@@ -94,12 +94,32 @@ function App() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Message sent! Thanks for reaching out! 🎮", {
-      duration: 3000,
-    });
-    setFormData({ name: '', email: '', message: '' });
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        toast.success("Message sent! Thanks for reaching out! 🎮", {
+          duration: 3000,
+        });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        toast.error("Failed to send message. Please try again.", {
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.", {
+        duration: 3000,
+      });
+    }
   };
 
   const scrollToSection = (id) => {
