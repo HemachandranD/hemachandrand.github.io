@@ -17,66 +17,73 @@ function App() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   const skills = [
-    { name: "React & Frontend", level: 90, color: "--sky-blue", icon: "⚡" },
-    { name: "Node.js & Backend", level: 85, color: "--mint-green", icon: "🔋" },
-    { name: "UI/UX Design", level: 75, color: "--coin-gold", icon: "✨" },
-    { name: "Problem Solving", level: 95, color: "--heart-red", icon: "💪" }
+    { name: "Machine Learning & Deep Learning", level: 95, color: "--sky-blue", icon: "⚡" },
+    { name: "MLOps & LLMOps", level: 90, color: "--mint-green", icon: "🔋" },
+    { name: "Cloud & Infrastructure", level: 85, color: "--coin-gold", icon: "✨" },
+    { name: "GenAI & LLM Applications", level: 88, color: "--heart-red", icon: "💪" },
+    { name: "Python & Data Science", level: 92, color: "--primary", icon: "🎯" }
   ];
 
   const projects = [
     {
       id: 1,
-      title: "Pixel Quest RPG",
-      description: "A retro-style RPG game built with React and Canvas API",
-      tags: ["React", "Canvas", "Game"],
-      coins: 15,
-      details: "Full-featured RPG with character progression, quests, and epic battles. Built with React hooks and HTML5 Canvas for smooth 60fps gameplay.",
-      link: "https://github.com"
+      title: "Ask Audio",
+      description: "AI-powered audio content analysis and summarization",
+      tags: ["AI", "NLP", "Audio"],
+      coins: 25,
+      details: "Revolutionizing audio content analysis with AI. Converts audio to text, extracts key insights, and provides intelligent summaries. Built to handle hours of recordings efficiently.",
+      link: "https://github.com/HemachandranD",
+      mediumLink: "https://www.linkedin.com/pulse/ask-audio-hemachandran-dhinakaran"
     },
     {
       id: 2,
-      title: "AI Chat Bot",
-      description: "Smart chatbot powered by latest AI models",
-      tags: ["AI", "Node.js", "API"],
-      coins: 20,
-      details: "Intelligent conversational AI with context awareness, multi-language support, and real-time responses. Integrated with GPT-4 and custom training data.",
-      link: "https://github.com"
+      title: "MLOps Platform",
+      description: "Complete MLOps framework on Databricks",
+      tags: ["MLOps", "Databricks", "CI/CD"],
+      coins: 30,
+      details: "A powerful plug-and-play MLOps platform with CI/CD on Azure DevOps. Handles continuous retraining, deployment, and monitoring. Built for enterprise-scale ML operations.",
+      link: "https://github.com/HemachandranD",
+      mediumLink: "https://medium.com/@hemz/mastering-mlops-building-a-powerful-mlops-platform-with-databricks-5ec4b43f6aa5"
     },
     {
       id: 3,
-      title: "E-Commerce Platform",
-      description: "Full-stack shopping experience with payment integration",
-      tags: ["Full-Stack", "Stripe", "MongoDB"],
-      coins: 25,
-      details: "Complete e-commerce solution with product management, cart functionality, secure payments, and order tracking. Built with MERN stack.",
-      link: "https://github.com"
+      title: "FoodSight",
+      description: "Image classification AI for food recognition",
+      tags: ["Deep Learning", "Computer Vision", "Streamlit"],
+      coins: 20,
+      details: "AI-powered food classification app trained on EfficientNetV2b0 using Food101 dataset. Deployed as a web app with real-time image recognition capabilities.",
+      link: "https://github.com/HemachandranD",
+      mediumLink: "https://foodsight.streamlit.app"
     },
     {
       id: 4,
-      title: "Weather Dashboard",
-      description: "Real-time weather data visualization",
-      tags: ["React", "API", "Charts"],
-      coins: 10,
-      details: "Beautiful weather dashboard with 7-day forecasts, interactive maps, and detailed metrics. Uses multiple weather APIs for accurate data.",
-      link: "https://github.com"
+      title: "Local RAG Application",
+      description: "Secure RAG with LangChain, llama3, Qdrant & Redis",
+      tags: ["LLM", "RAG", "LangChain"],
+      coins: 28,
+      details: "Production-grade RAG chatbot with chat history. Built with LangChain, llama3, Qdrant vector DB, and Redis. Handles sensitive data securely on local infrastructure.",
+      link: "https://github.com/HemachandranD",
+      mediumLink: "https://hemz.medium.com/build-a-secure-local-rag-application-with-chat-history-using-langchain-llama3-qdrant-redis-986be3628a94"
     },
     {
       id: 5,
-      title: "Task Manager Pro",
-      description: "Collaborative project management tool",
-      tags: ["React", "WebSocket", "Firebase"],
-      coins: 18,
-      details: "Real-time task management with team collaboration, drag-and-drop boards, notifications, and progress tracking. Built with Firebase for real-time sync.",
-      link: "https://github.com"
+      title: "LLMOps Platform",
+      description: "LLM operations platform on Databricks",
+      tags: ["LLMOps", "GenAI", "Databricks"],
+      coins: 32,
+      details: "Comprehensive LLMOps platform for managing Large Language Model lifecycles. Includes monitoring, versioning, and deployment automation on Databricks.",
+      link: "https://github.com/HemachandranD",
+      mediumLink: "https://hemz.medium.com/mastering-llmops-building-a-powerful-llmops-platform-with-databricks-954f77060948"
     },
     {
       id: 6,
-      title: "Portfolio Generator",
-      description: "Automated portfolio site builder",
-      tags: ["Next.js", "CMS", "Deploy"],
+      title: "MCP: AI Toolkit",
+      description: "Reusable and private AI toolkit with MCP",
+      tags: ["AI", "MCP", "Tools"],
       coins: 22,
-      details: "No-code portfolio builder with templates, drag-and-drop editor, and one-click deployment. Integrated with headless CMS for easy content management.",
-      link: "https://github.com"
+      details: "Building reusable and private AI toolkits using Model Context Protocol (MCP). Enables seamless integration of AI capabilities across applications.",
+      link: "https://github.com/HemachandranD",
+      mediumLink: "https://hemz.medium.com/harnessing-mcp-building-a-reusable-and-private-ai-toolkit-33f5ffc53d62"
     }
   ];
 
@@ -214,7 +221,7 @@ function App() {
                 transition={{ delay: 0.2 }}
               >
                 <h1 className="font-pixel text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight" data-testid="hero-title">
-                  ALEX DEVSON
+                  HEMACHANDRAN DHINAKARAN
                 </h1>
               </motion.div>
               
@@ -224,7 +231,7 @@ function App() {
                 transition={{ delay: 0.3 }}
               >
                 <h2 className="font-press-start text-base sm:text-lg text-[hsl(var(--primary))] tracking-wide" data-testid="hero-subtitle">
-                  FULL-STACK DEVELOPER
+                  SENIOR AI/ML ENGINEER
                 </h2>
               </motion.div>
 
@@ -235,8 +242,7 @@ function App() {
                 className="text-base sm:text-base leading-relaxed text-[hsl(var(--muted-foreground))]"
                 data-testid="hero-description"
               >
-                Building pixel-perfect web experiences and crushing code challenges like boss battles. 
-                Level 99 developer with max XP in React, Node.js, and creative problem solving.
+                Crafting AI systems and algorithms for tomorrow's innovations. Level 99 AI/ML Engineer with max XP in GenAI, MLOps, LLMOps, and building production-grade machine learning solutions on cloud platforms.
               </motion.p>
 
               <motion.div
