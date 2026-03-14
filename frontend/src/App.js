@@ -94,19 +94,19 @@ function App() {
     });
   };
 
-  // OPTION 1: Email Client (Works on GitHub Pages)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
-    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-    window.location.href = `mailto:hema18deena@gmail.com?subject=${subject}&body=${body}`;
-    toast.success("Opening your email client... 📧", {
-      duration: 3000,
-    });
-    setFormData({ name: '', email: '', message: '' });
-  };
+  // // OPTION 1: Email Client (Works on GitHub Pages)
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
+  //   const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
+  //   window.location.href = `mailto:hema18deena@gmail.com?subject=${subject}&body=${body}`;
+  //   toast.success("Opening your email client... 📧", {
+  //     duration: 3000,
+  //   });
+  //   setFormData({ name: '', email: '', message: '' });
+  // };
 
-  /* OPTION 2: FormSubmit.co (Uncomment to use)
+  // OPTION 2: FormSubmit.co (Uncomment to use)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -122,7 +122,7 @@ function App() {
           _subject: `Portfolio Contact from ${formData.name}`,
         }),
       });
-      
+
       if (response.ok) {
         toast.success("Message sent! Thanks for reaching out! 🎮", {
           duration: 3000,
@@ -139,7 +139,6 @@ function App() {
       });
     }
   };
-  */
 
   /* OPTION 3: Backend API (Requires backend deployment)
   const handleSubmit = async (e) => {
@@ -293,7 +292,7 @@ function App() {
                   HEMACHANDRAN DHINAKARAN
                 </h1>
               </motion.div>
-              
+
               <motion.div
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
