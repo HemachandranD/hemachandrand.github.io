@@ -17,10 +17,10 @@ function App() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   const skills = [
-    { name: "Machine Learning & Deep Learning", level: 95, color: "--sky-blue", icon: "⚡" },
+    { name: "GenAI & LLM Applications", level: 95, color: "--heart-red", icon: "💪" },
     { name: "MLOps & LLMOps", level: 90, color: "--mint-green", icon: "🔋" },
+    { name: "Machine Learning & Deep Learning", level: 93, color: "--sky-blue", icon: "⚡" },
     { name: "Cloud & Infrastructure", level: 85, color: "--coin-gold", icon: "✨" },
-    { name: "GenAI & LLM Applications", level: 88, color: "--heart-red", icon: "💪" },
     { name: "Python & Data Science", level: 92, color: "--primary", icon: "🎯" }
   ];
 
@@ -94,6 +94,54 @@ function App() {
     });
   };
 
+  // OPTION 1: Email Client (Works on GitHub Pages)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
+    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
+    window.location.href = `mailto:hema18deena@gmail.com?subject=${subject}&body=${body}`;
+    toast.success("Opening your email client... 📧", {
+      duration: 3000,
+    });
+    setFormData({ name: '', email: '', message: '' });
+  };
+
+  /* OPTION 2: FormSubmit.co (Uncomment to use)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('https://formsubmit.co/hema18deena@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `Portfolio Contact from ${formData.name}`,
+        }),
+      });
+      
+      if (response.ok) {
+        toast.success("Message sent! Thanks for reaching out! 🎮", {
+          duration: 3000,
+        });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        toast.error("Failed to send message. Please try again.", {
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.", {
+        duration: 3000,
+      });
+    }
+  };
+  */
+
+  /* OPTION 3: Backend API (Requires backend deployment)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -121,6 +169,7 @@ function App() {
       });
     }
   };
+  */
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
