@@ -8,7 +8,7 @@ import { Badge } from "./components/ui/badge";
 import { Input } from "./components/ui/input";
 import { Textarea } from "./components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./components/ui/dialog";
-import { Github, Linkedin, Twitter, Mail, Sparkles, Zap, Heart, Code, Rocket, Star } from "lucide-react";
+import { Github, Linkedin, Mail, Sparkles, Zap, Heart, Code, Rocket, Star, Brain } from "lucide-react";
 import { toast } from "sonner";
 
 function App() {
@@ -201,7 +201,7 @@ function App() {
             >
               <div className="relative">
                 <div className="w-64 h-64 bg-[hsl(var(--primary))] border-[4px] border-[color:hsl(var(--pixel-outline))] shadow-[8px_8px_0_0_hsl(var(--pixel-outline))] flex items-center justify-center animate-float">
-                  <Code className="w-32 h-32 text-white" />
+                  <Brain className="w-32 h-32 text-white" />
                 </div>
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
@@ -289,10 +289,10 @@ function App() {
             className="text-center mb-12"
           >
             <h2 className="font-pixel text-4xl sm:text-5xl font-bold mb-4" data-testid="skills-title">
-              PLAYER STATS
+              AI POWER STATS
             </h2>
             <p className="text-base text-[hsl(var(--muted-foreground))]" data-testid="skills-subtitle">
-              Skills leveled up through countless side quests
+              ML capabilities leveled up through countless AI quests
             </p>
           </motion.div>
 
@@ -351,10 +351,10 @@ function App() {
             className="text-center mb-12"
           >
             <h2 className="font-pixel text-4xl sm:text-5xl font-bold mb-4" data-testid="projects-title">
-              QUEST LOG
+              AI QUEST LOG
             </h2>
             <p className="text-base text-[hsl(var(--muted-foreground))]" data-testid="projects-subtitle">
-              Epic projects completed on the journey
+              Epic AI/ML projects completed on the journey
             </p>
           </motion.div>
 
@@ -417,10 +417,10 @@ function App() {
             className="text-center mb-12"
           >
             <h2 className="font-pixel text-4xl sm:text-5xl font-bold mb-4" data-testid="contact-title">
-              START A QUEST
+              START AN AI QUEST
             </h2>
             <p className="text-base text-[hsl(var(--muted-foreground))]" data-testid="contact-subtitle">
-              Let's team up and build something legendary
+              Let's team up and build intelligent AI solutions together
             </p>
           </motion.div>
 
