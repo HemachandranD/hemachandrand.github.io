@@ -497,9 +497,9 @@ function App() {
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             {/* About */}
             <div data-testid="footer-about">
-              <h3 className="font-pixel text-xl mb-4">ALEX DEVSON</h3>
+              <h3 className="font-pixel text-xl mb-4">HEMACHANDRAN DHINAKARAN</h3>
               <p className="text-sm text-gray-300">
-                Full-stack developer crafting pixel-perfect experiences. Always ready for the next challenge.
+                Senior AI/ML Engineer crafting intelligent systems. Building tomorrow's AI innovations today.
               </p>
             </div>
 
@@ -544,7 +544,7 @@ function App() {
               <div className="flex gap-4">
                 <motion.a
                   whileHover={{ y: -4 }}
-                  href="https://github.com"
+                  href="https://github.com/HemachandranD"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white border-[3px] border-white flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
@@ -554,7 +554,7 @@ function App() {
                 </motion.a>
                 <motion.a
                   whileHover={{ y: -4 }}
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/hemachandran-dhinakaran-20900b13b"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white border-[3px] border-white flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
@@ -564,13 +564,13 @@ function App() {
                 </motion.a>
                 <motion.a
                   whileHover={{ y: -4 }}
-                  href="https://twitter.com"
+                  href="https://hemz.medium.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white border-[3px] border-white flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
-                  data-testid="footer-social-twitter"
+                  data-testid="footer-social-medium"
                 >
-                  <Twitter className="w-6 h-6 text-[hsl(var(--pixel-outline))]" />
+                  <Mail className="w-6 h-6 text-[hsl(var(--pixel-outline))]" />
                 </motion.a>
               </div>
             </div>
@@ -578,7 +578,7 @@ function App() {
 
           <div className="border-t-[3px] border-white/20 pt-8 text-center">
             <p className="font-press-start text-xs text-gray-300" data-testid="footer-copyright">
-              © 2025 ALEX DEVSON. BUILT WITH <Heart className="inline w-3 h-3 text-[hsl(var(--heart-red))] fill-[hsl(var(--heart-red))]" /> & REACT
+              © 2025 HEMACHANDRAN DHINAKARAN. BUILT WITH <Heart className="inline w-3 h-3 text-[hsl(var(--heart-red))] fill-[hsl(var(--heart-red))]" /> & AI
             </p>
           </div>
         </div>
