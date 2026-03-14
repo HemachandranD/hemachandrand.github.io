@@ -1,0 +1,100 @@
+/* Pixel Font Classes */
+.font-pixel {
+  font-family: 'Pixelify Sans', cursive;
+}
+
+.font-press-start {
+  font-family: 'Press Start 2P', cursive;
+}
+
+.font-body {
+  font-family: 'Figtree', sans-serif;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--sky-blue));
+}
+
+/* Custom Pixel Button Animation */
+.pixel-button {
+  transition: box-shadow 0.1s steps(6, end), transform 0.1s steps(6, end);
+}
+
+.pixel-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 hsl(var(--pixel-outline));
+}
+
+/* Pixel Card Hover */
+.pixel-card {
+  transition: box-shadow 0.25s steps(6, end);
+}
+
+.pixel-card:hover {
+  box-shadow: 8px 8px 0 0 hsl(var(--pixel-outline));
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Blink Animation */
+@keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0.5;
+  }
+}
+
+.animate-blink {
+  animation: blink 2s steps(2, end) infinite;
+}
+
+/* Pixel Shake */
+@keyframes pixelShake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2px, 0); }
+  20% { transform: translate(2px, 0); }
+  30% { transform: translate(0, -2px); }
+  40% { transform: translate(0, 2px); }
+  50% { transform: translate(-2px, 2px); }
+  60% { transform: translate(2px, -2px); }
+  70% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+  90% { transform: translate(0, 0); }
+}
+
+.hover-shake:hover {
+  animation: pixelShake 0.5s steps(10, end);
+}
