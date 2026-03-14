@@ -5,10 +5,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import List
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 ROOT_DIR = Path(__file__).parent
@@ -30,10 +30,22 @@ api_router = APIRouter(prefix="/api")
 class StatusCheck(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class StatusCheckCreate(BaseModel):
     client_name: str
+
+class ContactMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: EmailStr
+    message: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ContactMessageCreate(BaseModel):
+    name: str
+    email: EmailStr
+    message: str
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
@@ -49,8 +61,20 @@ async def create_status_check(input: StatusCheckCreate):
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
-    status_checks = await db.status_checks.find().to_list(1000)
+    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
+
+@api_router.post("/contact", response_model=ContactMessage)
+async def create_contact_message(input: ContactMessageCreate):
+    contact_dict = input.dict()
+    contact_obj = ContactMessage(**contact_dict)
+    _ = await db.contact_messages.insert_one(contact_obj.dict())
+    return contact_obj
+
+@api_router.get("/contact", response_model=List[ContactMessage])
+async def get_contact_messages():
+    messages = await db.contact_messages.find({}, {"_id": 0}).to_list(1000)
+    return [ContactMessage(**message) for message in messages]
 
 # Include the router in the main app
 app.include_router(api_router)
