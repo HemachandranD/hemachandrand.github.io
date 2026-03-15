@@ -219,7 +219,6 @@ yarn deploy
 1. **Render.com** (Free tier)
 2. **Railway.app** (Free tier)
 3. **Vercel** (Serverless functions)
-4. **Keep Emergent** (Current setup)
 
 ---
 

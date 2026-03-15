@@ -26,7 +26,7 @@ code {
     --card-foreground: 210 25% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 210 25% 12%;
-    --primary: 195 84% 40%;
+    --primary: 345 82% 46%;
     --primary-foreground: 0 0% 100%;
     --secondary: 46 96% 62%;
     --secondary-foreground: 210 25% 12%;
@@ -38,7 +38,7 @@ code {
     --destructive-foreground: 0 0% 100%;
     --border: 210 16% 85%;
     --input: 210 16% 85%;
-    --ring: 195 84% 40%;
+    --ring: 345 82% 46%;
     --pixel-outline: 210 28% 20%;
     --coin-gold: 46 96% 52%;
     --heart-red: 3 86% 56%;
@@ -58,19 +58,25 @@ code {
     --card: 210 25% 10%;
     --card-foreground: 48 100% 98%;
     --border: 210 16% 24%;
+    --input: 210 16% 24%;
     --popover: 210 25% 10%;
     --popover-foreground: 48 100% 98%;
-    --primary: 195 84% 40%;
+    --primary: 345 82% 46%;
     --primary-foreground: 0 0% 100%;
     --secondary: 46 96% 62%;
-    --secondary-foreground: 210 25% 12%;
-    --muted: 210 20% 94%;
-    --muted-foreground: 210 8% 35%;
+    --secondary-foreground: 48 100% 98%;
+    --muted: 210 20% 18%;
+    --muted-foreground: 210 8% 65%;
     --accent: 160 74% 40%;
     --accent-foreground: 0 0% 100%;
     --destructive: 3 86% 56%;
     --destructive-foreground: 0 0% 100%;
-    --ring: 195 84% 40%;
+    --ring: 345 82% 46%;
+    --pixel-outline: 210 16% 70%;
+    --coin-gold: 46 96% 52%;
+    --heart-red: 3 86% 56%;
+    --sky-blue: 197 92% 46%;
+    --mint-green: 160 64% 42%;
   }
 }
 
@@ -83,13 +89,10 @@ code {
   }
 }
 
-/* Pixel Grid Background */
+/* Pixel Dot Background */
 .pixel-grid {
-  background-image: 
-    linear-gradient(hsla(210, 20%, 85%, 0.6) 1px, transparent 1px),
-    linear-gradient(90deg, hsla(210, 20%, 85%, 0.6) 1px, transparent 1px);
-  background-size: 16px 16px;
-  background-position: -1px -1px;
+  background-image: radial-gradient(circle, hsla(210, 20%, 70%, 0.3) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* Scanlines Effect */

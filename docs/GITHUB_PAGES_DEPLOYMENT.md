@@ -51,19 +51,10 @@ Add these lines to your `/app/frontend/package.json`:
 
 Since GitHub Pages only hosts static files (frontend), you have two options:
 
-#### **Option A: Keep Backend on Emergent (Recommended for now)**
-Your current setup with Emergent backend will work. Just ensure the contact form points to your Emergent backend URL.
-
-#### **Option B: Use a Free Backend Service**
+#### **Backend Service Options**
 - Deploy backend to **Render.com** (free tier)
 - Deploy backend to **Railway.app** (free tier)
 - Deploy backend to **Vercel** (serverless functions)
-
-For now, let's keep the Emergent backend. Update `/app/frontend/.env.production`:
-
-```bash
-REACT_APP_BACKEND_URL=https://dev-skill-arcade.preview.emergentagent.com/api
-```
 
 ### **Step 5: Initialize Git and Push to GitHub**
 
@@ -148,12 +139,7 @@ If you want a custom domain like `hemachandran.dev`:
 
 Since GitHub Pages only hosts static files, here are your backend options:
 
-### **Option 1: Keep Emergent Backend (Current)**
-- ✅ Already working
-- ✅ No additional setup
-- ⚠️ May have limitations for production use
-
-### **Option 2: Deploy Backend to Render.com (FREE)**
+### **Option 1: Deploy Backend to Render.com (FREE)**
 
 1. Create account on https://render.com
 2. Click "New +" → "Web Service"

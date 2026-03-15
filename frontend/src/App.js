@@ -1,59 +1,72 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 import "@/App.css";
 import { Button } from "./components/ui/button";
 import { Card } from "./components/ui/card";
-import { Progress } from "./components/ui/progress";
 import { Badge } from "./components/ui/badge";
 import { Input } from "./components/ui/input";
 import { Textarea } from "./components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./components/ui/dialog";
-import { Github, Linkedin, Mail, Sparkles, Zap, Heart, Code, Rocket, Star, Brain } from "lucide-react";
+import { Github, Linkedin, Mail, Sparkles, Zap, Heart, Code, Rocket, Star, Brain, Sun, Moon, Monitor } from "lucide-react";
 import { toast } from "sonner";
 
 function App() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [coins, setCoins] = useState(42);
   const [selectedProject, setSelectedProject] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
+  useEffect(() => setMounted(true), []);
+
+  const cycleTheme = () => {
+    if (theme === 'system') setTheme('light');
+    else if (theme === 'light') setTheme('dark');
+    else setTheme('system');
+  };
+
+  const ThemeIcon = !mounted ? Monitor : theme === 'system' ? Monitor : theme === 'light' ? Sun : Moon;
+
   const skills = [
-    { name: "GenAI & LLM Applications", level: 95, color: "--heart-red", icon: "💪" },
-    { name: "MLOps & LLMOps", level: 90, color: "--mint-green", icon: "🔋" },
-    { name: "Machine Learning & Deep Learning", level: 93, color: "--sky-blue", icon: "⚡" },
-    { name: "Cloud & Infrastructure", level: 85, color: "--coin-gold", icon: "✨" },
-    { name: "Python & Data Science", level: 92, color: "--primary", icon: "🎯" }
+    { name: "Agentic AI & Multi-Agent Systems", level: 95, color: "--heart-red", icon: "💪" },
+    { name: "Generative AI & Observability", level: 90, color: "--sky-blue", icon: "🔍" },
+    { name: "LLMOps & MLOps", level: 90, color: "--mint-green", icon: "🔋" },
+    { name: "Machine Learning & Deep Learning", level: 93, color: "--primary", icon: "⚡" },
+    { name: "Cloud & DevOps (Azure, AWS, GCP)", level: 90, color: "--coin-gold", icon: "☁️" },
+    { name: "Python & Data Engineering", level: 92, color: "--heart-red", icon: "🎯" }
   ];
 
   const projects = [
     {
       id: 1,
-      title: "Ask Audio",
-      description: "AI-powered audio content analysis and summarization",
-      tags: ["AI", "NLP", "Audio"],
-      coins: 25,
-      details: "Revolutionizing audio content analysis with AI. Converts audio to text, extracts key insights, and provides intelligent summaries. Built to handle hours of recordings efficiently.",
+      title: "Harness MCP: Reusable Private AI Toolkit",
+      description: "Reusable and private AI toolkit with MCP",
+      tags: ["AI", "MCP", "Tools"],
+      coins: 22,
+      details: "Building reusable and private AI toolkits using Model Context Protocol (MCP). Enables seamless integration of AI capabilities across applications.",
       link: "https://github.com/HemachandranD",
-      mediumLink: "https://www.linkedin.com/pulse/ask-audio-hemachandran-dhinakaran"
+      mediumLink: "https://hemz.medium.com/harnessing-mcp-building-a-reusable-and-private-ai-toolkit-33f5ffc53d62"
     },
     {
       id: 2,
-      title: "MLOps Platform",
-      description: "Complete MLOps framework on Databricks",
-      tags: ["MLOps", "Databricks", "CI/CD"],
-      coins: 30,
-      details: "A powerful plug-and-play MLOps platform with CI/CD on Azure DevOps. Handles continuous retraining, deployment, and monitoring. Built for enterprise-scale ML operations.",
+      title: "Amazon Bedrock AgentCore for AI Agents",
+      description: "Amazon Bedrock AgentCore for AI Agents",
+      tags: ["Amazon Bedrock", "AgentCore", "AI Agents"],
+      coins: 22,
+      details: "Amazon Bedrock AgentCore is a platform for building and deploying AI agents. It provides a set of tools and APIs for building and deploying AI agents.",
       link: "https://github.com/HemachandranD",
-      mediumLink: "https://medium.com/@hemz/mastering-mlops-building-a-powerful-mlops-platform-with-databricks-5ec4b43f6aa5"
+      mediumLink: "https://hemz.medium.com/amazon-bedrock-agentcore-for-ai-agents-33f5ffc53d62"
     },
     {
       id: 3,
-      title: "FoodSight",
-      description: "Image classification AI for food recognition",
-      tags: ["Deep Learning", "Computer Vision", "Streamlit"],
-      coins: 20,
-      details: "AI-powered food classification app trained on EfficientNetV2b0 using Food101 dataset. Deployed as a web app with real-time image recognition capabilities.",
+      title: "LLMOps Platform",
+      description: "LLM operations platform on Databricks",
+      tags: ["LLMOps", "GenAI", "Databricks"],
+      coins: 32,
+      details: "Comprehensive LLMOps platform for managing Large Language Model lifecycles. Includes monitoring, versioning, and deployment automation on Databricks.",
       link: "https://github.com/HemachandranD",
-      mediumLink: "https://foodsight.streamlit.app"
+      mediumLink: "https://hemz.medium.com/mastering-llmops-building-a-powerful-llmops-platform-with-databricks-954f77060948"
     },
     {
       id: 4,
@@ -67,23 +80,33 @@ function App() {
     },
     {
       id: 5,
-      title: "LLMOps Platform",
-      description: "LLM operations platform on Databricks",
-      tags: ["LLMOps", "GenAI", "Databricks"],
-      coins: 32,
-      details: "Comprehensive LLMOps platform for managing Large Language Model lifecycles. Includes monitoring, versioning, and deployment automation on Databricks.",
+      title: "FoodSight",
+      description: "Image classification AI for food recognition",
+      tags: ["Deep Learning", "Computer Vision", "Streamlit"],
+      coins: 20,
+      details: "AI-powered food classification app trained on EfficientNetV2b0 using Food101 dataset. Deployed as a web app with real-time image recognition capabilities.",
       link: "https://github.com/HemachandranD",
-      mediumLink: "https://hemz.medium.com/mastering-llmops-building-a-powerful-llmops-platform-with-databricks-954f77060948"
+      mediumLink: "https://foodsight.streamlit.app"
     },
     {
       id: 6,
-      title: "MCP: AI Toolkit",
-      description: "Reusable and private AI toolkit with MCP",
-      tags: ["AI", "MCP", "Tools"],
-      coins: 22,
-      details: "Building reusable and private AI toolkits using Model Context Protocol (MCP). Enables seamless integration of AI capabilities across applications.",
+      title: "MLOps Platform",
+      description: "Complete MLOps framework on Databricks",
+      tags: ["MLOps", "Databricks", "CI/CD"],
+      coins: 30,
+      details: "A powerful plug-and-play MLOps platform with CI/CD on Azure DevOps. Handles continuous retraining, deployment, and monitoring. Built for enterprise-scale ML operations.",
       link: "https://github.com/HemachandranD",
-      mediumLink: "https://hemz.medium.com/harnessing-mcp-building-a-reusable-and-private-ai-toolkit-33f5ffc53d62"
+      mediumLink: "https://medium.com/@hemz/mastering-mlops-building-a-powerful-mlops-platform-with-databricks-5ec4b43f6aa5"
+    },
+    {
+      id: 7,
+      title: "Ask Audio",
+      description: "AI-powered audio content analysis and summarization",
+      tags: ["AI", "NLP", "Audio"],
+      coins: 25,
+      details: "Revolutionizing audio content analysis with AI. Converts audio to text, extracts key insights, and provides intelligent summaries. Built to handle hours of recordings efficiently.",
+      link: "https://github.com/HemachandranD",
+      mediumLink: "https://www.linkedin.com/pulse/ask-audio-hemachandran-dhinakaran"
     }
   ];
 
@@ -94,26 +117,14 @@ function App() {
     });
   };
 
-  // // OPTION 1: Email Client (Works on GitHub Pages)
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
-  //   const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-  //   window.location.href = `mailto:hema18deena@gmail.com?subject=${subject}&body=${body}`;
-  //   toast.success("Opening your email client... 📧", {
-  //     duration: 3000,
-  //   });
-  //   setFormData({ name: '', email: '', message: '' });
-  // };
-
-  // OPTION 2: FormSubmit.co (Uncomment to use)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://formsubmit.co/hema18deena@gmail.com', {
+      const response = await fetch('https://formsubmit.co/ajax/hema18deena@gmail.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
           name: formData.name,
@@ -140,36 +151,6 @@ function App() {
     }
   };
 
-  /* OPTION 3: Backend API (Requires backend deployment)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      if (response.ok) {
-        toast.success("Message sent! Thanks for reaching out! 🎮", {
-          duration: 3000,
-        });
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        toast.error("Failed to send message. Please try again.", {
-          duration: 3000,
-        });
-      }
-    } catch (error) {
-      toast.error("Failed to send message. Please try again.", {
-        duration: 3000,
-      });
-    }
-  };
-  */
-
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -181,7 +162,7 @@ function App() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100 }}
-        className="sticky top-0 z-50 bg-white border-b-[3px] border-[color:hsl(var(--pixel-outline))] shadow-md"
+        className="sticky top-0 z-50 bg-[hsl(var(--card))] border-b-[3px] border-[color:hsl(var(--pixel-outline))] shadow-md"
         data-testid="header"
       >
         <div className="mx-auto px-4 sm:px-6 lg:px-10 max-w-6xl">
@@ -195,7 +176,7 @@ function App() {
               >
                 <Code className="w-6 h-6 text-white" />
               </motion.div>
-              <span className="font-pixel text-lg font-bold" data-testid="logo-text">DEV</span>
+              <span className="font-pixel text-lg font-bold" data-testid="logo-text">HEMZ</span>
             </div>
 
             {/* Desktop Nav */}
@@ -230,16 +211,30 @@ function App() {
               </button>
             </nav>
 
-            {/* Coin Counter */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              onClick={handleCoinCollect}
-              className="flex items-center gap-2 px-3 py-2 bg-white border-[3px] rounded-none border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] cursor-pointer hover-shake"
-              data-testid="coin-counter"
-            >
-              <div className="w-5 h-5 bg-[hsl(var(--coin-gold))] rounded-full border-2 border-[color:hsl(var(--pixel-outline))]" />
-              <span className="font-press-start text-xs">{coins}</span>
-            </motion.div>
+            <div className="flex items-center gap-3">
+              {/* Theme Toggle */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={cycleTheme}
+                className="flex items-center justify-center w-10 h-10 bg-[hsl(var(--card))] border-[3px] rounded-none border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] cursor-pointer"
+                data-testid="theme-toggle"
+                title={`Theme: ${theme}`}
+              >
+                <ThemeIcon className="w-5 h-5" />
+              </motion.button>
+
+              {/* Coin Counter */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                onClick={handleCoinCollect}
+                className="flex items-center gap-2 px-3 py-2 bg-[hsl(var(--card))] border-[3px] rounded-none border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] cursor-pointer hover-shake"
+                data-testid="coin-counter"
+              >
+                <div className="w-5 h-5 bg-[hsl(var(--coin-gold))] rounded-full border-2 border-[color:hsl(var(--pixel-outline))]" />
+                <span className="font-press-start text-xs">{coins}</span>
+              </motion.div>
+            </div>
           </div>
         </div>
       </motion.header>
@@ -252,10 +247,7 @@ function App() {
       >
         <div className="absolute inset-0 pixel-grid opacity-50" />
         <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(135deg, hsl(197 92% 96%) 0%, hsl(160 64% 96%) 55%, hsl(48 100% 96%) 100%)'
-          }}
+          className="absolute inset-0 bg-[linear-gradient(135deg,hsl(var(--sky-blue)/0.1)_0%,hsl(var(--mint-green)/0.1)_55%,hsl(var(--coin-gold)/0.1)_100%)]"
         />
         <div className="relative mx-auto px-4 sm:px-6 lg:px-10 max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -310,7 +302,7 @@ function App() {
                 className="text-base sm:text-base leading-relaxed text-[hsl(var(--muted-foreground))]"
                 data-testid="hero-description"
               >
-                Crafting AI systems and algorithms for tomorrow's innovations. Level 99 AI/ML Engineer with max XP in GenAI, MLOps, LLMOps, and building production-grade machine learning solutions on cloud platforms.
+                Crafting AI systems and algorithms for tomorrow's innovations. Level 99 AI Engineer with 7+ years of XP — building Agentic AI systems, observability platforms, and battle-tested MLOps & LLMOps frameworks across CPG, retail, and healthcare with real-world power-ups.
               </motion.p>
 
               <motion.div
@@ -322,7 +314,7 @@ function App() {
               >
                 <Button
                   onClick={() => scrollToSection('projects')}
-                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-[hsl(var(--primary))] text-white hover:bg-[hsl(var(--sky-blue))] font-press-start text-xs px-6 py-6"
+                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-[hsl(var(--primary))] text-white hover:bg-[hsl(345,82%,38%)] font-press-start text-xs px-6 py-6"
                   data-testid="hero-primary-cta"
                 >
                   <Rocket className="w-4 h-4 mr-2" />
@@ -331,11 +323,43 @@ function App() {
                 <Button
                   onClick={() => scrollToSection('contact')}
                   variant="outline"
-                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-white text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))] font-press-start text-xs px-6 py-6"
+                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))] font-press-start text-xs px-6 py-6"
                   data-testid="hero-secondary-cta"
                 >
                   <Mail className="w-4 h-4 mr-2" />
                   HIRE ME
+                </Button>
+              </motion.div>
+
+              <motion.div
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-wrap gap-4"
+              >
+                <Button
+                  asChild
+                  variant="outline"
+                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))] font-press-start text-xs px-6 py-6"
+                  data-testid="hero-linkedin-btn"
+                >
+                  <a href="https://www.linkedin.com/in/hemachandran-dhinakaran-20900b13b" target="_blank" rel="noopener noreferrer">
+                    <Linkedin className="w-4 h-4 mr-2" />
+                    LINKEDIN
+                  </a>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))] font-press-start text-xs px-6 py-6"
+                  data-testid="hero-medium-btn"
+                >
+                  <a href="https://hemz.medium.com" target="_blank" rel="noopener noreferrer">
+                    <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42S14.2 15.54 14.2 12s1.52-6.42 3.38-6.42 3.38 2.88 3.38 6.42zM24 12c0 3.17-.53 5.75-1.19 5.75S21.62 15.17 21.62 12s.53-5.75 1.19-5.75S24 8.83 24 12z" />
+                    </svg>
+                    MEDIUM
+                  </a>
                 </Button>
               </motion.div>
             </div>
@@ -346,7 +370,7 @@ function App() {
       {/* Skills Section */}
       <section
         id="skills"
-        className="py-12 sm:py-16 lg:py-24 bg-white"
+        className="py-12 sm:py-16 lg:py-24 bg-[hsl(var(--card))]"
         data-testid="skills-section"
       >
         <div className="mx-auto px-4 sm:px-6 lg:px-10 max-w-6xl">
@@ -374,7 +398,7 @@ function App() {
                 transition={{ delay: index * 0.1 }}
                 data-testid={`skill-item-${index}`}
               >
-                <Card className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] bg-white shadow-[6px_6px_0_0_hsl(var(--pixel-outline))] hover:shadow-[8px_8px_0_0_hsl(var(--pixel-outline))] transition-shadow p-6">
+                <Card className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] bg-[hsl(var(--card))] shadow-[6px_6px_0_0_hsl(var(--pixel-outline))] hover:shadow-[8px_8px_0_0_hsl(var(--pixel-outline))] transition-shadow p-6">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-pixel text-lg" data-testid={`skill-name-${index}`}>{skill.name}</h3>
                     <span className="text-2xl">{skill.icon}</span>
@@ -438,7 +462,7 @@ function App() {
                 data-testid={`project-card-${index}`}
               >
                 <Card
-                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] bg-white shadow-[6px_6px_0_0_hsl(var(--pixel-outline))] hover:shadow-[8px_8px_0_0_hsl(var(--pixel-outline))] transition-shadow cursor-pointer h-full"
+                  className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] bg-[hsl(var(--card))] shadow-[6px_6px_0_0_hsl(var(--pixel-outline))] hover:shadow-[8px_8px_0_0_hsl(var(--pixel-outline))] transition-shadow cursor-pointer h-full"
                   onClick={() => setSelectedProject(project)}
                 >
                   <div className="p-4 space-y-3">
@@ -474,7 +498,7 @@ function App() {
       {/* Contact Section */}
       <section
         id="contact"
-        className="py-12 sm:py-16 lg:py-24 bg-white"
+        className="py-12 sm:py-16 lg:py-24 bg-[hsl(var(--card))]"
         data-testid="contact-section"
       >
         <div className="mx-auto px-4 sm:px-6 lg:px-10 max-w-3xl">
@@ -497,7 +521,7 @@ function App() {
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
           >
-            <Card className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] bg-white shadow-[6px_6px_0_0_hsl(var(--pixel-outline))] p-8">
+            <Card className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] bg-[hsl(var(--card))] shadow-[6px_6px_0_0_hsl(var(--pixel-outline))] p-8">
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="contact-form">
                 <div>
                   <label className="font-press-start text-xs block mb-2" htmlFor="name">
@@ -544,7 +568,7 @@ function App() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-[hsl(var(--primary))] text-white hover:bg-[hsl(var(--sky-blue))] font-press-start text-xs py-6"
+                  className="w-full rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] active:shadow-[0_0_0_0_hsl(var(--pixel-outline))] active:translate-x-[4px] active:translate-y-[4px] bg-[hsl(var(--primary))] text-white hover:bg-[hsl(345,82%,38%)] font-press-start text-xs py-6"
                   data-testid="contact-submit-button"
                 >
                   <Zap className="w-4 h-4 mr-2" />
@@ -558,7 +582,7 @@ function App() {
 
       {/* Footer */}
       <footer
-        className="bg-[hsl(var(--pixel-outline))] text-white py-12"
+        className="bg-[hsl(var(--pixel-outline))] text-[hsl(var(--card))] py-12"
         data-testid="footer"
       >
         <div className="mx-auto px-4 sm:px-6 lg:px-10 max-w-6xl">
@@ -566,7 +590,7 @@ function App() {
             {/* About */}
             <div data-testid="footer-about">
               <h3 className="font-pixel text-xl mb-4">HEMACHANDRAN DHINAKARAN</h3>
-              <p className="text-sm text-gray-300">
+              <p className="text-sm text-[hsl(var(--card)/0.7)]">
                 Senior AI/ML Engineer crafting intelligent systems. Building tomorrow's AI innovations today.
               </p>
             </div>
@@ -577,28 +601,28 @@ function App() {
               <div className="space-y-2">
                 <button
                   onClick={() => scrollToSection('about')}
-                  className="block text-sm text-gray-300 hover:text-[hsl(var(--coin-gold))] transition-colors"
+                  className="block text-sm text-[hsl(var(--card)/0.7)] hover:text-[hsl(var(--coin-gold))] transition-colors"
                   data-testid="footer-link-about"
                 >
                   About
                 </button>
                 <button
                   onClick={() => scrollToSection('skills')}
-                  className="block text-sm text-gray-300 hover:text-[hsl(var(--coin-gold))] transition-colors"
+                  className="block text-sm text-[hsl(var(--card)/0.7)] hover:text-[hsl(var(--coin-gold))] transition-colors"
                   data-testid="footer-link-skills"
                 >
                   Skills
                 </button>
                 <button
                   onClick={() => scrollToSection('projects')}
-                  className="block text-sm text-gray-300 hover:text-[hsl(var(--coin-gold))] transition-colors"
+                  className="block text-sm text-[hsl(var(--card)/0.7)] hover:text-[hsl(var(--coin-gold))] transition-colors"
                   data-testid="footer-link-projects"
                 >
                   Projects
                 </button>
                 <button
                   onClick={() => scrollToSection('contact')}
-                  className="block text-sm text-gray-300 hover:text-[hsl(var(--coin-gold))] transition-colors"
+                  className="block text-sm text-[hsl(var(--card)/0.7)] hover:text-[hsl(var(--coin-gold))] transition-colors"
                   data-testid="footer-link-contact"
                 >
                   Contact
@@ -615,7 +639,7 @@ function App() {
                   href="https://github.com/HemachandranD"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-white border-[3px] border-white flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
+                  className="w-12 h-12 bg-[hsl(var(--card))] border-[3px] border-[hsl(var(--card))] flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
                   data-testid="footer-social-github"
                 >
                   <Github className="w-6 h-6 text-[hsl(var(--pixel-outline))]" />
@@ -625,7 +649,7 @@ function App() {
                   href="https://www.linkedin.com/in/hemachandran-dhinakaran-20900b13b"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-white border-[3px] border-white flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
+                  className="w-12 h-12 bg-[hsl(var(--card))] border-[3px] border-[hsl(var(--card))] flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
                   data-testid="footer-social-linkedin"
                 >
                   <Linkedin className="w-6 h-6 text-[hsl(var(--pixel-outline))]" />
@@ -635,17 +659,19 @@ function App() {
                   href="https://hemz.medium.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-white border-[3px] border-white flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
+                  className="w-12 h-12 bg-[hsl(var(--card))] border-[3px] border-[hsl(var(--card))] flex items-center justify-center hover:bg-[hsl(var(--coin-gold))] transition-colors"
                   data-testid="footer-social-medium"
                 >
-                  <Mail className="w-6 h-6 text-[hsl(var(--pixel-outline))]" />
+                  <svg className="w-6 h-6 text-[hsl(var(--pixel-outline))]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42S14.2 15.54 14.2 12s1.52-6.42 3.38-6.42 3.38 2.88 3.38 6.42zM24 12c0 3.17-.53 5.75-1.19 5.75S21.62 15.17 21.62 12s.53-5.75 1.19-5.75S24 8.83 24 12z" />
+                  </svg>
                 </motion.a>
               </div>
             </div>
           </div>
 
-          <div className="border-t-[3px] border-white/20 pt-8 text-center">
-            <p className="font-press-start text-xs text-gray-300" data-testid="footer-copyright">
+          <div className="border-t-[3px] border-[hsl(var(--card)/0.2)] pt-8 text-center">
+            <p className="font-press-start text-xs text-[hsl(var(--card)/0.7)]" data-testid="footer-copyright">
               © 2025 HEMACHANDRAN DHINAKARAN. BUILT WITH <Heart className="inline w-3 h-3 text-[hsl(var(--heart-red))] fill-[hsl(var(--heart-red))]" /> & AI
             </p>
           </div>
@@ -686,7 +712,7 @@ function App() {
                 <div className="flex gap-4">
                   <Button
                     asChild
-                    className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] bg-[hsl(var(--primary))] text-white hover:bg-[hsl(var(--sky-blue))] font-press-start text-xs"
+                    className="rounded-none border-[3px] border-[color:hsl(var(--pixel-outline))] shadow-[4px_4px_0_0_hsl(var(--pixel-outline))] bg-[hsl(var(--primary))] text-white hover:bg-[hsl(345,82%,38%)] font-press-start text-xs"
                     data-testid="project-dialog-github-btn"
                   >
                     <a href={selectedProject.link} target="_blank" rel="noopener noreferrer">

@@ -31,10 +31,6 @@ Your repository is **SAFE** to make public! Here's the complete security audit:
    - Connection string NOT in code
    - Properly secured
 
-5. **Backend URLs** ✅
-   - Emergent preview URL is public anyway
-   - No security risk
-
 ---
 
 ## 📋 Before Making Repository Public - Checklist

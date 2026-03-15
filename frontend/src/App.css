@@ -31,7 +31,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--sky-blue));
+  background: hsl(345, 82%, 38%);
 }
 
 /* Custom Pixel Button Animation */
