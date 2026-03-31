@@ -50,22 +50,35 @@ function useISTStatus() {
     return status;
 }
 
-// Visitor counter hook — persists total across sessions via localStorage,
-// increments by 1 each page-load (resets on fresh browser / cleared storage).
+// Visitor counter hook — global count shared across all visitors via counterapi.dev
 function useVisitorCount() {
     const [count, setCount] = useState(null);
     const counted = useRef(false);
 
     useEffect(() => {
-        if (counted.current) return;    // guard against StrictMode double-run
+        if (counted.current) return;
         counted.current = true;
 
-        const KEY = "hd-page-views";
-        localStorage.removeItem("hd-visitor-count"); // clear legacy key
-        const prev = parseInt(localStorage.getItem(KEY), 10) || 0;
-        const next = prev + 1;
-        localStorage.setItem(KEY, String(next));
-        setCount(next);
+        // Check if this session already counted (avoid double-count on refresh)
+        const SESSION_KEY = "hd-counted-session";
+        const alreadyCounted = sessionStorage.getItem(SESSION_KEY);
+
+        const endpoint = alreadyCounted
+            ? "https://api.counterapi.dev/v1/hemachandrand-github-io/visits"       // just read
+            : "https://api.counterapi.dev/v1/hemachandrand-github-io/visits/up";   // increment + read
+
+        fetch(endpoint)
+            .then((r) => r.json())
+            .then((data) => {
+                if (data?.count != null) {
+                    setCount(data.count);
+                    if (!alreadyCounted) sessionStorage.setItem(SESSION_KEY, "1");
+                }
+            })
+            .catch(() => {
+                // If API is down, show nothing rather than a stale number
+                setCount(null);
+            });
     }, []);
 
     return count;
