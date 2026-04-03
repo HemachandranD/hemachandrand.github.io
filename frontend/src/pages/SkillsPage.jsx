@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { skills } from "../data/portfolio";
 
-// Animated number counter
+// Animated number counter using requestAnimationFrame
 function AnimatedNumber({ value, duration = 1.5 }) {
     const [displayed, setDisplayed] = useState(0);
+    const started = useRef(false);
 
     return (
         <motion.span
@@ -13,16 +14,17 @@ function AnimatedNumber({ value, duration = 1.5 }) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             onViewportEnter={() => {
-                let start = 0;
-                const step = value / (duration * 60);
-                const timer = setInterval(() => {
-                    start += step;
-                    if (start >= value) {
-                        start = value;
-                        clearInterval(timer);
-                    }
-                    setDisplayed(Math.round(start));
-                }, 1000 / 60);
+                if (started.current) return;
+                started.current = true;
+                const dur = duration * 1000;
+                const t0 = performance.now();
+                const tick = (now) => {
+                    const p = Math.min((now - t0) / dur, 1);
+                    const eased = 1 - Math.pow(1 - p, 3);
+                    setDisplayed(Math.round(eased * value));
+                    if (p < 1) requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
             }}
         >
             {displayed}

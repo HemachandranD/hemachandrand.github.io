@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, Linkedin, Mail, FileText, ExternalLink, Eye, X, Send, Loader2, ArrowRight } from "lucide-react";
-import { Badge } from "../components/ui/badge";
 import { Separator } from "../components/ui/separator";
+import MediumIcon from "../components/ui/MediumIcon";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { profile, links, experience, education, skills } from "../data/portfolio";
@@ -113,13 +113,6 @@ function RotatingText({ texts, interval = 3000 }) {
     );
 }
 
-// Medium icon SVG
-const MediumIcon = ({ className }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42S14.2 15.54 14.2 12s1.52-6.42 3.38-6.42 3.38 2.88 3.38 6.42zM24 12c0 3.17-.53 5.75-1.19 5.75S21.62 15.17 21.62 12s.53-5.75 1.19-5.75S24 8.83 24 12z" />
-    </svg>
-);
-
 // Verified checkmark (Twitter/X style – blue rosette + white tick)
 const VerifiedBadge = () => (
     <svg
@@ -139,16 +132,124 @@ const VerifiedBadge = () => (
 );
 
 const fadeIn = {
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, ease: "easeOut" },
+    initial: { opacity: 0, y: 20, filter: "blur(8px)" },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+    transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
 };
 
 const stagger = (delay = 0) => ({
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, ease: "easeOut", delay },
+    initial: { opacity: 0, y: 20, filter: "blur(8px)" },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+    transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1], delay },
 });
+
+// Magnetic hover — element subtly follows cursor
+function useMagnetic(strength = 0.25) {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const onMove = (e) => {
+            const rect = el.getBoundingClientRect();
+            const x = (e.clientX - rect.left - rect.width / 2) * strength;
+            const y = (e.clientY - rect.top - rect.height / 2) * strength;
+            el.style.transform = `translate(${x}px, ${y}px)`;
+            el.style.transition = "transform 0.15s ease-out";
+        };
+
+        const onLeave = () => {
+            el.style.transform = "";
+            el.style.transition = "transform 0.5s cubic-bezier(0.23,1,0.32,1)";
+        };
+
+        el.addEventListener("mousemove", onMove);
+        el.addEventListener("mouseleave", onLeave);
+        return () => {
+            el.removeEventListener("mousemove", onMove);
+            el.removeEventListener("mouseleave", onLeave);
+        };
+    }, [strength]);
+
+    return ref;
+}
+
+// Animated counter — counts up from 0
+function AnimatedCounter({ value }) {
+    const [shown, setShown] = useState(0);
+    const started = useRef(false);
+
+    useEffect(() => {
+        if (value == null || started.current) return;
+        started.current = true;
+        const dur = 1500;
+        const t0 = performance.now();
+        const tick = (now) => {
+            const p = Math.min((now - t0) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            setShown(Math.floor(eased * value));
+            if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    }, [value]);
+
+    return shown.toLocaleString();
+}
+
+// Glitch sound — short burst of noise + pitch-warped tone via Web Audio API
+function playGlitchSound() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const t = ctx.currentTime;
+
+        // Layer 1: White noise burst
+        const bufLen = ctx.sampleRate * 0.15;
+        const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * 0.4;
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.12, t);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+        const hp = ctx.createBiquadFilter();
+        hp.type = "highpass";
+        hp.frequency.value = 2000;
+        noise.connect(hp).connect(noiseGain).connect(ctx.destination);
+        noise.start(t);
+        noise.stop(t + 0.15);
+
+        // Layer 2: Rapid pitch-drop tone
+        const osc = ctx.createOscillator();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(1800, t);
+        osc.frequency.exponentialRampToValueAtTime(120, t + 0.12);
+        const oscGain = ctx.createGain();
+        oscGain.gain.setValueAtTime(0.08, t);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+        osc.connect(oscGain).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.14);
+
+        // Layer 3: Quick digital blip
+        const osc2 = ctx.createOscillator();
+        osc2.type = "square";
+        osc2.frequency.setValueAtTime(400, t + 0.05);
+        osc2.frequency.setValueAtTime(800, t + 0.07);
+        osc2.frequency.setValueAtTime(200, t + 0.09);
+        const osc2Gain = ctx.createGain();
+        osc2Gain.gain.setValueAtTime(0.06, t + 0.05);
+        osc2Gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+        osc2.connect(osc2Gain).connect(ctx.destination);
+        osc2.start(t + 0.05);
+        osc2.stop(t + 0.12);
+
+        setTimeout(() => ctx.close(), 400);
+    } catch {
+        // Silently fail if audio not available
+    }
+}
 
 // Contact Form Modal
 function ContactModal({ isOpen, onClose }) {
@@ -301,19 +402,26 @@ export default function HomePage() {
     const istStatus = useISTStatus();
     const visitorCount = useVisitorCount();
     const [contactOpen, setContactOpen] = useState(false);
+    const avatarRef = useMagnetic(0.3);
 
     return (
         <div className="max-w-[640px] mx-auto px-5 sm:px-6 py-10 sm:py-16">
             {/* ===== Profile Header ===== */}
             <motion.section {...fadeIn} className="profile-header mb-10">
                 <div className="flex items-center gap-5">
-                    {/* Avatar - large rounded rectangle */}
-                    <div className="profile-avatar-wrapper flex-shrink-0">
-                        <div className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-2xl overflow-hidden bg-muted border-2 border-border flex items-center justify-center">
+                    {/* Avatar - large rounded rectangle with magnetic hover */}
+                    <div ref={avatarRef} className="profile-avatar-wrapper flex-shrink-0">
+                        <motion.div
+                            className="avatar-glitch w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-2xl overflow-hidden bg-muted border-2 border-border flex items-center justify-center"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            onHoverStart={playGlitchSound}
+                        >
                             {profile.avatarUrl ? (
                                 <img
                                     src={profile.avatarUrl}
                                     alt={profile.name}
+                                    loading="lazy"
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
@@ -321,13 +429,13 @@ export default function HomePage() {
                                     {profile.name.split(" ").map(w => w[0]).join("")}
                                 </span>
                             )}
-                        </div>
+                        </motion.div>
                     </div>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                         {/* Name + Verified */}
-                        <div className="flex items-center gap-1 mb-0.5">
+                        <div className="mb-0.5">
                             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight">
                                 {profile.name.split(' ').slice(0, -1).join(' ')}{' '}
                                 <span className="inline-flex items-center whitespace-nowrap">
@@ -336,10 +444,10 @@ export default function HomePage() {
                                 </span>
                             </h1>
                             {visitorCount != null && (
-                                <div className="flex items-center gap-1 text-muted-foreground ml-2" title="Page views">
+                                <div className="flex items-center gap-1 text-muted-foreground mt-1" title="Page views">
                                     <Eye className="w-3.5 h-3.5" />
                                     <span className="text-xs font-medium tabular-nums">
-                                        {visitorCount.toLocaleString()}
+                                        <AnimatedCounter value={visitorCount} />
                                     </span>
                                 </div>
                             )}
@@ -372,10 +480,17 @@ export default function HomePage() {
                 <h2 className="text-lg font-semibold mb-4 tracking-tight">About</h2>
                 <div className="space-y-3">
                     {profile.about.map((paragraph, i) => (
-                        <p key={i} className="text-[14px] leading-[1.7] text-muted-foreground">
+                        <motion.p
+                            key={i}
+                            initial={{ opacity: 0, x: -20, filter: "blur(6px)" }}
+                            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: i * 0.12, ease: [0.23, 1, 0.32, 1] }}
+                            className="text-[14px] leading-[1.7] text-muted-foreground"
+                        >
                             <span className="text-foreground mr-1.5">•</span>
                             {paragraph}
-                        </p>
+                        </motion.p>
                     ))}
                 </div>
             </motion.section>
@@ -432,38 +547,71 @@ export default function HomePage() {
             {/* ===== Connect ===== */}
             <motion.section {...stagger(0.1)} className="mb-10">
                 <h2 className="text-lg font-semibold mb-4 tracking-tight">Connect</h2>
-                <div className="flex flex-wrap gap-2.5">
+                <motion.div className="flex flex-wrap gap-2.5">
                     {links.github && (
-                        <a href={links.github} target="_blank" rel="noopener noreferrer" className="connect-pill">
+                        <motion.a
+                            href={links.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="connect-pill"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.97 }}
+                        >
                             <Github className="w-4 h-4" />
                             GitHub
-                        </a>
+                        </motion.a>
                     )}
                     {links.linkedin && (
-                        <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="connect-pill">
+                        <motion.a
+                            href={links.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="connect-pill"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.97 }}
+                        >
                             <Linkedin className="w-4 h-4" />
                             LinkedIn
-                        </a>
+                        </motion.a>
                     )}
                     {links.mail && (
-                        <button onClick={() => setContactOpen(true)} className="connect-pill">
+                        <motion.button
+                            onClick={() => setContactOpen(true)}
+                            className="connect-pill"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.97 }}
+                        >
                             <Mail className="w-4 h-4" />
                             Mail
-                        </button>
+                        </motion.button>
                     )}
                     {links.medium && (
-                        <a href={links.medium} target="_blank" rel="noopener noreferrer" className="connect-pill">
+                        <motion.a
+                            href={links.medium}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="connect-pill"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.97 }}
+                        >
                             <MediumIcon className="w-4 h-4" />
                             Medium
-                        </a>
+                        </motion.a>
                     )}
                     {links.resume && (
-                        <a href={links.resume} target="_blank" rel="noopener noreferrer" className="connect-pill">
+                        <motion.a
+                            href={links.resume}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="connect-pill"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.97 }}
+                        >
                             <FileText className="w-4 h-4" />
                             Resume
-                        </a>
+                        </motion.a>
                     )}
-                </div>
+                </motion.div>
             </motion.section>
 
             <Separator className="my-8" />
@@ -474,7 +622,15 @@ export default function HomePage() {
                     <h2 className="text-lg font-semibold mb-6 tracking-tight">Experience</h2>
                     <div className="space-y-4">
                         {experience.map((exp, i) => (
-                            <div key={i} className="timeline-card">
+                            <motion.div
+                                key={i}
+                                className="timeline-card"
+                                initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
+                                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.23, 1, 0.32, 1] }}
+                                whileHover={{ y: -3, transition: { duration: 0.25 } }}
+                            >
                                 <div className="flex items-start gap-4">
                                     {/* Company icon */}
                                     <div className="w-10 h-10 rounded-lg bg-secondary border border-border flex items-center justify-center flex-shrink-0">
@@ -532,7 +688,7 @@ export default function HomePage() {
                                         )}
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 </motion.section>
@@ -546,7 +702,15 @@ export default function HomePage() {
                     <h2 className="text-lg font-semibold mb-6 tracking-tight">Education</h2>
                     <div className="space-y-4">
                         {education.map((edu, i) => (
-                            <div key={i} className="timeline-card">
+                            <motion.div
+                                key={i}
+                                className="timeline-card"
+                                initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
+                                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.23, 1, 0.32, 1] }}
+                                whileHover={{ y: -3, transition: { duration: 0.25 } }}
+                            >
                                 <div className="flex items-start gap-4">
                                     <div className="w-10 h-10 rounded-lg bg-secondary border border-border flex items-center justify-center flex-shrink-0">
                                         <span className="text-sm font-semibold text-muted-foreground">
@@ -575,7 +739,7 @@ export default function HomePage() {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 </motion.section>
