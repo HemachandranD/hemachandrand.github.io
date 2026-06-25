@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,74 +6,88 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+  font-family: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "rlig" 1, "calt" 1;
+  font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
 }
 
-code {
-  font-family: 'Geist Mono', 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+code,
+.font-mono {
+  font-family: 'Geist Mono', 'JetBrains Mono', source-code-pro, Menlo, Monaco,
+    Consolas, "Courier New", monospace;
 }
 
 @layer base {
+
+  /* ===== Light (near-white · default) ===== */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 252 20% 98%;
+    --foreground: 250 10% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 250 10% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --popover-foreground: 250 10% 11%;
+    --primary: 250 10% 13%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 250 14% 95%;
+    --secondary-foreground: 250 10% 13%;
+    --muted: 250 14% 95%;
+    --muted-foreground: 250 6% 44%;
+    --accent: 252 30% 94%;
+    --accent-foreground: 250 10% 13%;
+    --destructive: 0 70% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 250 16% 90%;
+    --input: 250 16% 90%;
+    --ring: 252 86% 62%;
     --radius: 0.75rem;
-    --sidebar-bg: 0 0% 98%;
-    --sidebar-border: 240 5.9% 92%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --green-dot: 142 71% 45%;
+
+    /* Electric-violet "model" accent */
+    --signal: 252 86% 62%;
+    --signal-foreground: 0 0% 100%;
+    --trace: 256 60% 70%;
+
+    --chart-1: 252 86% 62%;
+    --chart-2: 276 70% 60%;
+    --chart-3: 222 80% 60%;
+    --chart-4: 300 60% 60%;
+    --chart-5: 200 75% 55%;
   }
 
+  /* ===== Dark (violet-charcoal) ===== */
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 5.5%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 5.5%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --sidebar-bg: 240 10% 5.5%;
-    --sidebar-border: 240 3.7% 13%;
-    --green-dot: 142 71% 45%;
+    --background: 252 16% 6%;
+    --foreground: 250 24% 96%;
+    --card: 252 14% 9%;
+    --card-foreground: 250 24% 96%;
+    --popover: 252 16% 8%;
+    --popover-foreground: 250 24% 96%;
+    --primary: 250 24% 96%;
+    --primary-foreground: 252 16% 6%;
+    --secondary: 252 10% 15%;
+    --secondary-foreground: 250 24% 96%;
+    --muted: 252 10% 15%;
+    --muted-foreground: 250 10% 65%;
+    --accent: 252 16% 17%;
+    --accent-foreground: 250 24% 96%;
+    --destructive: 0 62% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 252 12% 18%;
+    --input: 252 12% 18%;
+    --ring: 256 92% 74%;
+
+    /* Electric-violet accent (brighter on dark) */
+    --signal: 256 92% 75%;
+    --signal-foreground: 252 30% 8%;
+    --trace: 256 60% 64%;
+
+    --chart-1: 256 92% 75%;
+    --chart-2: 276 80% 72%;
+    --chart-3: 222 85% 70%;
+    --chart-4: 300 70% 70%;
+    --chart-5: 200 80% 65%;
   }
 }
 
@@ -84,5 +98,11 @@ code {
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--signal));
+    outline-offset: 2px;
+    border-radius: 3px;
   }
 }

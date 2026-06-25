@@ -32,146 +32,71 @@ function AnimatedNumber({ value, duration = 1.5 }) {
     );
 }
 
-// Skill bar – monochrome, matching portfolio palette
-function SkillBar({ skill, index, catIndex }) {
-    const delay = catIndex * 0.15 + index * 0.08;
-
-    return (
-        <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay, ease: "easeOut" }}
-            className="group"
-        >
-            <div className="flex items-center justify-between mb-2">
-                <span className="text-[13px] font-medium text-foreground">
-                    {skill.name}
-                </span>
-                <span className="text-xs font-semibold text-muted-foreground">
-                    <AnimatedNumber value={skill.level} duration={1 + delay} />%
-                </span>
-            </div>
-            <div className="relative h-2 rounded-full bg-muted overflow-hidden">
-                {/* Main bar */}
-                <motion.div
-                    className="absolute inset-y-0 left-0 rounded-full bg-foreground/80"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.level}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.2, delay: delay + 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                />
-                {/* Shimmer sweep */}
-                <motion.div
-                    className="absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-foreground/10 to-transparent"
-                    initial={{ x: "-100%" }}
-                    whileInView={{ x: "500%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.5, delay: delay + 1, ease: "easeInOut" }}
-                />
-            </div>
-        </motion.div>
-    );
-}
-
-// Radar/hexagon SVG for the overall stats visualization
-function StatsRadar() {
+// Confidence distribution across core domains — reads like a probability readout
+function DomainDistribution() {
     const stats = [
         { label: "AI/ML", value: 95 },
+        { label: "LLMs", value: 93 },
+        { label: "Python", value: 92 },
         { label: "MLOps", value: 90 },
         { label: "Cloud", value: 88 },
-        { label: "Python", value: 92 },
-        { label: "LLMs", value: 93 },
         { label: "DevOps", value: 85 },
     ];
 
-    const cx = 100, cy = 100, r = 70;
-    const n = stats.length;
+    return (
+        <div>
+            {stats.map((s, i) => (
+                <motion.div
+                    key={s.label}
+                    className="dist-row"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.07, ease: "easeOut" }}
+                >
+                    <span className="dist-label">{s.label}</span>
+                    <div className="dist-bar">
+                        <motion.div
+                            className="dist-fill"
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${s.value}%` }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1.1, delay: 0.15 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        />
+                    </div>
+                    <span className="dist-val">0.{s.value}</span>
+                </motion.div>
+            ))}
+        </div>
+    );
+}
 
-    const getPoint = (i, val) => {
-        const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
-        const dist = (val / 100) * r;
-        return [cx + dist * Math.cos(angle), cy + dist * Math.sin(angle)];
-    };
-
-    const gridLevels = [25, 50, 75, 100];
+// Skill gauge — violet instrument readout
+function SkillGauge({ skill, index, catIndex }) {
+    const delay = catIndex * 0.12 + index * 0.07;
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex justify-center"
+            transition={{ duration: 0.4, delay, ease: "easeOut" }}
         >
-            <svg viewBox="0 0 200 200" className="w-64 h-64 sm:w-72 sm:h-72">
-                {/* Grid rings */}
-                {gridLevels.map((level) => (
-                    <polygon
-                        key={level}
-                        points={Array.from({ length: n }, (_, i) => getPoint(i, level).join(",")).join(" ")}
-                        fill="none"
-                        stroke="hsl(var(--border))"
-                        strokeWidth="0.5"
-                        opacity={0.6}
-                    />
-                ))}
-
-                {/* Axis lines */}
-                {stats.map((_, i) => {
-                    const [px, py] = getPoint(i, 100);
-                    return <line key={i} x1={cx} y1={cy} x2={px} y2={py} stroke="hsl(var(--border))" strokeWidth="0.5" opacity={0.4} />;
-                })}
-
-                {/* Data polygon */}
-                <motion.polygon
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
+            <div className="gauge-head">
+                <span className="gauge-name">{skill.name}</span>
+                <span className="gauge-val">
+                    <AnimatedNumber value={skill.level} duration={1 + delay} />%
+                </span>
+            </div>
+            <div className="gauge-track">
+                <motion.div
+                    className="gauge-fill"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${skill.level}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.3 }}
-                    points={stats.map((s, i) => getPoint(i, s.value).join(",")).join(" ")}
-                    fill="hsl(var(--foreground) / 0.08)"
-                    stroke="hsl(var(--foreground))"
-                    strokeWidth="1.5"
+                    transition={{ duration: 1.1, delay: delay + 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
                 />
-
-                {/* Data points */}
-                {stats.map((s, i) => {
-                    const [px, py] = getPoint(i, s.value);
-                    return (
-                        <motion.circle
-                            key={i}
-                            cx={px}
-                            cy={py}
-                            r="3"
-                            fill="hsl(var(--foreground))"
-                            initial={{ scale: 0 }}
-                            whileInView={{ scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.5 + i * 0.1, type: "spring", stiffness: 300 }}
-                        />
-                    );
-                })}
-
-                {/* Labels */}
-                {stats.map((s, i) => {
-                    const [px, py] = getPoint(i, 115);
-                    return (
-                        <text
-                            key={i}
-                            x={px}
-                            y={py}
-                            textAnchor="middle"
-                            dominantBaseline="central"
-                            className="fill-muted-foreground"
-                            fontSize="7"
-                            fontWeight="500"
-                        >
-                            {s.label}
-                        </text>
-                    );
-                })}
-            </svg>
+            </div>
         </motion.div>
     );
 }
@@ -179,49 +104,50 @@ function StatsRadar() {
 export default function SkillsPage() {
     const [activeCategory, setActiveCategory] = useState(null);
 
-    const displayed = activeCategory !== null
-        ? [skills[activeCategory]]
-        : skills;
+    const displayed = activeCategory !== null ? [skills[activeCategory]] : skills;
 
     return (
-        <div className="max-w-[700px] mx-auto px-5 sm:px-6 py-10 sm:py-16">
-            {/* Page Header */}
+        <div className="max-w-[760px] mx-auto px-5 sm:px-7 pt-12 pb-10">
+            {/* Header */}
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.45 }}
                 className="mb-10"
             >
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-                    Skills & Expertise
-                </h1>
-                <p className="text-sm text-muted-foreground">
+                <div className="sec-label">skills · telemetry</div>
+                <h1 className="page-title mb-3">Skills &amp; expertise</h1>
+                <p className="text-[15px] text-muted-foreground">
                     7+ years of leveling up across AI, ML, and cloud engineering.
                 </p>
             </motion.div>
 
-            {/* Radar Chart */}
+            {/* Confidence distribution */}
             <motion.section
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
+                transition={{ duration: 0.45, delay: 0.1 }}
                 className="mb-12"
             >
-                <StatsRadar />
+                <div className="cat-head">
+                    <span className="title">Confidence across domains</span>
+                    <div className="rule" />
+                </div>
+                <DomainDistribution />
             </motion.section>
 
-            {/* Category Tabs */}
+            {/* Category tabs */}
             <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.2 }}
-                className="flex flex-wrap gap-2 mb-8"
+                className="flex flex-wrap gap-2 mb-9"
             >
                 <button
                     onClick={() => setActiveCategory(null)}
                     className={`skill-tab ${activeCategory === null ? "active" : ""}`}
                 >
-                    All
+                    all
                 </button>
                 {skills.map((cat, i) => (
                     <button
@@ -235,7 +161,7 @@ export default function SkillsPage() {
                 ))}
             </motion.div>
 
-            {/* Skill Categories */}
+            {/* Skill categories */}
             <AnimatePresence mode="wait">
                 <motion.div
                     key={activeCategory ?? "all"}
@@ -248,24 +174,20 @@ export default function SkillsPage() {
                     {displayed.map((category, catIdx) => (
                         <motion.section
                             key={category.category}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 18 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.4, delay: catIdx * 0.1 }}
                         >
-                            {/* Category Header */}
-                            <div className="flex items-center gap-2.5 mb-5">
+                            <div className="cat-head">
                                 <span className="text-xl">{category.icon}</span>
-                                <h2 className="text-base font-semibold tracking-tight">
-                                    {category.category}
-                                </h2>
-                                <div className="flex-1 h-px bg-border ml-2" />
+                                <h2 className="title">{category.category}</h2>
+                                <div className="rule" />
                             </div>
 
-                            {/* Skill Bars */}
-                            <div className="space-y-4 pl-1">
+                            <div className="space-y-4">
                                 {category.items.map((skill, skillIdx) => (
-                                    <SkillBar
+                                    <SkillGauge
                                         key={skill.name}
                                         skill={skill}
                                         index={skillIdx}
@@ -278,13 +200,13 @@ export default function SkillsPage() {
                 </motion.div>
             </AnimatePresence>
 
-            {/* Summary Stats */}
+            {/* Summary metrics */}
             <motion.section
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.2 }}
-                className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4"
+                className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3"
             >
                 {[
                     { label: "Years XP", value: "7+", icon: "⚡" },
@@ -294,16 +216,15 @@ export default function SkillsPage() {
                 ].map((stat, i) => (
                     <motion.div
                         key={stat.label}
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.92 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}
-                        whileHover={{ y: -4 }}
-                        className="text-center p-4 rounded-xl border border-border bg-card hover:shadow-md transition-shadow"
+                        transition={{ delay: 0.25 + i * 0.08, type: "spring", stiffness: 300 }}
+                        className="metric-tile"
                     >
                         <span className="text-2xl block mb-1">{stat.icon}</span>
-                        <span className="text-xl font-bold block">{stat.value}</span>
-                        <span className="text-xs text-muted-foreground">{stat.label}</span>
+                        <span className="val block">{stat.value}</span>
+                        <span className="label">{stat.label}</span>
                     </motion.div>
                 ))}
             </motion.section>
