@@ -8,9 +8,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Space Grotesk', 'Geist', 'system-ui', 'sans-serif'],
-        sans: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['Geist Mono', 'JetBrains Mono', 'monospace'],
+        display: ['Syne', 'Instrument Sans', 'system-ui', 'sans-serif'],
+        sans: ['Instrument Sans', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['IBM Plex Mono', 'JetBrains Mono', 'monospace'],
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -49,6 +49,7 @@ module.exports = {
           foreground: 'hsl(var(--signal-foreground))'
         },
         trace: 'hsl(var(--trace))',
+        tertiary: 'hsl(var(--tertiary))',
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))'

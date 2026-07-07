@@ -12,15 +12,15 @@ export const profile = {
     avatarUrl: "/profile.png", // Local image in public/ folder
     taglines: [
         "Enterprise AI Engineer",
-        "Building the future with Agents and LLMs",
-        "Peeking at Agents' internal state",
-        "Turning coffee into tokens",
+        "Shipping agents that survive production",
+        "Watching every thought an agent has",
+        "Turning coffee into tokens since 2018",
         "Making machines think, one prompt at a time",
     ],
     about: [
-        "I'm an Enterprise AI Engineer with 7+ years of experience building Agentic AI systems, observability platforms, and battle-tested MLOps & LLMOps frameworks across CPG, retail, and healthcare.",
-        "I enjoy working at the intersection of AI and real-world impact — whether it's building production-grade systems, experimenting with LLMs, or turning ideas into something tangible that creates value.",
-        "At my core, I'm driven by curiosity — not just about technology, but about how it shapes industries and empowers people. That curiosity fuels my work in pushing the boundaries of what AI can do in practice.",
+        "I build the machinery behind production AI. Seven-plus years of agentic systems, LLM observability platforms, and MLOps & LLMOps frameworks that hold up under enterprise load — across CPG, retail, and healthcare.",
+        "My favorite territory is the gap between a promising demo and a dependable product. That's where the hard problems live: evaluation, observability, guardrails, and the unglamorous engineering that turns a clever model into something a business can trust.",
+        "Under it all is plain curiosity — about the technology, and about how it reshapes the industries and people around it. It's what keeps me experimenting, writing, and shipping.",
     ],
     quote: {
         text: "The best way to predict the future is to invent it.",
@@ -45,7 +45,7 @@ export const experience = [
                 title: "Enterprise AI Engineer",
                 type: "Full-time",
                 period: "Aug 2023 — Present",
-                description: "Building enterprise AI products — Agentic AI systems, LLM-powered observability platforms, and production-grade MLOps & LLMOps frameworks across CPG, retail, and healthcare.",
+                description: "Building enterprise AI products end to end — multi-agent systems, LLM-powered observability platforms, and production-grade MLOps & LLMOps frameworks serving CPG, retail, and healthcare clients.",
             },
         ],
         tags: ["Agentic AI", "LLMOps", "MLOps", "Python", "Azure", "Databricks"],
@@ -58,7 +58,7 @@ export const experience = [
                 title: "Machine Learning Engineer",
                 type: "Full-time",
                 period: "Dec 2021 — Aug 2023",
-                description: "Designed and implemented MLOps platforms on Databricks with monitoring solutions. Built Data Centric AI handling end-user claims with CI/CD for a health-tech giant. Reverse-engineered statistics SQL models into ML pipelines, helping mitigate business losses through claims.",
+                description: "Designed MLOps platforms on Databricks with end-to-end monitoring. Built data-centric AI pipelines with CI/CD handling end-user claims for a health-tech giant, and reverse-engineered legacy statistical SQL models into ML pipelines that cut business losses from claims.",
             },
         ],
         tags: ["MLOps", "Databricks", "Azure ML", "CI/CD", "Python"],
@@ -71,7 +71,7 @@ export const experience = [
                 title: "Machine Learning Practitioner",
                 type: "Full-time",
                 period: "Jun 2018 — Dec 2021",
-                description: "Developed a Self-Heal Automation API using Python and a Random Forest ML algorithm that analyses ticket parameters from the ticketing tool. The end-to-end automation reduced human efforts by 40%.",
+                description: "Built a self-heal automation API in Python — a Random Forest model that reads ticket parameters straight from the ticketing tool and triggers end-to-end remediation, cutting manual effort by 40%.",
             },
         ],
         tags: ["Python", "Machine Learning", "Automation", "Random Forest"],
@@ -93,41 +93,42 @@ export const education = [
     },
 ];
 
+// Skill colors follow the site's inferno ramp: violet → rose → orange → amber
 export const skills = [
     {
         category: "AI & Agents",
-        icon: "🤖",
+        icon: "◆",
         items: [
-            { name: "Agentic AI & Multi-Agent Systems", level: 95, color: "#ef4444" },
-            { name: "Generative AI & Observability", level: 90, color: "#38bdf8" },
-            { name: "LLM Fine-tuning & Prompt Engineering", level: 92, color: "#a78bfa" },
+            { name: "Agentic AI & Multi-Agent Systems", level: 95, color: "#FFB224" },
+            { name: "Generative AI & Observability", level: 90, color: "#FF7847" },
+            { name: "LLM Fine-tuning & Prompt Engineering", level: 92, color: "#F0527C" },
         ],
     },
     {
         category: "MLOps & Engineering",
-        icon: "⚙️",
+        icon: "◇",
         items: [
-            { name: "LLMOps & MLOps", level: 90, color: "#34d399" },
-            { name: "Machine Learning & Deep Learning", level: 93, color: "#f472b6" },
-            { name: "Python & Data Engineering", level: 92, color: "#fb923c" },
+            { name: "LLMOps & MLOps", level: 90, color: "#FFB224" },
+            { name: "Machine Learning & Deep Learning", level: 93, color: "#B266FF" },
+            { name: "Python & Data Engineering", level: 92, color: "#FF7847" },
         ],
     },
     {
         category: "Cloud & DevOps",
-        icon: "☁️",
+        icon: "▲",
         items: [
-            { name: "Azure (AI Services, DevOps, ML)", level: 90, color: "#60a5fa" },
-            { name: "AWS & GCP", level: 82, color: "#fbbf24" },
-            { name: "CI/CD & Containerization", level: 88, color: "#2dd4bf" },
+            { name: "Azure (AI Services, DevOps, ML)", level: 90, color: "#F0527C" },
+            { name: "AWS & GCP", level: 82, color: "#FFD166" },
+            { name: "CI/CD & Containerization", level: 88, color: "#B266FF" },
         ],
     },
     {
         category: "Frameworks & Tools",
-        icon: "🛠️",
+        icon: "●",
         items: [
-            { name: "LangChain / LlamaIndex / CrewAI", level: 91, color: "#c084fc" },
-            { name: "Databricks & Spark", level: 89, color: "#f87171" },
-            { name: "Vector DBs (Qdrant, Pinecone, FAISS)", level: 87, color: "#4ade80" },
+            { name: "LangChain / LlamaIndex / CrewAI", level: 91, color: "#F0527C" },
+            { name: "Databricks & Spark", level: 89, color: "#FF7847" },
+            { name: "Vector DBs (Qdrant, Pinecone, FAISS)", level: 87, color: "#FFB224" },
         ],
     },
 ];
@@ -139,7 +140,7 @@ export const projects = [
         subtitle: "Reusable Private AI Toolkit",
         date: "2025",
         description:
-            "Building reusable and private AI toolkits using Model Context Protocol (MCP). Enables seamless integration of AI capabilities across applications.",
+            "A private, reusable AI toolkit built on the Model Context Protocol — write a capability once and plug it into any MCP-aware client, without your data ever leaving your walls.",
         tags: ["AI", "MCP", "Python", "Tools"],
         image: null,
         liveUrl: null,
@@ -153,7 +154,7 @@ export const projects = [
         subtitle: "For AI Agents",
         date: "2025",
         description:
-            "Amazon Bedrock AgentCore is a platform for building and deploying AI agents. It provides a set of tools and APIs for building and deploying AI agents.",
+            "A hands-on tour of Amazon Bedrock AgentCore — the managed runtime for deploying AI agents with memory, identity, and tool access — and what it takes to move an agent from laptop to production on AWS.",
         tags: ["Amazon Bedrock", "AgentCore", "AI Agents"],
         image: null,
         liveUrl: null,
@@ -167,7 +168,7 @@ export const projects = [
         subtitle: "On Databricks",
         date: "2024",
         description:
-            "Comprehensive LLMOps platform for managing Large Language Model lifecycles. Includes monitoring, versioning, and deployment automation on Databricks.",
+            "A full lifecycle platform for LLMs on Databricks: model versioning, evaluation gates, deployment automation, and monitoring — the paved road from experiment to production.",
         tags: ["LLMOps", "GenAI", "Databricks", "Python"],
         image: null,
         liveUrl: null,
@@ -181,7 +182,7 @@ export const projects = [
         subtitle: "Secure RAG with LangChain",
         date: "2024",
         description:
-            "Production-grade RAG chatbot with chat history. Built with LangChain, llama3, Qdrant vector DB, and Redis. Handles sensitive data securely on local infrastructure.",
+            "A production-grade RAG chatbot that never phones home. LangChain + Llama 3 + Qdrant + Redis, with full chat history — built for sensitive data that must stay on local infrastructure.",
         tags: ["LLM", "RAG", "LangChain", "Qdrant", "Redis"],
         image: null,
         liveUrl: null,
@@ -195,7 +196,7 @@ export const projects = [
         subtitle: "AI Food Recognition",
         date: "2024",
         description:
-            "AI-powered food classification app trained on EfficientNetV2b0 using Food101 dataset. Deployed as a web app with real-time image recognition capabilities.",
+            "A food-recognition web app fine-tuned on EfficientNetV2 with the Food101 dataset — point it at a plate and it names the dish in real time.",
         tags: ["Deep Learning", "Computer Vision", "Streamlit"],
         image: null,
         liveUrl: "https://foodsight.streamlit.app",
@@ -208,7 +209,7 @@ export const projects = [
         subtitle: "Complete MLOps Framework",
         date: "2023",
         description:
-            "A powerful plug-and-play MLOps platform with CI/CD on Azure DevOps. Handles continuous retraining, deployment, and monitoring. Built for enterprise-scale ML operations.",
+            "A plug-and-play MLOps framework with CI/CD on Azure DevOps: continuous retraining, automated deployment, and drift monitoring, built for enterprise-scale ML operations.",
         tags: ["MLOps", "Databricks", "CI/CD", "Azure DevOps"],
         image: null,
         liveUrl: null,
@@ -222,7 +223,7 @@ export const projects = [
         subtitle: "AI Audio Analysis",
         date: "2023",
         description:
-            "Revolutionizing audio content analysis with AI. Converts audio to text, extracts key insights, and provides intelligent summaries. Built to handle hours of recordings efficiently.",
+            "Feed it hours of recordings and get back the parts that matter — transcription, key insights, and intelligent summaries distilled from raw audio.",
         tags: ["AI", "NLP", "Audio", "Python"],
         image: null,
         liveUrl: null,

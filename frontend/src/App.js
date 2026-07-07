@@ -83,8 +83,8 @@ function ThemeToggle() {
           className="theme-horizon"
           animate={{
             background: resolvedTheme === "dark"
-              ? "linear-gradient(90deg, transparent, hsl(220 60% 50% / 0.4), transparent)"
-              : "linear-gradient(90deg, transparent, hsl(35 90% 55% / 0.5), transparent)",
+              ? "linear-gradient(90deg, transparent, hsl(262 80% 62% / 0.4), transparent)"
+              : "linear-gradient(90deg, transparent, hsl(38 95% 55% / 0.5), transparent)",
           }}
           transition={{ duration: 0.8 }}
         />
@@ -126,8 +126,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background font-sans relative overflow-x-hidden">
-      {/* Soft violet bloom background */}
-      <div className="stream-bg" aria-hidden="true" />
+      {/* Faint plotting grid + vignette */}
+      <div className="space-bg" aria-hidden="true" />
 
       {/* ===== Top navigation ===== */}
       <header
@@ -135,7 +135,7 @@ function App() {
       >
         <div className="topnav-inner">
           <NavLink to="/" className="brand" aria-label="Home">
-            HD<span className="blink" aria-hidden="true" />
+            hemz<span className="brand-dot" aria-hidden="true">.</span>
           </NavLink>
 
           <div className="nav-right">

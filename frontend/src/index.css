@@ -1,93 +1,93 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   margin: 0;
-  font-family: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Helvetica Neue", sans-serif;
+  font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+  font-feature-settings: "rlig" 1, "calt" 1;
 }
 
 code,
 .font-mono {
-  font-family: 'Geist Mono', 'JetBrains Mono', source-code-pro, Menlo, Monaco,
-    Consolas, "Courier New", monospace;
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', source-code-pro, Menlo,
+    Monaco, Consolas, "Courier New", monospace;
 }
 
 @layer base {
 
-  /* ===== Light (near-white · default) ===== */
+  /* ===== Light — "lab paper" ===== */
   :root {
-    --background: 252 20% 98%;
-    --foreground: 250 10% 11%;
+    --background: 222 30% 97%;
+    --foreground: 228 25% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 250 10% 11%;
+    --card-foreground: 228 25% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 250 10% 11%;
-    --primary: 250 10% 13%;
+    --popover-foreground: 228 25% 10%;
+    --primary: 228 25% 12%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 250 14% 95%;
-    --secondary-foreground: 250 10% 13%;
-    --muted: 250 14% 95%;
-    --muted-foreground: 250 6% 44%;
-    --accent: 252 30% 94%;
-    --accent-foreground: 250 10% 13%;
+    --secondary: 222 20% 93%;
+    --secondary-foreground: 228 25% 12%;
+    --muted: 222 20% 93%;
+    --muted-foreground: 228 9% 42%;
+    --accent: 222 24% 91%;
+    --accent-foreground: 228 25% 12%;
     --destructive: 0 70% 48%;
     --destructive-foreground: 0 0% 100%;
-    --border: 250 16% 90%;
-    --input: 250 16% 90%;
-    --ring: 252 86% 62%;
+    --border: 224 16% 87%;
+    --input: 224 16% 87%;
+    --ring: 33 95% 44%;
     --radius: 0.75rem;
 
-    /* Electric-violet "model" accent */
-    --signal: 252 86% 62%;
+    /* Inferno ramp — ember / rose / violet */
+    --signal: 33 95% 42%;
     --signal-foreground: 0 0% 100%;
-    --trace: 256 60% 70%;
+    --trace: 345 72% 50%;
+    --tertiary: 258 70% 56%;
 
-    --chart-1: 252 86% 62%;
-    --chart-2: 276 70% 60%;
-    --chart-3: 222 80% 60%;
-    --chart-4: 300 60% 60%;
-    --chart-5: 200 75% 55%;
+    --chart-1: 33 95% 44%;
+    --chart-2: 345 72% 50%;
+    --chart-3: 258 70% 56%;
+    --chart-4: 18 90% 55%;
+    --chart-5: 45 95% 50%;
   }
 
-  /* ===== Dark (violet-charcoal) ===== */
+  /* ===== Dark — "deep ink" (the intended experience) ===== */
   .dark {
-    --background: 252 16% 6%;
-    --foreground: 250 24% 96%;
-    --card: 252 14% 9%;
-    --card-foreground: 250 24% 96%;
-    --popover: 252 16% 8%;
-    --popover-foreground: 250 24% 96%;
-    --primary: 250 24% 96%;
-    --primary-foreground: 252 16% 6%;
-    --secondary: 252 10% 15%;
-    --secondary-foreground: 250 24% 96%;
-    --muted: 252 10% 15%;
-    --muted-foreground: 250 10% 65%;
-    --accent: 252 16% 17%;
-    --accent-foreground: 250 24% 96%;
+    --background: 228 26% 6%;
+    --foreground: 227 22% 93%;
+    --card: 228 22% 8.5%;
+    --card-foreground: 227 22% 93%;
+    --popover: 228 24% 8%;
+    --popover-foreground: 227 22% 93%;
+    --primary: 227 22% 93%;
+    --primary-foreground: 228 26% 6%;
+    --secondary: 228 16% 13%;
+    --secondary-foreground: 227 22% 93%;
+    --muted: 228 16% 13%;
+    --muted-foreground: 227 10% 63%;
+    --accent: 228 18% 15%;
+    --accent-foreground: 227 22% 93%;
     --destructive: 0 62% 48%;
     --destructive-foreground: 0 0% 100%;
-    --border: 252 12% 18%;
-    --input: 252 12% 18%;
-    --ring: 256 92% 74%;
+    --border: 228 15% 16%;
+    --input: 228 15% 16%;
+    --ring: 38 100% 57%;
 
-    /* Electric-violet accent (brighter on dark) */
-    --signal: 256 92% 75%;
-    --signal-foreground: 252 30% 8%;
-    --trace: 256 60% 64%;
+    /* Inferno ramp — brighter on ink */
+    --signal: 38 100% 57%;
+    --signal-foreground: 228 30% 7%;
+    --trace: 345 84% 63%;
+    --tertiary: 262 100% 70%;
 
-    --chart-1: 256 92% 75%;
-    --chart-2: 276 80% 72%;
-    --chart-3: 222 85% 70%;
-    --chart-4: 300 70% 70%;
-    --chart-5: 200 80% 65%;
+    --chart-1: 38 100% 57%;
+    --chart-2: 345 84% 63%;
+    --chart-3: 262 100% 70%;
+    --chart-4: 18 100% 64%;
+    --chart-5: 45 100% 67%;
   }
 }
 

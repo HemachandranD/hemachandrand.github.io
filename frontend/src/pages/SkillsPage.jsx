@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { skills } from "../data/portfolio";
+import { skills, profile } from "../data/portfolio";
 
 // Animated number counter using requestAnimationFrame
 function AnimatedNumber({ value, duration = 1.5 }) {
@@ -71,7 +71,7 @@ function DomainDistribution() {
     );
 }
 
-// Skill gauge — violet instrument readout
+// Skill gauge — heat readout, colored by each skill's ramp stop
 function SkillGauge({ skill, index, catIndex }) {
     const delay = catIndex * 0.12 + index * 0.07;
 
@@ -84,13 +84,14 @@ function SkillGauge({ skill, index, catIndex }) {
         >
             <div className="gauge-head">
                 <span className="gauge-name">{skill.name}</span>
-                <span className="gauge-val">
+                <span className="gauge-val" style={{ color: skill.color }}>
                     <AnimatedNumber value={skill.level} duration={1 + delay} />%
                 </span>
             </div>
             <div className="gauge-track">
                 <motion.div
                     className="gauge-fill"
+                    style={{ background: `linear-gradient(90deg, ${skill.color}55, ${skill.color})` }}
                     initial={{ width: 0 }}
                     whileInView={{ width: `${skill.level}%` }}
                     viewport={{ once: true }}
@@ -107,7 +108,7 @@ export default function SkillsPage() {
     const displayed = activeCategory !== null ? [skills[activeCategory]] : skills;
 
     return (
-        <div className="max-w-[760px] mx-auto px-5 sm:px-7 pt-12 pb-10">
+        <div className="page-narrow">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: 16 }}
@@ -115,10 +116,15 @@ export default function SkillsPage() {
                 transition={{ duration: 0.45 }}
                 className="mb-10"
             >
-                <div className="sec-label">skills · telemetry</div>
-                <h1 className="page-title mb-3">Skills &amp; expertise</h1>
-                <p className="text-[15px] text-muted-foreground">
-                    7+ years of leveling up across AI, ML, and cloud engineering.
+                <div className="coord">
+                    <span className="coord-xy">[ −0.958, 0.344 ]</span>
+                    <span className="coord-sep">·</span>
+                    <span className="coord-label">skills · telemetry</span>
+                </div>
+                <h1 className="page-title">Skill-space readout</h1>
+                <p className="page-intro">
+                    Seven-plus years of signal, plotted honestly. The numbers are confidence,
+                    not ego — they move as I learn.
                 </p>
             </motion.div>
 
@@ -155,7 +161,7 @@ export default function SkillsPage() {
                         onClick={() => setActiveCategory(activeCategory === i ? null : i)}
                         className={`skill-tab ${activeCategory === i ? "active" : ""}`}
                     >
-                        <span className="mr-1.5">{cat.icon}</span>
+                        <span className="cat-glyph mr-1.5">{cat.icon}</span>
                         {cat.category}
                     </button>
                 ))}
@@ -180,7 +186,7 @@ export default function SkillsPage() {
                             transition={{ duration: 0.4, delay: catIdx * 0.1 }}
                         >
                             <div className="cat-head">
-                                <span className="text-xl">{category.icon}</span>
+                                <span className="cat-glyph text-lg">{category.icon}</span>
                                 <h2 className="title">{category.category}</h2>
                                 <div className="rule" />
                             </div>
@@ -209,10 +215,10 @@ export default function SkillsPage() {
                 className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3"
             >
                 {[
-                    { label: "Years XP", value: "7+", icon: "⚡" },
-                    { label: "Projects", value: "25+", icon: "🚀" },
-                    { label: "Certifications", value: "5+", icon: "🏆" },
-                    { label: "Tech Stack", value: "30+", icon: "🛠️" },
+                    { label: "years in production", value: "7+" },
+                    { label: "projects shipped", value: "25+" },
+                    { label: "certifications", value: "5+" },
+                    { label: "tools in rotation", value: "30+" },
                 ].map((stat, i) => (
                     <motion.div
                         key={stat.label}
@@ -222,12 +228,15 @@ export default function SkillsPage() {
                         transition={{ delay: 0.25 + i * 0.08, type: "spring", stiffness: 300 }}
                         className="metric-tile"
                     >
-                        <span className="text-2xl block mb-1">{stat.icon}</span>
                         <span className="val block">{stat.value}</span>
                         <span className="label">{stat.label}</span>
                     </motion.div>
                 ))}
             </motion.section>
+
+            <footer className="site-footer">
+                <p>© {new Date().getFullYear()} {profile.shortName || profile.name.split(" ")[0]} <span className="sep">·</span> mapped in latent space <span className="sep">·</span> caffeine → tokens ☕</p>
+            </footer>
         </div>
     );
 }

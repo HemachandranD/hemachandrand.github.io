@@ -1,8 +1,15 @@
 # Hemachandran Dhinakaran — Portfolio
 
-Personal portfolio site for **Hemachandran Dhinakaran**, Senior AI/ML Engineer.
+Personal portfolio site for **Hemachandran Dhinakaran**, Enterprise AI Engineer.
 
 **Live:** [hemachandrand.github.io](https://hemachandrand.github.io)
+
+**Design concept — "Latent Space":** the site is styled as a navigable
+embedding space. The hero is a hand-rolled 3D point-cloud of real skill
+domains (drag to orbit — no WebGL library, just perspective projection on a
+2D canvas), sections are marked with mono coordinates, the career timeline
+renders like a distributed trace, and the accent palette follows the
+inferno heatmap ramp (violet → rose → ember).
 
 ---
 
@@ -10,13 +17,13 @@ Personal portfolio site for **Hemachandran Dhinakaran**, Senior AI/ML Engineer.
 
 - **React 19** + React Router (HashRouter)
 - **Tailwind CSS 3** + tailwindcss-animate
-- **Framer Motion** — page transitions, scroll animations
+- **Framer Motion** — page transitions, scroll animations, 3D tilt cards
 - **next-themes** — dark/light with View Transitions API circular reveal
 - **Lucide React** — icons
 - **Sonner** — toast notifications
 - **CRACO** — CRA config override
 - **gh-pages** — deployment to GitHub Pages
-- **Fonts:** Geist Sans, Geist Mono (Google Fonts)
+- **Fonts:** Syne (display), Instrument Sans (body), IBM Plex Mono (data)
 
 ---
 
@@ -35,6 +42,8 @@ frontend/
 │   │   ├── ProjectsPage.jsx     # Projects grid
 │   │   └── SkillsPage.jsx       # Skills detail page (radar chart, animated bars, stats)
 │   ├── components/
+│   │   ├── LatentField.jsx      # 3D embedding-space hero (canvas, drag to orbit)
+│   │   ├── TiltCard.jsx         # Pointer-driven 3D tilt card with glare
 │   │   └── ui/                  # badge, separator, sonner (shadcn/ui)
 │   ├── lib/
 │   │   └── utils.js             # cn() helper
@@ -123,11 +132,15 @@ Changes typically go live within 1–2 minutes after deploy.
 
 ## Key Features
 
-- **Theme Toggle** — dark/light with circular mask reveal animation (View Transitions API) and synthesized sound
+- **Latent Field Hero** — interactive 3D embedding of real skill domains: drag to orbit, pointer parallax, deterministic layout (seeded PRNG), pauses off-screen, respects reduced motion
+- **Full-bleed Name Lockup** — each line of the name is measured against the loaded display font and sized to span the column exactly on any viewport
+- **Career Trace** — experience plotted as spans on a shared timeline, observability-style
+- **3D Tilt Cards** — spring-smoothed pointer tilt with glare sweep on project cards (hover devices only)
+- **Theme Toggle** — dark/light with circular mask reveal animation (View Transitions API)
 - **IST Status** — live status indicator with time-aware messages (work hours, evening, sleep, weekend gaming)
-- **Visitor Counter** — localStorage-based page view counter
+- **Visitor Counter** — global count via counterapi.dev with session dedupe
 - **Contact Modal** — sends via FormSubmit.co with mailto: fallback
-- **Skills Page** — SVG radar chart, animated progress bars, category filter tabs
+- **Skills Page** — inferno-ramp confidence bars, category filter tabs, animated counters
 - **Rotating Taglines** — animated text cycling through taglines
 - **Responsive** — mobile-first, works on all screen sizes
 

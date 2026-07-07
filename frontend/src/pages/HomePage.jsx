@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "next-themes";
 import { Github, Linkedin, Mail, FileText, ExternalLink, X, Send, Loader2, ArrowUpRight } from "lucide-react";
 import MediumIcon from "../components/ui/MediumIcon";
+import LatentField from "../components/LatentField";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { profile, links, experience, education, skills, projects } from "../data/portfolio";
@@ -83,7 +85,7 @@ function useVisitorCount() {
     return count;
 }
 
-// Rotating tagline — streams like generated output
+// Rotating tagline
 function RotatingText({ texts, interval = 3000 }) {
     const [index, setIndex] = useState(0);
 
@@ -134,38 +136,69 @@ function AnimatedCounter({ value }) {
     return shown.toLocaleString();
 }
 
-// ===== Decoding name (the signature) =====
-// Split each word into BPE-ish subword chunks that "decode" in sequence.
-function tokenizeWord(word) {
-    const chunks = [];
-    const sizes = [3, 4, 2, 3, 5];
-    let i = 0;
-    let s = 0;
-    while (i < word.length) {
-        const len = Math.min(sizes[s % sizes.length], word.length - i);
-        chunks.push(word.slice(i, i + len));
-        i += len;
-        s++;
-    }
-    return chunks;
+// Coordinate eyebrow — every section is a location in the space
+function Coord({ xy, label }) {
+    return (
+        <div className="coord">
+            <span className="coord-xy">[ {xy[0]}, {xy[1]} ]</span>
+            <span className="coord-sep">·</span>
+            <span className="coord-label">{label}</span>
+        </div>
+    );
 }
 
-function DecodingName({ name }) {
-    const words = useMemo(() => name.split(" ").map(tokenizeWord), [name]);
-    let counter = 0;
+// Hero name — words rise out of clipped lines, each line sized to
+// span the full column exactly (Syne 800 is too wide to eyeball).
+function RisingName({ name }) {
+    const words = useMemo(() => name.split(" "), [name]);
+    const boxRef = useRef(null);
+    const [sizes, setSizes] = useState([]);
+
+    useEffect(() => {
+        // The CSS clamp is a safe (smaller) fallback; once Syne is
+        // actually loaded, size each line from canvas metrics so it
+        // spans the column exactly.
+        const FONT = "800 100px Syne";
+        const fit = () => {
+            const el = boxRef.current;
+            if (!el || !document.fonts?.check?.(FONT)) return;
+            const w = el.clientWidth;
+            const ctx = document.createElement("canvas").getContext("2d");
+            ctx.font = `${FONT}, sans-serif`;
+            setSizes(
+                words.map((word) => {
+                    const m = ctx.measureText(word.toUpperCase()).width;
+                    return m > 0 ? Math.min((99 * w) / m, 150) : null;
+                })
+            );
+        };
+        fit();
+        document.fonts?.load?.(FONT).then(fit).catch(() => { });
+        document.fonts?.addEventListener?.("loadingdone", fit);
+        window.addEventListener("resize", fit);
+        return () => {
+            document.fonts?.removeEventListener?.("loadingdone", fit);
+            window.removeEventListener("resize", fit);
+        };
+    }, [words]);
+
     return (
-        <h1 className="hero-name" aria-label={name}>
-            {words.map((tokens, wi) => (
-                <span className="word" key={wi} aria-hidden="true">
-                    {tokens.map((t, ti) => {
-                        const delay = counter * 0.06;
-                        counter++;
-                        return (
-                            <span className="tok" key={ti} style={{ animationDelay: `${delay}s` }}>
-                                {t}
-                            </span>
-                        );
-                    })}
+        <h1 className="hero-name" ref={boxRef} aria-label={name}>
+            {words.map((word, i) => (
+                <span
+                    className="hero-name-line"
+                    key={word}
+                    aria-hidden="true"
+                    style={sizes[i] ? { fontSize: `${sizes[i]}px` } : undefined}
+                >
+                    <motion.span
+                        className="hero-name-word"
+                        initial={{ y: "112%" }}
+                        animate={{ y: "0%" }}
+                        transition={{ duration: 0.85, delay: 0.25 + i * 0.14, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                        {word}
+                    </motion.span>
                 </span>
             ))}
         </h1>
@@ -174,7 +207,7 @@ function DecodingName({ name }) {
 
 // Section reveal on scroll
 const reveal = {
-    initial: { opacity: 0, y: 20, filter: "blur(6px)" },
+    initial: { opacity: 0, y: 22, filter: "blur(6px)" },
     whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
     viewport: { once: true, margin: "-60px" },
     transition: { duration: 0.55, ease: [0.23, 1, 0.32, 1] },
@@ -199,6 +232,9 @@ function parseSpan(period, nowDec) {
     const end = toDecimalYear(parts[1] ?? parts[0], nowDec);
     return { start, end };
 }
+
+// Trace span colors walk the inferno ramp, newest = hottest
+const SPAN_COLORS = ["#FFB224", "#F0527C", "#B266FF", "#FF7847"];
 
 // Contact Form Modal
 function ContactModal({ isOpen, onClose }) {
@@ -276,7 +312,7 @@ function ContactModal({ isOpen, onClose }) {
                         <div className="w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-border">
                                 <span className="eyebrow flex items-center gap-2">
-                                    <span className="dot dot-signal" /> contact.send()
+                                    <span className="dot dot-signal" /> send a message
                                 </span>
                                 <button
                                     onClick={onClose}
@@ -288,7 +324,7 @@ function ContactModal({ isOpen, onClose }) {
                             </div>
 
                             <div className="p-6">
-                                <p className="text-sm text-muted-foreground mb-5">Send me a message — I'll get back to you soon.</p>
+                                <p className="text-sm text-muted-foreground mb-5">It lands straight in my inbox — I'll get back to you soon.</p>
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div>
                                         <label className="eyebrow block mb-1.5" htmlFor="contact-name">Name</label>
@@ -329,7 +365,7 @@ function ContactModal({ isOpen, onClose }) {
                                         {sending ? (
                                             <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
                                         ) : (
-                                            <><Send className="w-4 h-4" /> Send Message</>
+                                            <><Send className="w-4 h-4" /> Send message</>
                                         )}
                                     </button>
                                 </form>
@@ -346,6 +382,10 @@ export default function HomePage() {
     const istStatus = useISTStatus();
     const visitorCount = useVisitorCount();
     const [contactOpen, setContactOpen] = useState(false);
+    const { resolvedTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    const isDark = !mounted || resolvedTheme !== "light";
 
     // Shared tenure timeline (earliest start → now)
     const tenure = useMemo(() => {
@@ -376,252 +416,291 @@ export default function HomePage() {
         ...(links.medium ? [{ key: "writing", val: "Medium", to: null, ext: links.medium }] : []),
     ];
 
+    const stats = [
+        { val: "7+", label: "years shipping AI" },
+        { val: "3", label: "industries served" },
+        { val: "25+", label: "projects built" },
+        { val: "∞", label: "curiosity" },
+    ];
+
     return (
-        <div className="max-w-[760px] mx-auto px-5 sm:px-7 pb-10">
-            {/* ===== Hero ===== */}
+        <div className="home">
+            {/* ===== Hero — the latent field ===== */}
             <section className="hero">
-                <motion.div
-                    className="hero-eyebrow"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <span className="accent">model</span>
-                    <span>·</span>
-                    <span>hemz · enterprise-ai</span>
-                    {visitorCount != null && (
-                        <>
-                            <span>·</span>
-                            <span>◍ <AnimatedCounter value={visitorCount} /> views</span>
-                        </>
-                    )}
-                </motion.div>
+                <LatentField dark={isDark} className="hero-field" />
 
-                <div className="hero-top">
-                    <DecodingName name={profile.name} />
-                    {profile.avatarUrl && (
-                        <motion.div
-                            className="hero-ava"
-                            initial={{ opacity: 0, scale: 0.85 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                        >
-                            <img src={profile.avatarUrl} alt={profile.name} loading="lazy" />
-                        </motion.div>
-                    )}
-                </div>
-
-                <motion.div
-                    className="gen-line"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.55 }}
-                >
-                    <span className="prompt">▸</span>
-                    {profile.taglines && profile.taglines.length > 0 ? (
-                        <RotatingText texts={profile.taglines} interval={2800} />
-                    ) : (
-                        profile.title
-                    )}
-                    <span className="caret" />
-                </motion.div>
-
-                <motion.div
-                    className="hero-status"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.75 }}
-                >
-                    <span className={`dot ${istStatus.color} animate-pulse-dot`} />
-                    <span>{istStatus.emoji} {istStatus.text}</span>
-                </motion.div>
-
-                {/* Index strip */}
-                <motion.div
-                    className="index-list"
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.85 }}
-                >
-                    {indexRows.map((row) => {
-                        const inner = (
+                <div className="hero-content">
+                    <motion.div
+                        className="hero-eyebrow"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <span className="accent">latent-space</span>
+                        <span>·</span>
+                        <span>hemz · enterprise-ai</span>
+                        {visitorCount != null && (
                             <>
-                                <span className="index-key">{row.key}</span>
-                                <span className="index-val">{row.val}</span>
-                                <span className="index-arrow">↗</span>
+                                <span>·</span>
+                                <span>◍ <AnimatedCounter value={visitorCount} /> views</span>
                             </>
-                        );
-                        if (row.to) return <Link key={row.key} to={row.to} className="index-row">{inner}</Link>;
-                        if (row.ext) return <a key={row.key} href={row.ext} target="_blank" rel="noopener noreferrer" className="index-row">{inner}</a>;
-                        return <div key={row.key} className="index-row">{inner}</div>;
-                    })}
-                </motion.div>
+                        )}
+                    </motion.div>
+
+                    <RisingName name={profile.name} />
+
+                    <motion.div
+                        className="gen-line"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.7 }}
+                    >
+                        <span className="prompt">▸</span>
+                        {profile.taglines && profile.taglines.length > 0 ? (
+                            <RotatingText texts={profile.taglines} interval={2800} />
+                        ) : (
+                            profile.title
+                        )}
+                        <span className="caret" />
+                    </motion.div>
+
+                    <motion.div
+                        className="hero-status"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.9 }}
+                    >
+                        <span className={`dot ${istStatus.color} animate-pulse-dot`} />
+                        <span>{istStatus.emoji} {istStatus.text}</span>
+                    </motion.div>
+
+                    <motion.p
+                        className="hero-hint"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6, delay: 1.4 }}
+                    >
+                        ↻ drag the field to orbit — every cluster is a real skill domain
+                    </motion.p>
+
+                    {/* Index strip */}
+                    <motion.div
+                        className="index-list"
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.05 }}
+                    >
+                        {indexRows.map((row) => {
+                            const inner = (
+                                <>
+                                    <span className="index-key">{row.key}</span>
+                                    <span className="index-val">{row.val}</span>
+                                    <span className="index-arrow">↗</span>
+                                </>
+                            );
+                            if (row.to) return <Link key={row.key} to={row.to} className="index-row">{inner}</Link>;
+                            if (row.ext) return <a key={row.key} href={row.ext} target="_blank" rel="noopener noreferrer" className="index-row">{inner}</a>;
+                            return <div key={row.key} className="index-row">{inner}</div>;
+                        })}
+                    </motion.div>
+                </div>
             </section>
 
-            {/* ===== About ===== */}
-            <motion.section className="sec" {...reveal}>
-                <div className="sec-label">about</div>
-                {profile.about.map((p, i) => (
-                    <p key={i} className="lead">{p}</p>
-                ))}
-            </motion.section>
-
-            {/* ===== Skills ===== */}
-            {skills.length > 0 && (
+            <div className="page-body">
+                {/* ===== About ===== */}
                 <motion.section className="sec" {...reveal}>
-                    <div className="sec-label">skills</div>
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="sec-h mb-0">Domains &amp; tooling</h2>
-                        <Link to="/skills" className="text-xs font-mono text-muted-foreground hover:text-signal flex items-center gap-1 transition-colors">
-                            view all <ArrowUpRight className="w-3 h-3" />
-                        </Link>
-                    </div>
-                    <div className="space-y-5">
-                        {skills.map((cat) => (
-                            <div key={cat.category}>
-                                <span className="eyebrow flex items-center gap-1.5 mb-2.5">
-                                    <span>{cat.icon}</span> {cat.category}
-                                </span>
-                                <div className="flex flex-wrap gap-2">
-                                    {cat.items.map((s) => (
-                                        <span key={s.name} className="token-chip">{s.name}</span>
-                                    ))}
-                                </div>
+                    <Coord xy={["0.412", "−1.087"]} label="about" />
+                    <div className="about-grid">
+                        {profile.avatarUrl && (
+                            <div className="about-photo">
+                                <img src={profile.avatarUrl} alt={profile.name} loading="lazy" />
+                                <span className="about-photo-caption">hemz · human, not synthetic</span>
                             </div>
-                        ))}
-                    </div>
-                </motion.section>
-            )}
-
-            {/* ===== Connect ===== */}
-            <motion.section className="sec" {...reveal}>
-                <div className="sec-label">connect</div>
-                <h2 className="sec-h">Let's build something</h2>
-                <div className="flex flex-wrap gap-2.5">
-                    {links.github && (
-                        <a href={links.github} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                            <Github className="w-4 h-4" /> GitHub
-                        </a>
-                    )}
-                    {links.linkedin && (
-                        <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                            <Linkedin className="w-4 h-4" /> LinkedIn
-                        </a>
-                    )}
-                    {links.mail && (
-                        <button onClick={() => setContactOpen(true)} className="btn">
-                            <Mail className="w-4 h-4" /> Mail
-                        </button>
-                    )}
-                    {links.medium && (
-                        <a href={links.medium} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                            <MediumIcon className="w-4 h-4" /> Medium
-                        </a>
-                    )}
-                    {links.resume && (
-                        <a href={links.resume} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                            <FileText className="w-4 h-4" /> Resume
-                        </a>
-                    )}
-                </div>
-            </motion.section>
-
-            {/* ===== Experience ===== */}
-            {experience.length > 0 && (
-                <motion.section className="sec" {...reveal}>
-                    <div className="sec-label">experience</div>
-                    <h2 className="sec-h">Where I've worked</h2>
-                    <div>
-                        {experience.map((exp, i) => (
-                            <div key={i} className="xp-row">
-                                <div className="xp-head">
-                                    {exp.companyUrl ? (
-                                        <a href={exp.companyUrl} target="_blank" rel="noopener noreferrer" className="xp-company">
-                                            {exp.company}
-                                            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-                                        </a>
-                                    ) : (
-                                        <span className="xp-company">{exp.company}</span>
-                                    )}
-                                    <span className="xp-period">{exp.roles[0]?.period}</span>
-                                </div>
-
-                                {exp.roles.map((role, j) => (
-                                    <div key={j}>
-                                        <div className="xp-role">
-                                            {role.title}
-                                            {role.type && <span className="xp-type">{role.type}</span>}
-                                        </div>
-                                        {role.description && <p className="xp-desc">{role.description}</p>}
-                                    </div>
-                                ))}
-
-                                <div className="tenure-track">
-                                    <motion.div
-                                        className="tenure-fill"
-                                        style={{ left: `${tenure.bars[i].left}%` }}
-                                        initial={{ width: 0 }}
-                                        whileInView={{ width: `${tenure.bars[i].width}%` }}
-                                        viewport={{ once: true }}
-                                        transition={{ duration: 0.9, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
-                                    />
-                                </div>
-
-                                {exp.tags && exp.tags.length > 0 && (
-                                    <div className="flex flex-wrap gap-1.5 mt-3">
-                                        {exp.tags.map((tag) => <span key={tag} className="token-chip">{tag}</span>)}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                        <div className="tenure-scale">
-                            <span>{tenure.tlStart}</span>
-                            <span>now</span>
+                        )}
+                        <div className="about-text">
+                            {profile.about.map((p, i) => (
+                                <p key={i} className="lead">{p}</p>
+                            ))}
                         </div>
                     </div>
-                </motion.section>
-            )}
-
-            {/* ===== Education ===== */}
-            {education.length > 0 && (
-                <motion.section className="sec" {...reveal}>
-                    <div className="sec-label">education</div>
-                    <h2 className="sec-h">Foundations</h2>
-                    <div>
-                        {education.map((edu, i) => (
-                            <div key={i} className="edu-row">
-                                <div>
-                                    {edu.institutionUrl ? (
-                                        <a href={edu.institutionUrl} target="_blank" rel="noopener noreferrer" className="edu-inst">
-                                            {edu.institution}
-                                            <ExternalLink className="w-3 h-3 text-muted-foreground" />
-                                        </a>
-                                    ) : (
-                                        <span className="edu-inst">{edu.institution}</span>
-                                    )}
-                                    <div className="edu-degree">{edu.degree}</div>
-                                </div>
-                                <span className="xp-period">{edu.period}</span>
+                    <div className="stat-strip">
+                        {stats.map((s) => (
+                            <div key={s.label} className="stat-cell">
+                                <span className="stat-val">{s.val}</span>
+                                <span className="stat-label">{s.label}</span>
                             </div>
                         ))}
                     </div>
                 </motion.section>
-            )}
 
-            {/* ===== Quote ===== */}
-            {profile.quote && (
+                {/* ===== Skills preview ===== */}
+                {skills.length > 0 && (
+                    <motion.section className="sec" {...reveal}>
+                        <Coord xy={["−0.958", "0.344"]} label="skills" />
+                        <div className="sec-head-row">
+                            <h2 className="sec-h">Domains &amp; tooling</h2>
+                            <Link to="/skills" className="view-all">
+                                view all <ArrowUpRight className="w-3 h-3" />
+                            </Link>
+                        </div>
+                        <div className="space-y-5">
+                            {skills.map((cat) => (
+                                <div key={cat.category}>
+                                    <span className="eyebrow flex items-center gap-1.5 mb-2.5">
+                                        <span className="cat-glyph">{cat.icon}</span> {cat.category}
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {cat.items.map((s) => (
+                                            <span key={s.name} className="token-chip">{s.name}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.section>
+                )}
+
+                {/* ===== Experience — the career trace ===== */}
+                {experience.length > 0 && (
+                    <motion.section className="sec" {...reveal}>
+                        <Coord xy={["−0.733", "0.291"]} label="experience" />
+                        <h2 className="sec-h">The career trace</h2>
+                        <div className="trace-meta">
+                            <span>career.run()</span>
+                            <span>{experience.length} spans · {tenure.tlStart} → now</span>
+                        </div>
+                        <div>
+                            {experience.map((exp, i) => (
+                                <div key={i} className="xp-row">
+                                    <div className="xp-head">
+                                        {exp.companyUrl ? (
+                                            <a href={exp.companyUrl} target="_blank" rel="noopener noreferrer" className="xp-company">
+                                                {exp.company}
+                                                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                                            </a>
+                                        ) : (
+                                            <span className="xp-company">{exp.company}</span>
+                                        )}
+                                        <span className="xp-period">{exp.roles[0]?.period}</span>
+                                    </div>
+
+                                    {exp.roles.map((role, j) => (
+                                        <div key={j}>
+                                            <div className="xp-role">
+                                                {role.title}
+                                                {role.type && <span className="xp-type">{role.type}</span>}
+                                            </div>
+                                            {role.description && <p className="xp-desc">{role.description}</p>}
+                                        </div>
+                                    ))}
+
+                                    <div className="tenure-track">
+                                        <motion.div
+                                            className="tenure-fill"
+                                            style={{
+                                                left: `${tenure.bars[i].left}%`,
+                                                background: SPAN_COLORS[i % SPAN_COLORS.length],
+                                            }}
+                                            initial={{ width: 0 }}
+                                            whileInView={{ width: `${tenure.bars[i].width}%` }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.9, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+                                        />
+                                    </div>
+
+                                    {exp.tags && exp.tags.length > 0 && (
+                                        <div className="flex flex-wrap gap-1.5 mt-3">
+                                            {exp.tags.map((tag) => <span key={tag} className="token-chip">{tag}</span>)}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                            <div className="tenure-scale">
+                                <span>{tenure.tlStart}</span>
+                                <span>now</span>
+                            </div>
+                        </div>
+                    </motion.section>
+                )}
+
+                {/* ===== Education ===== */}
+                {education.length > 0 && (
+                    <motion.section className="sec" {...reveal}>
+                        <Coord xy={["0.108", "0.966"]} label="education" />
+                        <h2 className="sec-h">Foundations</h2>
+                        <div>
+                            {education.map((edu, i) => (
+                                <div key={i} className="edu-row">
+                                    <div>
+                                        {edu.institutionUrl ? (
+                                            <a href={edu.institutionUrl} target="_blank" rel="noopener noreferrer" className="edu-inst">
+                                                {edu.institution}
+                                                <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                                            </a>
+                                        ) : (
+                                            <span className="edu-inst">{edu.institution}</span>
+                                        )}
+                                        <div className="edu-degree">{edu.degree}</div>
+                                    </div>
+                                    <span className="xp-period">{edu.period}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.section>
+                )}
+
+                {/* ===== Quote — the anchor point ===== */}
+                {profile.quote && (
+                    <motion.section className="sec" {...reveal}>
+                        <Coord xy={["0.000", "0.000"]} label="anchor" />
+                        <div className="quote-block">
+                            <p className="quote-text">"{profile.quote.text}"</p>
+                            <cite className="quote-cite">— {profile.quote.author}</cite>
+                        </div>
+                    </motion.section>
+                )}
+
+                {/* ===== Connect ===== */}
                 <motion.section className="sec" {...reveal}>
-                    <div className="quote-block">
-                        <p className="quote-text">"{profile.quote.text}"</p>
-                        <cite className="quote-cite">— {profile.quote.author}</cite>
+                    <Coord xy={["−0.529", "−0.644"]} label="connect" />
+                    <h2 className="sec-h">Let's build something real</h2>
+                    <p className="connect-note">
+                        Open to hard problems in agents, LLM systems, and everything it takes to run them in production.
+                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                        {links.mail && (
+                            <button onClick={() => setContactOpen(true)} className="btn">
+                                <Mail className="w-4 h-4" /> Send a message
+                            </button>
+                        )}
+                        {links.github && (
+                            <a href={links.github} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                                <Github className="w-4 h-4" /> GitHub
+                            </a>
+                        )}
+                        {links.linkedin && (
+                            <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                                <Linkedin className="w-4 h-4" /> LinkedIn
+                            </a>
+                        )}
+                        {links.medium && (
+                            <a href={links.medium} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                                <MediumIcon className="w-4 h-4" /> Medium
+                            </a>
+                        )}
+                        {links.resume && (
+                            <a href={links.resume} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                                <FileText className="w-4 h-4" /> Resume
+                            </a>
+                        )}
                     </div>
                 </motion.section>
-            )}
 
-            {/* ===== Footer ===== */}
-            <footer className="site-footer">
-                <p>© {new Date().getFullYear()} {profile.shortName || profile.name.split(" ")[0]} <span className="sep">·</span> built with love, AI &amp; coffee ☕</p>
-            </footer>
+                {/* ===== Footer ===== */}
+                <footer className="site-footer">
+                    <p>© {new Date().getFullYear()} {profile.shortName || profile.name.split(" ")[0]} <span className="sep">·</span> mapped in latent space <span className="sep">·</span> caffeine → tokens ☕</p>
+                </footer>
+            </div>
 
             <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
         </div>

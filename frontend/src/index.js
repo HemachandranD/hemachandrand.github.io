@@ -9,7 +9,7 @@ import { Toaster } from './components/ui/sonner';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <HashRouter>
         <App />
         <Toaster position="top-right" />
