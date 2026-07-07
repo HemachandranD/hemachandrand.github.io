@@ -203,7 +203,12 @@ function ContactModal({ isOpen, onClose }) {
                 'button, [href], input, textarea, [tabindex]:not([tabindex="-1"])'
             ) ?? [];
         // Focus the first field once the dialog is in the DOM
-        requestAnimationFrame(() => focusables()[0]?.focus());
+        requestAnimationFrame(() => {
+            const first =
+                dialogRef.current?.querySelector("input:not([tabindex='-1']), textarea") ??
+                focusables()[0];
+            first?.focus();
+        });
         const onKeyDown = (e) => {
             if (e.key === "Escape") {
                 onClose();
