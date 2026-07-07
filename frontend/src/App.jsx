@@ -10,9 +10,9 @@ const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
 const SkillsPage = lazy(() => import("./pages/SkillsPage"));
 
 const NAV = [
-  { to: "/", label: "home", end: true },
-  { to: "/projects", label: "projects" },
-  { to: "/skills", label: "skills" },
+  { to: "/", label: "Home", end: true },
+  { to: "/projects", label: "Projects" },
+  { to: "/skills", label: "Skills" },
 ];
 
 function ThemeToggle() {
@@ -151,7 +151,7 @@ function App() {
       >
         <div className="topnav-inner">
           <NavLink to="/" className="brand" aria-label="Home">
-            hemz<span className="brand-dot" aria-hidden="true">.</span>
+            Hemz<span className="brand-dot" aria-hidden="true">.</span>
           </NavLink>
 
           <div className="nav-right">

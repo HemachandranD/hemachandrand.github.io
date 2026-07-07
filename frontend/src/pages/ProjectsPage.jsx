@@ -76,7 +76,7 @@ export default function ProjectsPage() {
                 <div className="coord">
                     <span className="coord-xy">[ 0.847, 0.312 ]</span>
                     <span className="coord-sep">·</span>
-                    <span className="coord-label">work · {String(projects.length).padStart(2, "0")} entries</span>
+                    <span className="coord-label">Work · {String(projects.length).padStart(2, "0")} Entries</span>
                 </div>
                 <h1 className="page-title">Selected work</h1>
                 <p className="page-intro">

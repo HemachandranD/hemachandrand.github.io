@@ -229,7 +229,6 @@
     font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: 2.2rem;
-    text-transform: lowercase;
     color: hsl(var(--foreground));
     text-decoration: none;
     display: flex;
@@ -543,7 +542,6 @@ div.index-row .index-arrow {
 
 .coord-label {
     color: hsl(var(--muted-foreground));
-    text-transform: lowercase;
     letter-spacing: 0.08em;
 }
 
@@ -587,7 +585,6 @@ div.index-row .index-arrow {
 .eyebrow {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.7rem;
-    text-transform: lowercase;
     letter-spacing: 0.07em;
     color: hsl(var(--muted-foreground));
 }
@@ -909,28 +906,6 @@ a.edu-inst:hover {
     font-size: 0.83rem;
     color: hsl(var(--muted-foreground));
     margin-top: 3px;
-}
-
-/* ---------- quote ---------- */
-.quote-block {
-    border-left: 2px solid hsl(var(--signal));
-    padding: 6px 0 6px 24px;
-}
-
-.quote-text {
-    font-family: 'Syne', sans-serif;
-    font-weight: 600;
-    font-size: clamp(1.15rem, 3vw, 1.5rem);
-    line-height: 1.45;
-    color: hsl(var(--foreground));
-    margin: 0 0 10px;
-}
-
-.quote-cite {
-    font-family: 'IBM Plex Mono', monospace;
-    font-style: normal;
-    font-size: 0.75rem;
-    color: hsl(var(--muted-foreground));
 }
 
 /* ---------- connect ---------- */

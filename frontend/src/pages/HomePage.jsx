@@ -314,7 +314,7 @@ function ContactModal({ isOpen, onClose }) {
                         >
                             <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-border">
                                 <span className="eyebrow flex items-center gap-2">
-                                    <span className="dot dot-signal" /> send a message
+                                    <span className="dot dot-signal" /> Send a message
                                 </span>
                                 <button
                                     onClick={onClose}
@@ -422,10 +422,10 @@ export default function HomePage() {
     }, []);
 
     const indexRows = [
-        { key: "about", val: `${yearsOfExperience}+ yrs · Enterprise AI`, to: null, ext: null, anchor: "about" },
-        { key: "work", val: `${projects.length} featured projects`, to: "/projects", ext: null },
-        { key: "skills", val: `${skills.length} domains`, to: "/skills", ext: null },
-        ...(links.medium ? [{ key: "writing", val: "Medium", to: null, ext: links.medium }] : []),
+        { key: "About", val: `${yearsOfExperience}+ yrs · Enterprise AI`, to: null, ext: null, anchor: "about" },
+        { key: "Work", val: `${projects.length} featured projects`, to: "/projects", ext: null },
+        { key: "Skills", val: `${skills.length} domains`, to: "/skills", ext: null },
+        ...(links.medium ? [{ key: "Writing", val: "Medium", to: null, ext: links.medium }] : []),
     ];
 
     const stats = [
@@ -524,12 +524,12 @@ export default function HomePage() {
             <div className="page-body">
                 {/* ===== About ===== */}
                 <motion.section id="about" className="sec" {...reveal}>
-                    <Coord xy={["0.412", "−1.087"]} label="about" />
+                    <Coord xy={["0.412", "−1.087"]} label="About" />
                     <div className="about-grid">
                         {profile.avatarUrl && (
                             <div className="about-photo">
                                 <img src={profile.avatarUrl} alt={profile.name} loading="lazy" />
-                                <span className="about-photo-caption">hemz · human, not synthetic</span>
+                                <span className="about-photo-caption">Hemz · Human, not Synthetic</span>
                             </div>
                         )}
                         <div className="about-text">
@@ -551,7 +551,7 @@ export default function HomePage() {
                 {/* ===== Skills preview ===== */}
                 {skills.length > 0 && (
                     <motion.section className="sec" {...reveal}>
-                        <Coord xy={["−0.958", "0.344"]} label="skills" />
+                        <Coord xy={["−0.958", "0.344"]} label="Skills" />
                         <div className="sec-head-row">
                             <h2 className="sec-h">Domains &amp; tooling</h2>
                             <Link to="/skills" className="view-all">
@@ -578,7 +578,7 @@ export default function HomePage() {
                 {/* ===== Experience — the career trace ===== */}
                 {experience.length > 0 && (
                     <motion.section className="sec" {...reveal}>
-                        <Coord xy={["−0.733", "0.291"]} label="experience" />
+                        <Coord xy={["−0.733", "0.291"]} label="Experience" />
                         <h2 className="sec-h">The career trace</h2>
                         <div className="trace-meta">
                             <span>career.run()</span>
@@ -641,7 +641,7 @@ export default function HomePage() {
                 {/* ===== Education ===== */}
                 {education.length > 0 && (
                     <motion.section className="sec" {...reveal}>
-                        <Coord xy={["0.108", "0.966"]} label="education" />
+                        <Coord xy={["0.108", "0.966"]} label="Education" />
                         <h2 className="sec-h">Foundations</h2>
                         <div>
                             {education.map((edu, i) => (
@@ -664,20 +664,9 @@ export default function HomePage() {
                     </motion.section>
                 )}
 
-                {/* ===== Quote — the anchor point ===== */}
-                {profile.quote && (
-                    <motion.section className="sec" {...reveal}>
-                        <Coord xy={["0.000", "0.000"]} label="anchor" />
-                        <div className="quote-block">
-                            <p className="quote-text">"{profile.quote.text}"</p>
-                            <cite className="quote-cite">— {profile.quote.author}</cite>
-                        </div>
-                    </motion.section>
-                )}
-
                 {/* ===== Connect ===== */}
                 <motion.section className="sec" {...reveal}>
-                    <Coord xy={["−0.529", "−0.644"]} label="connect" />
+                    <Coord xy={["−0.529", "−0.644"]} label="Connect" />
                     <h2 className="sec-h">Let's build something real</h2>
                     <p className="connect-note">
                         Open to hard problems in agents, LLM systems, and everything it takes to run them in production.

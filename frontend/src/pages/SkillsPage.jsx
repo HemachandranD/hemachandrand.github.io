@@ -96,7 +96,7 @@ export default function SkillsPage() {
                 <div className="coord">
                     <span className="coord-xy">[ −0.958, 0.344 ]</span>
                     <span className="coord-sep">·</span>
-                    <span className="coord-label">skills · telemetry</span>
+                    <span className="coord-label">Skills · Telemetry</span>
                 </div>
                 <h1 className="page-title">Skill-space readout</h1>
                 <p className="page-intro">

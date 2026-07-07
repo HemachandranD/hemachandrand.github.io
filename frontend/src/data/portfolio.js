@@ -25,14 +25,10 @@ export const profile = {
         "Making machines think, one prompt at a time",
     ],
     about: [
-        `I build the machinery behind production AI. ${yearsOfExperience}+ years of agentic systems, LLM observability platforms, and MLOps & LLMOps frameworks that hold up under enterprise load — across CPG, retail, and healthcare.`,
+        `I build the machinery behind production AI. ${yearsOfExperience}+ years of agentic systems, LLM observability platforms, and MLOps & LLMOps frameworks that hold up under enterprise load across CPG, retail, and healthcare.`,
         "My favorite territory is the gap between a promising demo and a dependable product. That's where the hard problems live: evaluation, observability, guardrails, and the unglamorous engineering that turns a clever model into something a business can trust.",
-        "Under it all is plain curiosity — about the technology, and about how it reshapes the industries and people around it. It's what keeps me experimenting, writing, and shipping.",
+        "Under it all is plain curiosity about the technology, and about how it reshapes the industries and people around it. It's what keeps me experimenting, writing, and shipping.",
     ],
-    quote: {
-        text: "The gap between a promising demo and a dependable product — that's where the real work lives.",
-        author: "me, on most days",
-    },
 };
 
 export const links = {
@@ -55,7 +51,7 @@ export const experience = [
                 title: "Enterprise AI Engineer",
                 type: "Full-time",
                 period: "Aug 2023 — Present",
-                description: "Building enterprise AI products end to end — multi-agent systems, LLM-powered observability platforms, and production-grade MLOps & LLMOps frameworks serving CPG, retail, and healthcare clients.",
+                description: "Building enterprise AI products end to end multi-agent systems, LLM-powered observability platforms, and production-grade MLOps & LLMOps frameworks serving CPG, retail, and healthcare clients.",
             },
         ],
         tags: ["Agentic AI", "LLMOps", "MLOps", "Python", "Azure", "Databricks"],
@@ -144,6 +140,20 @@ export const skills = [
 ];
 
 export const projects = [
+    {
+        id: 8,
+        title: "Observent",
+        subtitle: "Claude Code Plugin for AI Observability",
+        date: "2026",
+        description:
+            "A Claude Code plugin and Agent Skills that wires observability into multi-agent AI apps in one command — it detects your agent framework, instruments traces to backends like Phoenix, Langfuse, or SigNoz, and validates the span hierarchy end to end.",
+        tags: ["AI Observability", "Claude Code", "OpenTelemetry", "Agents"],
+        image: null,
+        liveUrl: null,
+        githubUrl: "https://github.com/HemachandranD/observent",
+        mediumUrl:
+            "https://medium.com/towardsdev/observent-claude-code-plugin-for-ai-observability-c8f022ced63e",
+    },
     {
         id: 1,
         title: "Harness MCP",
