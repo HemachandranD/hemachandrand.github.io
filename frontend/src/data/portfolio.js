@@ -2,6 +2,13 @@
 // Portfolio Configuration — Edit this file to update your data
 // ============================================================
 
+// Career started June 2018 — every "years of experience" figure on the
+// site derives from this so the numbers never drift out of date.
+const CAREER_START = new Date(2018, 5); // June 2018
+export const yearsOfExperience = Math.floor(
+    (Date.now() - CAREER_START.getTime()) / (365.25 * 24 * 3600 * 1000)
+);
+
 export const profile = {
     name: "Hemachandran Dhinakaran",
     shortName: "Hemz",
@@ -18,13 +25,13 @@ export const profile = {
         "Making machines think, one prompt at a time",
     ],
     about: [
-        "I build the machinery behind production AI. Seven-plus years of agentic systems, LLM observability platforms, and MLOps & LLMOps frameworks that hold up under enterprise load — across CPG, retail, and healthcare.",
+        `I build the machinery behind production AI. ${yearsOfExperience}+ years of agentic systems, LLM observability platforms, and MLOps & LLMOps frameworks that hold up under enterprise load — across CPG, retail, and healthcare.`,
         "My favorite territory is the gap between a promising demo and a dependable product. That's where the hard problems live: evaluation, observability, guardrails, and the unglamorous engineering that turns a clever model into something a business can trust.",
         "Under it all is plain curiosity — about the technology, and about how it reshapes the industries and people around it. It's what keeps me experimenting, writing, and shipping.",
     ],
     quote: {
-        text: "The best way to predict the future is to invent it.",
-        author: "Alan Kay",
+        text: "The gap between a promising demo and a dependable product — that's where the real work lives.",
+        author: "me, on most days",
     },
 };
 
@@ -33,7 +40,10 @@ export const links = {
     linkedin: "https://www.linkedin.com/in/hemachandran-dhinakaran-20900b13b",
     medium: "https://hemz.medium.com",
     mail: "mailto:hema18deena@gmail.com",
-    resume: "https://drive.google.com/file/d/YOUR_GDRIVE_FILE_ID/view?usp=sharing", // Replace YOUR_GDRIVE_FILE_ID with your Google Drive resume file ID
+    // Set to your real resume URL to show the Resume button, e.g.
+    // "https://drive.google.com/file/d/<file-id>/view" — leaving it null
+    // hides the button instead of shipping a broken link.
+    resume: null,
 };
 
 export const experience = [
@@ -82,7 +92,7 @@ export const education = [
     {
         institution: "Stanford Online",
         institutionUrl: "https://online.stanford.edu/",
-        degree: "Online Degree · Machine Learning",
+        degree: "Certificate · Machine Learning",
         period: "2020 — 2021",
     },
     {
@@ -144,7 +154,7 @@ export const projects = [
         tags: ["AI", "MCP", "Python", "Tools"],
         image: null,
         liveUrl: null,
-        githubUrl: "https://github.com/HemachandranD",
+        githubUrl: null, // set the project repo URL (not your profile) to show a GitHub button
         mediumUrl:
             "https://hemz.medium.com/harnessing-mcp-building-a-reusable-and-private-ai-toolkit-33f5ffc53d62",
     },
@@ -158,9 +168,9 @@ export const projects = [
         tags: ["Amazon Bedrock", "AgentCore", "AI Agents"],
         image: null,
         liveUrl: null,
-        githubUrl: "https://github.com/HemachandranD",
+        githubUrl: null, // set the project repo URL (not your profile) to show a GitHub button
         mediumUrl:
-            "https://hemz.medium.com/amazon-bedrock-agentcore-for-ai-agents-33f5ffc53d62",
+            "https://hemz.medium.com/quickstart-amazon-bedrock-agentcore-for-agents-7c439252f7e0",
     },
     {
         id: 3,
@@ -172,7 +182,7 @@ export const projects = [
         tags: ["LLMOps", "GenAI", "Databricks", "Python"],
         image: null,
         liveUrl: null,
-        githubUrl: "https://github.com/HemachandranD",
+        githubUrl: null, // set the project repo URL (not your profile) to show a GitHub button
         mediumUrl:
             "https://hemz.medium.com/mastering-llmops-building-a-powerful-llmops-platform-with-databricks-954f77060948",
     },
@@ -186,7 +196,7 @@ export const projects = [
         tags: ["LLM", "RAG", "LangChain", "Qdrant", "Redis"],
         image: null,
         liveUrl: null,
-        githubUrl: "https://github.com/HemachandranD",
+        githubUrl: null, // set the project repo URL (not your profile) to show a GitHub button
         mediumUrl:
             "https://hemz.medium.com/build-a-secure-local-rag-application-with-chat-history-using-langchain-llama3-qdrant-redis-986be3628a94",
     },
@@ -200,7 +210,7 @@ export const projects = [
         tags: ["Deep Learning", "Computer Vision", "Streamlit"],
         image: null,
         liveUrl: "https://foodsight.streamlit.app",
-        githubUrl: "https://github.com/HemachandranD",
+        githubUrl: null, // set the project repo URL (not your profile) to show a GitHub button
         mediumUrl: null,
     },
     {
@@ -213,9 +223,9 @@ export const projects = [
         tags: ["MLOps", "Databricks", "CI/CD", "Azure DevOps"],
         image: null,
         liveUrl: null,
-        githubUrl: "https://github.com/HemachandranD",
+        githubUrl: null, // set the project repo URL (not your profile) to show a GitHub button
         mediumUrl:
-            "https://medium.com/@hemz/mastering-mlops-building-a-powerful-mlops-platform-with-databricks-5ec4b43f6aa5",
+            "https://hemz.medium.com/mastering-mlops-building-a-powerful-mlops-platform-with-databricks-5ec4b43f6aa5",
     },
     {
         id: 7,
@@ -227,7 +237,7 @@ export const projects = [
         tags: ["AI", "NLP", "Audio", "Python"],
         image: null,
         liveUrl: null,
-        githubUrl: "https://github.com/HemachandranD",
+        githubUrl: null, // set the project repo URL (not your profile) to show a GitHub button
         mediumUrl:
             "https://www.linkedin.com/pulse/ask-audio-hemachandran-dhinakaran",
     },

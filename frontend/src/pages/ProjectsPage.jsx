@@ -3,6 +3,7 @@ import { Github, ExternalLink } from "lucide-react";
 import { projects, profile } from "../data/portfolio";
 import MediumIcon from "../components/ui/MediumIcon";
 import TiltCard from "../components/TiltCard";
+import ProjectCover from "../components/ProjectCover";
 
 const container = {
     hidden: { opacity: 0 },
@@ -22,11 +23,13 @@ function ProjectCard({ project, featured }) {
                 {featured && <span className="proj-flag">latest</span>}
             </div>
 
-            {project.image && (
-                <div className="proj-img">
+            <div className="proj-img">
+                {project.image ? (
                     <img src={project.image} alt={project.title} loading="lazy" />
-                </div>
-            )}
+                ) : (
+                    <ProjectCover seed={project.id} label={project.title} />
+                )}
+            </div>
 
             <h2 className="proj-title">{project.title}</h2>
             {project.subtitle && <div className="proj-sub">{project.subtitle}</div>}

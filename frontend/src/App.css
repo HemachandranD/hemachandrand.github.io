@@ -24,6 +24,11 @@
     padding-top: 64px;
 }
 
+/* anchored sections stop clear of the fixed header */
+.sec[id] {
+    scroll-margin-top: 80px;
+}
+
 /* ---------- top navigation ---------- */
 .topnav {
     position: fixed;
@@ -391,6 +396,12 @@
     margin-bottom: 14px;
 }
 
+.hero-status-tz {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: hsl(var(--muted-foreground) / 0.75);
+}
+
 .dot {
     width: 8px;
     height: 8px;
@@ -447,7 +458,19 @@
     transition: background-color 0.2s, padding-left 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-a.index-row:hover {
+/* the "about" row is a button that scrolls to the section */
+button.index-row {
+    width: 100%;
+    background: none;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+a.index-row:hover,
+button.index-row:hover {
     background: hsl(var(--muted) / 0.45);
     padding-left: 12px;
 }
@@ -467,7 +490,8 @@ a.index-row:hover {
     transition: opacity 0.2s;
 }
 
-a.index-row:hover .index-arrow {
+a.index-row:hover .index-arrow,
+button.index-row:hover .index-arrow {
     opacity: 1;
 }
 
@@ -615,7 +639,7 @@ div.index-row .index-arrow {
     display: block;
     margin-top: 9px;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
+    font-size: 0.7rem;
     color: hsl(var(--muted-foreground));
     text-align: center;
 }
@@ -670,7 +694,7 @@ div.index-row .index-arrow {
 
 .stat-label {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.64rem;
+    font-size: 0.7rem;
     color: hsl(var(--muted-foreground));
 }
 
@@ -683,7 +707,7 @@ div.index-row .index-arrow {
 /* ---------- chips & buttons ---------- */
 .token-chip {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
     padding: 4px 11px;
     border-radius: 999px;
     border: 1px solid hsl(var(--border));
@@ -818,7 +842,7 @@ a.xp-company:hover {
 .xp-type {
     font-family: 'IBM Plex Mono', monospace;
     font-weight: 400;
-    font-size: 0.62rem;
+    font-size: 0.7rem;
     padding: 2px 8px;
     border-radius: 999px;
     border: 1px solid hsl(var(--border));
@@ -852,7 +876,7 @@ a.xp-company:hover {
     display: flex;
     justify-content: space-between;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
+    font-size: 0.7rem;
     color: hsl(var(--muted-foreground));
     padding-top: 10px;
 }
@@ -1016,7 +1040,7 @@ a.edu-inst:hover {
 
 .proj-flag {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.62rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: hsl(var(--signal));
@@ -1038,6 +1062,21 @@ a.edu-inst:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* generated cover art (used when a project has no screenshot) */
+.proj-cover {
+    width: 100%;
+    height: 100%;
+    display: block;
+    color: hsl(var(--foreground));
+    background: hsl(var(--card));
+}
+
+/* the featured card gets a shorter, wider canvas */
+.proj-card-featured .proj-img {
+    aspect-ratio: auto;
+    height: 150px;
 }
 
 .proj-title {
@@ -1234,7 +1273,7 @@ a.edu-inst:hover {
 
 .metric-tile .label {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.64rem;
+    font-size: 0.7rem;
     color: hsl(var(--muted-foreground));
 }
 

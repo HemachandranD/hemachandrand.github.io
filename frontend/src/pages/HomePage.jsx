@@ -6,7 +6,7 @@ import MediumIcon from "../components/ui/MediumIcon";
 import LatentField from "../components/LatentField";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { profile, links, experience, education, skills, projects } from "../data/portfolio";
+import { profile, links, experience, education, skills, projects, yearsOfExperience } from "../data/portfolio";
 
 // Dynamic IST status hook
 function useISTStatus() {
@@ -51,45 +51,13 @@ function useISTStatus() {
     return status;
 }
 
-// Visitor counter hook — global count shared across all visitors via counterapi.dev
-function useVisitorCount() {
-    const [count, setCount] = useState(null);
-    const counted = useRef(false);
-
-    useEffect(() => {
-        if (counted.current) return;
-        counted.current = true;
-
-        // Check if this session already counted (avoid double-count on refresh)
-        const SESSION_KEY = "hd-counted-session";
-        const alreadyCounted = sessionStorage.getItem(SESSION_KEY);
-
-        const endpoint = alreadyCounted
-            ? "https://api.counterapi.dev/v1/hemachandrand-github-io/visits"       // just read
-            : "https://api.counterapi.dev/v1/hemachandrand-github-io/visits/up";   // increment + read
-
-        fetch(endpoint)
-            .then((r) => r.json())
-            .then((data) => {
-                if (data?.count != null) {
-                    setCount(data.count);
-                    if (!alreadyCounted) sessionStorage.setItem(SESSION_KEY, "1");
-                }
-            })
-            .catch(() => {
-                // If API is down, show nothing rather than a stale number
-                setCount(null);
-            });
-    }, []);
-
-    return count;
-}
-
-// Rotating tagline
+// Rotating tagline. Holds still for reduced-motion users, and screen
+// readers get one static tagline instead of an announcement every cycle.
 function RotatingText({ texts, interval = 3000 }) {
     const [index, setIndex] = useState(0);
 
     useEffect(() => {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         const timer = setInterval(() => {
             setIndex((prev) => (prev + 1) % texts.length);
         }, interval);
@@ -98,43 +66,24 @@ function RotatingText({ texts, interval = 3000 }) {
 
     return (
         <span className="rotating-text-wrapper">
-            <AnimatePresence mode="wait">
-                <motion.span
-                    key={index}
-                    initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="inline-block"
-                >
-                    {texts[index]}
-                    <span className="caret" />
-                </motion.span>
-            </AnimatePresence>
+            <span className="sr-only">{texts[0]}</span>
+            <span aria-hidden="true">
+                <AnimatePresence mode="wait">
+                    <motion.span
+                        key={index}
+                        initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+                        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
+                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        className="inline-block"
+                    >
+                        {texts[index]}
+                        <span className="caret" />
+                    </motion.span>
+                </AnimatePresence>
+            </span>
         </span>
     );
-}
-
-// Animated counter — counts up from 0
-function AnimatedCounter({ value }) {
-    const [shown, setShown] = useState(0);
-    const started = useRef(false);
-
-    useEffect(() => {
-        if (value == null || started.current) return;
-        started.current = true;
-        const dur = 1500;
-        const t0 = performance.now();
-        const tick = (now) => {
-            const p = Math.min((now - t0) / dur, 1);
-            const eased = 1 - Math.pow(1 - p, 3);
-            setShown(Math.floor(eased * value));
-            if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-    }, [value]);
-
-    return shown.toLocaleString();
 }
 
 // Coordinate eyebrow — every section is a location in the space
@@ -241,6 +190,45 @@ const SPAN_COLORS = ["#FFB224", "#F0527C", "#B266FF", "#FF7847"];
 function ContactModal({ isOpen, onClose }) {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [sending, setSending] = useState(false);
+    const dialogRef = useRef(null);
+
+    // Escape closes, focus moves into the dialog and stays trapped there,
+    // and the page behind stops scrolling while it's open.
+    useEffect(() => {
+        if (!isOpen) return;
+        const opener = document.activeElement;
+        document.body.style.overflow = "hidden";
+        const focusables = () =>
+            dialogRef.current?.querySelectorAll(
+                'button, [href], input, textarea, [tabindex]:not([tabindex="-1"])'
+            ) ?? [];
+        // Focus the first field once the dialog is in the DOM
+        requestAnimationFrame(() => focusables()[0]?.focus());
+        const onKeyDown = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+                return;
+            }
+            if (e.key !== "Tab") return;
+            const items = focusables();
+            if (items.length === 0) return;
+            const first = items[0];
+            const last = items[items.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        };
+        document.addEventListener("keydown", onKeyDown);
+        return () => {
+            document.removeEventListener("keydown", onKeyDown);
+            document.body.style.overflow = "";
+            opener?.focus?.();
+        };
+    }, [isOpen, onClose]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -258,6 +246,7 @@ function ContactModal({ isOpen, onClose }) {
                     message: formData.message,
                     _subject: `Portfolio Contact from ${formData.name}`,
                     _captcha: 'false',
+                    _honey: formData.honey ?? '',
                     _template: 'table',
                 }),
             });
@@ -310,7 +299,14 @@ function ContactModal({ isOpen, onClose }) {
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="fixed inset-0 z-50 flex items-center justify-center p-4"
                     >
-                        <div className="w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                        <div
+                            ref={dialogRef}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Send a message"
+                            className="w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-border">
                                 <span className="eyebrow flex items-center gap-2">
                                     <span className="dot dot-signal" /> send a message
@@ -327,6 +323,17 @@ function ContactModal({ isOpen, onClose }) {
                             <div className="p-6">
                                 <p className="text-sm text-muted-foreground mb-5">It lands straight in my inbox — I'll get back to you soon.</p>
                                 <form onSubmit={handleSubmit} className="space-y-4">
+                                    {/* Honeypot — bots fill it, FormSubmit drops those submissions */}
+                                    <input
+                                        type="text"
+                                        name="_honey"
+                                        value={formData.honey ?? ""}
+                                        onChange={(e) => setFormData({ ...formData, honey: e.target.value })}
+                                        className="hidden"
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        aria-hidden="true"
+                                    />
                                     <div>
                                         <label className="eyebrow block mb-1.5" htmlFor="contact-name">Name</label>
                                         <input
@@ -381,7 +388,6 @@ function ContactModal({ isOpen, onClose }) {
 
 export default function HomePage() {
     const istStatus = useISTStatus();
-    const visitorCount = useVisitorCount();
     const [contactOpen, setContactOpen] = useState(false);
     const { resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
@@ -411,16 +417,16 @@ export default function HomePage() {
     }, []);
 
     const indexRows = [
-        { key: "about", val: "7+ yrs · Enterprise AI", to: null, ext: null },
-        { key: "work", val: `${projects.length} projects`, to: "/projects", ext: null },
+        { key: "about", val: `${yearsOfExperience}+ yrs · Enterprise AI`, to: null, ext: null, anchor: "about" },
+        { key: "work", val: `${projects.length} featured projects`, to: "/projects", ext: null },
         { key: "skills", val: `${skills.length} domains`, to: "/skills", ext: null },
         ...(links.medium ? [{ key: "writing", val: "Medium", to: null, ext: links.medium }] : []),
     ];
 
     const stats = [
-        { val: "7+", label: "years shipping AI" },
+        { val: `${yearsOfExperience}+`, label: "years shipping AI" },
         { val: "3", label: "industries served" },
-        { val: "25+", label: "projects built" },
+        { val: "25+", label: "builds & experiments" },
         { val: "∞", label: "curiosity" },
     ];
 
@@ -440,12 +446,6 @@ export default function HomePage() {
                         <span className="accent">latent-space</span>
                         <span>·</span>
                         <span>hemz · enterprise-ai</span>
-                        {visitorCount != null && (
-                            <>
-                                <span>·</span>
-                                <span>◍ <AnimatedCounter value={visitorCount} /> views</span>
-                            </>
-                        )}
                     </motion.div>
 
                     <RisingName name={profile.name} />
@@ -471,7 +471,7 @@ export default function HomePage() {
                         transition={{ duration: 0.5, delay: 0.9 }}
                     >
                         <span className={`dot ${istStatus.color} animate-pulse-dot`} />
-                        <span>{istStatus.emoji} {istStatus.text}</span>
+                        <span>{istStatus.emoji} {istStatus.text} <span className="hero-status-tz">· IST</span></span>
                     </motion.div>
 
                     <motion.p
@@ -500,6 +500,16 @@ export default function HomePage() {
                             );
                             if (row.to) return <Link key={row.key} to={row.to} className="index-row">{inner}</Link>;
                             if (row.ext) return <a key={row.key} href={row.ext} target="_blank" rel="noopener noreferrer" className="index-row">{inner}</a>;
+                            if (row.anchor) return (
+                                <button
+                                    key={row.key}
+                                    type="button"
+                                    className="index-row"
+                                    onClick={() => document.getElementById(row.anchor)?.scrollIntoView({ behavior: "smooth" })}
+                                >
+                                    {inner}
+                                </button>
+                            );
                             return <div key={row.key} className="index-row">{inner}</div>;
                         })}
                     </motion.div>
@@ -508,7 +518,7 @@ export default function HomePage() {
 
             <div className="page-body">
                 {/* ===== About ===== */}
-                <motion.section className="sec" {...reveal}>
+                <motion.section id="about" className="sec" {...reveal}>
                     <Coord xy={["0.412", "−1.087"]} label="about" />
                     <div className="about-grid">
                         {profile.avatarUrl && (
