@@ -108,6 +108,7 @@ function RotatingText({ texts, interval = 3000 }) {
                     className="inline-block"
                 >
                     {texts[index]}
+                    <span className="caret" />
                 </motion.span>
             </AnimatePresence>
         </span>
@@ -459,9 +460,8 @@ export default function HomePage() {
                         {profile.taglines && profile.taglines.length > 0 ? (
                             <RotatingText texts={profile.taglines} interval={2800} />
                         ) : (
-                            profile.title
+                            <span>{profile.title}<span className="caret" /></span>
                         )}
-                        <span className="caret" />
                     </motion.div>
 
                     <motion.div
