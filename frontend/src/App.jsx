@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
 import { useTheme } from "next-themes";
-import { Routes, Route, NavLink, useLocation } from "react-router-dom";
+import { Routes, Route, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import "@/App.css";
@@ -122,8 +122,17 @@ const ROUTE_TITLES = {
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { hidden, scrolled } = useScrollDirection();
+
+  // Redirect old HashRouter-era links (/#/projects) to real paths
+  useEffect(() => {
+    if (window.location.hash.startsWith("#/")) {
+      navigate(window.location.hash.slice(1), { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
