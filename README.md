@@ -15,14 +15,14 @@ inferno heatmap ramp (violet → rose → ember).
 
 ## Tech Stack
 
-- **React 19** + React Router (HashRouter)
+- **React 19** + React Router (BrowserRouter with a GitHub Pages SPA fallback)
+- **Vite** — dev server & production build
 - **Tailwind CSS 3** + tailwindcss-animate
 - **Framer Motion** — page transitions, scroll animations, 3D tilt cards
 - **next-themes** — dark/light with View Transitions API circular reveal
 - **Lucide React** — icons
 - **Sonner** — toast notifications
-- **CRACO** — CRA config override
-- **gh-pages** — deployment to GitHub Pages
+- **gh-pages** via GitHub Actions — deployment
 - **Fonts:** Syne (display), Instrument Sans (body), IBM Plex Mono (data)
 
 ---
@@ -31,117 +31,88 @@ inferno heatmap ramp (violet → rose → ember).
 
 ```
 frontend/
+├── index.html                   # Vite entry — meta, OG tags, JSON-LD, SPA redirect decode
 ├── public/
-│   ├── index.html
+│   ├── 404.html                 # GitHub Pages SPA fallback redirect
+│   ├── favicon.svg + PNG icons  # Favicon, apple-touch, manifest icons
+│   ├── og.png                   # Social share card (1200×630)
+│   ├── manifest.webmanifest
+│   ├── robots.txt / sitemap.xml
 │   └── profile.png
 ├── src/
 │   ├── data/
-│   │   └── portfolio.js        # All content: profile, links, experience, education, skills, projects
+│   │   └── portfolio.js         # ALL content: profile, links, experience, education, skills, projects
 │   ├── pages/
-│   │   ├── HomePage.jsx         # Main page (profile, about, skills overview, connect, experience, education)
+│   │   ├── HomePage.jsx         # Hero, about, skills overview, experience, education, connect
 │   │   ├── ProjectsPage.jsx     # Projects grid
-│   │   └── SkillsPage.jsx       # Skills detail page (radar chart, animated bars, stats)
+│   │   └── SkillsPage.jsx       # Skills detail page
 │   ├── components/
 │   │   ├── LatentField.jsx      # 3D embedding-space hero (canvas, drag to orbit)
 │   │   ├── TiltCard.jsx         # Pointer-driven 3D tilt card with glare
+│   │   ├── ProjectCover.jsx     # Generated constellation art for image-less projects
 │   │   └── ui/                  # badge, separator, sonner (shadcn/ui)
-│   ├── lib/
-│   │   └── utils.js             # cn() helper
-│   ├── App.js                   # Root layout, topbar nav, theme toggle, routing
+│   ├── lib/utils.js             # cn() helper
+│   ├── App.jsx                  # Root layout, nav, theme toggle, routes, per-route titles
 │   ├── App.css                  # All custom styles
-│   ├── index.js                 # Entry point (ThemeProvider, HashRouter, Toaster)
-│   └── index.css                # Tailwind directives, CSS variables, fonts
-├── craco.config.js              # Webpack aliases, watchOptions
+│   ├── main.jsx                 # Entry (ThemeProvider, MotionConfig, BrowserRouter)
+│   └── index.css                # Tailwind directives, CSS variables
+├── vite.config.mjs
 ├── tailwind.config.js
-├── package.json
-└── postcss.config.js
+└── package.json
 ```
 
 ---
 
 ## Local Development
 
-### Prerequisites
-
-- **Node.js 18+** and **npm**
-
-### Setup
+Requires **Node.js 20+**.
 
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev        # http://localhost:3000
 ```
 
-The dev server runs at `http://localhost:3000`.
+### Content updates
 
-### Content Updates
-
-All portfolio content lives in **`src/data/portfolio.js`**:
-
-- `profile` — name, avatar, taglines, about paragraphs
-- `links` — GitHub, LinkedIn, Medium, email, resume URL
-- `experience` — work history entries
-- `education` — degrees and certifications
-- `skills` — categorized skills with proficiency levels
-- `projects` — project cards with tags, links, descriptions
-
-Edit that single file to update any content. No other files need to change for content-only updates.
+All portfolio content lives in **`src/data/portfolio.js`** — see
+[`docs/GUIDE.md`](docs/GUIDE.md) for a field-by-field walkthrough
+(including how the resume button, project GitHub links, and generated
+cover art behave).
 
 ---
 
-## Deployment to GitHub Pages
+## Deployment
 
-### First-time setup
+Pushing to `master` runs the **Deploy to GitHub Pages** workflow
+(`.github/workflows/deploy.yml`), which builds with Vite and publishes
+`frontend/dist` to the `gh-pages` branch. GitHub Pages serves that
+branch at <https://hemachandrand.github.io>.
 
-1. Make sure `package.json` has:
-
-   ```json
-   "homepage": "https://hemachandrand.github.io",
-   "scripts": {
-     "predeploy": "npm run build",
-     "deploy": "gh-pages -d build"
-   }
-   ```
-
-2. `gh-pages` is already a dev dependency.
-
-### Deploy after making changes
+Manual fallback:
 
 ```bash
 cd frontend
-npm run deploy
+npm run deploy     # build + push dist/ to gh-pages
 ```
 
-This will:
-
-1. Build an optimized production bundle (`npm run build` via `predeploy`)
-2. Push the `build/` folder to the `gh-pages` branch
-3. GitHub Pages serves it at **<https://hemachandrand.github.io>**
-
-### GitHub repo settings
-
-Go to **Settings → Pages** and ensure:
-
-- **Source:** Deploy from a branch
-- **Branch:** `gh-pages` / `/ (root)`
-
-Changes typically go live within 1–2 minutes after deploy.
+Repo settings: **Settings → Pages → Source: Deploy from a branch →
+`gh-pages` / `/ (root)`**.
 
 ---
 
 ## Key Features
 
-- **Latent Field Hero** — interactive 3D embedding of real skill domains: drag to orbit, pointer parallax, deterministic layout (seeded PRNG), pauses off-screen, respects reduced motion
+- **Latent Field Hero** — interactive 3D embedding of real skill domains: drag to orbit, pointer parallax, deterministic layout (seeded PRNG), pauses off-screen, respects reduced motion, dims to an ambient layer on small screens
 - **Full-bleed Name Lockup** — each line of the name is measured against the loaded display font and sized to span the column exactly on any viewport
 - **Career Trace** — experience plotted as spans on a shared timeline, observability-style
 - **3D Tilt Cards** — spring-smoothed pointer tilt with glare sweep on project cards (hover devices only)
+- **Generated Project Covers** — deterministic constellation art for projects without screenshots
 - **Theme Toggle** — dark/light with circular mask reveal animation (View Transitions API)
-- **IST Status** — live status indicator with time-aware messages (work hours, evening, sleep, weekend gaming)
-- **Visitor Counter** — global count via counterapi.dev with session dedupe
-- **Contact Modal** — sends via FormSubmit.co with mailto: fallback
-- **Skills Page** — inferno-ramp confidence bars, category filter tabs, animated counters
-- **Rotating Taglines** — animated text cycling through taglines
+- **IST Status** — live status indicator with time-aware messages
+- **Contact Modal** — FormSubmit.co with mailto: fallback, focus-trapped, Escape to close, honeypot spam filter
+- **Accessibility** — `prefers-reduced-motion` respected end to end (Framer `MotionConfig`, canvas auto-orbit, tagline rotation), focus-visible outlines, SR-safe rotating text
+- **SEO & Sharing** — real URLs per page, per-route titles, OG/Twitter cards, JSON-LD, sitemap
 - **Responsive** — mobile-first, works on all screen sizes
 
 ---

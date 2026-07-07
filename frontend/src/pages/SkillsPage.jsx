@@ -1,35 +1,12 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { skills, profile } from "../data/portfolio";
+import { skills, profile, yearsOfExperience } from "../data/portfolio";
 
-// Animated number counter using requestAnimationFrame
-function AnimatedNumber({ value, duration = 1.5 }) {
-    const [displayed, setDisplayed] = useState(0);
-    const started = useRef(false);
-
-    return (
-        <motion.span
-            className="tabular-nums"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            onViewportEnter={() => {
-                if (started.current) return;
-                started.current = true;
-                const dur = duration * 1000;
-                const t0 = performance.now();
-                const tick = (now) => {
-                    const p = Math.min((now - t0) / dur, 1);
-                    const eased = 1 - Math.pow(1 - p, 3);
-                    setDisplayed(Math.round(eased * value));
-                    if (p < 1) requestAnimationFrame(tick);
-                };
-                requestAnimationFrame(tick);
-            }}
-        >
-            {displayed}
-        </motion.span>
-    );
+// Confidence levels read as tiers, not fake-precise percentages
+function tierOf(level) {
+    if (level >= 90) return "expert";
+    if (level >= 85) return "daily driver";
+    return "proficient";
 }
 
 // Confidence distribution across core domains — reads like a probability readout
@@ -85,7 +62,7 @@ function SkillGauge({ skill, index, catIndex }) {
             <div className="gauge-head">
                 <span className="gauge-name">{skill.name}</span>
                 <span className="gauge-val" style={{ color: skill.color }}>
-                    <AnimatedNumber value={skill.level} duration={1 + delay} />%
+                    {tierOf(skill.level)}
                 </span>
             </div>
             <div className="gauge-track">
@@ -123,7 +100,7 @@ export default function SkillsPage() {
                 </div>
                 <h1 className="page-title">Skill-space readout</h1>
                 <p className="page-intro">
-                    Seven-plus years of signal, plotted honestly. The numbers are confidence,
+                    {yearsOfExperience} years of signal, plotted honestly. The readouts are confidence,
                     not ego — they move as I learn.
                 </p>
             </motion.div>
@@ -215,9 +192,9 @@ export default function SkillsPage() {
                 className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3"
             >
                 {[
-                    { label: "years in production", value: "7+" },
-                    { label: "projects shipped", value: "25+" },
-                    { label: "certifications", value: "5+" },
+                    { label: "years in production", value: `${yearsOfExperience}+` },
+                    { label: "builds & experiments", value: "25+" },
+                    { label: "industries served", value: "3" },
                     { label: "tools in rotation", value: "30+" },
                 ].map((stat, i) => (
                     <motion.div
