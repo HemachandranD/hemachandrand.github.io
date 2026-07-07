@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider } from 'next-themes';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import './index.css';
 import App from './App';
@@ -14,10 +14,10 @@ root.render(
       {/* reducedMotion="user" makes every Framer animation respect the
           OS-level prefers-reduced-motion setting */}
       <MotionConfig reducedMotion="user">
-        <HashRouter>
+        <BrowserRouter>
           <App />
           <Toaster position="top-right" />
-        </HashRouter>
+        </BrowserRouter>
       </MotionConfig>
     </ThemeProvider>
   </React.StrictMode>

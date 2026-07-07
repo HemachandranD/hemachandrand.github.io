@@ -114,6 +114,12 @@ function useScrollDirection() {
   return { hidden, scrolled };
 }
 
+const BASE_TITLE = "Hemachandran Dhinakaran — Enterprise AI Engineer";
+const ROUTE_TITLES = {
+  "/projects": `Projects · ${BASE_TITLE}`,
+  "/skills": `Skills · ${BASE_TITLE}`,
+};
+
 function App() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -122,6 +128,7 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setMobileMenuOpen(false);
+    document.title = ROUTE_TITLES[location.pathname] ?? BASE_TITLE;
   }, [location.pathname]);
 
   return (
