@@ -141,6 +141,20 @@ export const skills = [
 
 export const projects = [
     {
+        id: 9,
+        title: "NotionWiki",
+        subtitle: "A Notion Wiki Your AI Assistant Can Understand",
+        date: "2026",
+        description:
+            "An open-source CLI that turns a Notion workspace into a flat, indexed markdown wiki an AI assistant can actually reason over — mirroring pages into immutable raw sources, layering agent-curated synthesis on top, and syncing on an OS-native schedule with a force-directed graph view.",
+        tags: ["AI Assistants", "Notion API", "Python", "CLI"],
+        image: null,
+        liveUrl: null,
+        githubUrl: "https://github.com/HemachandranD/notionwiki",
+        mediumUrl:
+            "https://hemz.medium.com/notionwiki-a-notion-workspace-wiki-your-ai-assistant-can-understand-5a822ce0cdc4",
+    },
+    {
         id: 8,
         title: "Observent",
         subtitle: "Claude Code Plugin for AI Observability",
