@@ -4,8 +4,8 @@
 
 body {
   margin: 0;
-  font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+  font-family: var(--font-sans);
+  letter-spacing: -0.011em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "rlig" 1, "calt" 1;
@@ -13,15 +13,20 @@ body {
 
 code,
 .font-mono {
-  font-family: 'IBM Plex Mono', 'JetBrains Mono', source-code-pro, Menlo,
-    Monaco, Consolas, "Courier New", monospace;
+  font-family: var(--font-mono);
 }
 
 @layer base {
 
-  /* ===== Light — "lab paper" ===== */
+  /* ===== Light — "morning glass" ===== */
   :root {
-    --background: 222 30% 97%;
+    /* Apple's system faces where available (SF Pro / SF Mono on Apple
+       devices), Inter + JetBrains Mono everywhere else */
+    --font-sans: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+    --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+
+    --background: 228 33% 95%;
     --foreground: 228 25% 10%;
     --card: 0 0% 100%;
     --card-foreground: 228 25% 10%;
@@ -43,7 +48,7 @@ code,
     --radius: 0.75rem;
 
     /* Inferno ramp — ember / rose / violet */
-    --signal: 33 95% 42%;
+    --signal: 28 96% 44%;
     --signal-foreground: 0 0% 100%;
     --trace: 345 72% 50%;
     --tertiary: 258 70% 56%;
@@ -53,11 +58,23 @@ code,
     --chart-3: 258 70% 56%;
     --chart-4: 18 90% 55%;
     --chart-5: 45 95% 50%;
+
+    /* Liquid glass */
+    --glass-tint: 0 0% 100%;
+    --glass-alpha: 0.46;
+    --glass-alpha-strong: 0.72;
+    --specular: 0 0% 100%;
+    --rim-top: 0.95;
+    --rim-bottom: 0.55;
+    --rim-edge: 0.55;
+    --shadow: 228 40% 25%;
+    --shadow-a: 0.16;
+    --chip: 228 25% 10%;
   }
 
   /* ===== Dark — "deep ink" (the intended experience) ===== */
   .dark {
-    --background: 228 26% 6%;
+    --background: 232 28% 5%;
     --foreground: 227 22% 93%;
     --card: 228 22% 8.5%;
     --card-foreground: 227 22% 93%;
@@ -88,6 +105,17 @@ code,
     --chart-3: 262 100% 70%;
     --chart-4: 18 100% 64%;
     --chart-5: 45 100% 67%;
+
+    --glass-tint: 230 24% 14%;
+    --glass-alpha: 0.34;
+    --glass-alpha-strong: 0.66;
+    --specular: 0 0% 100%;
+    --rim-top: 0.32;
+    --rim-bottom: 0.1;
+    --rim-edge: 0.14;
+    --shadow: 232 60% 2%;
+    --shadow-a: 0.5;
+    --chip: 0 0% 100%;
   }
 }
 
@@ -102,7 +130,6 @@ code,
 
   :focus-visible {
     outline: 2px solid hsl(var(--signal));
-    outline-offset: 2px;
-    border-radius: 3px;
+    outline-offset: 3px;
   }
 }

@@ -16,14 +16,25 @@ function mulberry32(seed) {
     };
 }
 
-// Skill domains as clusters, colored along the inferno ramp
+// Skill domains as clusters (the skills page's core areas + the rest of
+// the stack), colored along the inferno ramp. Core areas are larger.
 const CLUSTERS = [
-    { label: "agents", center: [0.95, 0.30, 0.10], n: 26, spread: 0.34, color: [255, 178, 36] },
-    { label: "llm-ops", center: [-0.85, 0.55, -0.30], n: 22, spread: 0.30, color: [240, 82, 124] },
-    { label: "rag", center: [0.15, -0.80, 0.75], n: 20, spread: 0.28, color: [255, 120, 71] },
-    { label: "ml", center: [-0.55, -0.50, 0.55], n: 22, spread: 0.32, color: [178, 102, 255] },
-    { label: "cloud", center: [0.55, 0.90, -0.65], n: 18, spread: 0.30, color: [255, 209, 102] },
-    { label: "observability", center: [-0.20, 0.05, -1.00], n: 20, spread: 0.28, color: [214, 84, 200] },
+    { label: "agents", center: [0.95, 0.30, 0.10], n: 26, spread: 0.32, color: [255, 178, 36] },
+    { label: "observability", center: [-0.20, 0.05, -1.00], n: 24, spread: 0.30, color: [214, 84, 200] },
+    { label: "mlops", center: [-0.85, 0.55, -0.30], n: 24, spread: 0.30, color: [240, 82, 124] },
+    { label: "rag", center: [0.15, -0.80, 0.75], n: 18, spread: 0.26, color: [255, 120, 71] },
+    { label: "llms", center: [0.75, -0.55, -0.55], n: 18, spread: 0.26, color: [255, 140, 170] },
+    { label: "ml", center: [-0.55, -0.50, 0.55], n: 18, spread: 0.28, color: [178, 102, 255] },
+    { label: "vision·audio", center: [-1.05, -0.45, -0.55], n: 14, spread: 0.24, color: [130, 120, 255] },
+    { label: "data", center: [-0.10, 0.85, 0.70], n: 16, spread: 0.26, color: [255, 150, 90] },
+    { label: "cloud", center: [0.55, 0.90, -0.65], n: 16, spread: 0.26, color: [255, 209, 102] },
+];
+
+// Related domains get a faint dashed bridge between their closest points
+const BRIDGES = [
+    ["agents", "rag"], ["agents", "llms"], ["agents", "observability"],
+    ["observability", "mlops"], ["mlops", "cloud"], ["mlops", "ml"],
+    ["ml", "vision·audio"], ["ml", "data"], ["data", "rag"], ["llms", "ml"],
 ];
 
 function buildUniverse() {
@@ -74,7 +85,7 @@ function buildUniverse() {
 
     // Ambient dust for depth
     const dust = [];
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0; i < 120; i++) {
         dust.push({
             x: (rand() - 0.5) * 4.2,
             y: (rand() - 0.5) * 3.4,
@@ -83,11 +94,26 @@ function buildUniverse() {
         });
     }
 
-    return { points, edges: uniqueEdges, dust };
+    // Bridges: the closest pair of points between two related clusters
+    const byLabel = Object.fromEntries(CLUSTERS.map((c, ci) => [c.label, ci]));
+    const bridges = BRIDGES.map(([la, lb]) => {
+        const A = byLabel[la], B = byLabel[lb];
+        let best = null;
+        points.forEach((p, i) => {
+            if (p.ci !== A) return;
+            points.forEach((q, j) => {
+                if (q.ci !== B) return;
+                const d = (p.x - q.x) ** 2 + (p.y - q.y) ** 2 + (p.z - q.z) ** 2;
+                if (!best || d < best.d) best = { i, j, d };
+            });
+        });
+        return [best.i, best.j];
+    });
+
+    return { points, edges: uniqueEdges, bridges, dust };
 }
 
 const UNIVERSE = buildUniverse();
-const AXIS_LEN = 1.35;
 
 export default function LatentField({ dark = true, className = "" }) {
     const canvasRef = useRef(null);
@@ -130,10 +156,10 @@ export default function LatentField({ dark = true, className = "" }) {
             let dy = y * cx - dz * sx;
             dz = y * sx + dz * cx;
             const D = 3.6;
-            const f = Math.min(W, H) * 0.66;
+            const f = Math.min(W, H) * (W > 900 ? 0.6 : 0.66);
             const s = f / (dz + D);
             // On wide screens the text sits left, so the field leans right
-            const centerX = W > 900 ? W * 0.62 : W * 0.5;
+            const centerX = W > 900 ? W * 0.7 : W * 0.5;
             return { X: centerX + dx * s, Y: H * 0.46 + dy * s, s, depth: dz };
         };
 
@@ -142,34 +168,7 @@ export default function LatentField({ dark = true, className = "" }) {
             ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
             ctx.clearRect(0, 0, W, H);
 
-            const inkAxis = isDark ? "255,255,255" : "20,23,34";
             const dustInk = isDark ? "200,205,225" : "40,45,64";
-
-            // ---- axes (the instrument frame) ----
-            ctx.lineWidth = 1;
-            const axes = [
-                [[-AXIS_LEN, 0, 0], [AXIS_LEN, 0, 0], "dim₀"],
-                [[0, -AXIS_LEN, 0], [0, AXIS_LEN, 0], "dim₁"],
-                [[0, 0, -AXIS_LEN], [0, 0, AXIS_LEN], "dim₂"],
-            ];
-            ctx.font = "10px 'IBM Plex Mono', monospace";
-            axes.forEach(([a, b, name]) => {
-                const A = project(...a), B = project(...b);
-                ctx.strokeStyle = `rgba(${inkAxis},${isDark ? 0.10 : 0.13})`;
-                ctx.beginPath();
-                ctx.moveTo(A.X, A.Y);
-                ctx.lineTo(B.X, B.Y);
-                ctx.stroke();
-                // ticks every 0.45 units
-                for (let t = -1; t <= 1; t += 0.45) {
-                    if (Math.abs(t) < 0.01) continue;
-                    const P = project(a[0] ? t : 0, a[1] ? t : 0, a[2] ? t : 0);
-                    ctx.fillStyle = `rgba(${inkAxis},${isDark ? 0.16 : 0.2})`;
-                    ctx.fillRect(P.X - 1, P.Y - 1, 2, 2);
-                }
-                ctx.fillStyle = `rgba(${inkAxis},${isDark ? 0.28 : 0.34})`;
-                ctx.fillText(name, B.X + 5, B.Y + 3);
-            });
 
             // ---- dust ----
             UNIVERSE.dust.forEach((p) => {
@@ -197,6 +196,25 @@ export default function LatentField({ dark = true, className = "" }) {
                 ctx.stroke();
             });
 
+            // ---- bridges between related domains ----
+            ctx.setLineDash([2, 5]);
+            UNIVERSE.bridges.forEach(([i, j]) => {
+                const A = proj[i], B = proj[j];
+                const [r1, g1, b1] = CLUSTERS[UNIVERSE.points[i].ci].color;
+                const [r2, g2, b2] = CLUSTERS[UNIVERSE.points[j].ci].color;
+                const depth = (A.depth + B.depth) * 0.5;
+                const a = Math.max(0.05, (isDark ? 0.26 : 0.32) - depth * 0.08);
+                const grad = ctx.createLinearGradient(A.X, A.Y, B.X, B.Y);
+                grad.addColorStop(0, `rgba(${r1},${g1},${b1},${a})`);
+                grad.addColorStop(1, `rgba(${r2},${g2},${b2},${a})`);
+                ctx.strokeStyle = grad;
+                ctx.beginPath();
+                ctx.moveTo(A.X, A.Y);
+                ctx.lineTo(B.X, B.Y);
+                ctx.stroke();
+            });
+            ctx.setLineDash([]);
+
             // ---- points (painter's order, far → near) ----
             const order = UNIVERSE.points
                 .map((p, i) => ({ i, depth: proj[i].depth }))
@@ -214,7 +232,7 @@ export default function LatentField({ dark = true, className = "" }) {
             });
 
             // ---- cluster labels ----
-            ctx.font = "500 10px 'IBM Plex Mono', monospace";
+            ctx.font = "500 10px ui-monospace, 'SF Mono', 'JetBrains Mono', monospace";
             CLUSTERS.forEach((c) => {
                 const P = project(c.center[0], c.center[1] + c.spread + 0.16, c.center[2]);
                 if (P.depth > 1.2) return; // fade out labels far behind

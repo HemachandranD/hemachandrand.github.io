@@ -4,12 +4,14 @@ Personal portfolio site for **Hemachandran Dhinakaran**, Enterprise AI Engineer.
 
 **Live:** [hemachandrand.github.io](https://hemachandrand.github.io)
 
-**Design concept — "Latent Space":** the site is styled as a navigable
-embedding space. The hero is a hand-rolled 3D point-cloud of real skill
-domains (drag to orbit — no WebGL library, just perspective projection on a
-2D canvas), sections are marked with mono coordinates, the career timeline
-renders like a distributed trace, and the accent palette follows the
-inferno heatmap ramp (violet → rose → ember).
+**Design concept — "Liquid Latent":** a navigable embedding space seen
+through Apple-style liquid glass. The hero is a hand-rolled 3D point-cloud
+of real skill domains (drag to orbit — no WebGL library, just perspective
+projection on a 2D canvas); every surface above it is translucent glass
+that blurs, saturates and — on Chromium — genuinely refracts what drifts
+behind it, lit by a specular rim that follows the pointer. The career
+timeline still renders like a distributed trace, and the light follows the
+inferno ramp (violet → rose → ember).
 
 ---
 
@@ -23,7 +25,7 @@ inferno heatmap ramp (violet → rose → ember).
 - **Lucide React** — icons
 - **Sonner** — toast notifications
 - **gh-pages** via GitHub Actions — deployment
-- **Fonts:** Syne (display), Instrument Sans (body), IBM Plex Mono (data)
+- **Fonts:** SF Pro / SF Mono on Apple devices, Inter / JetBrains Mono elsewhere
 
 ---
 
@@ -47,6 +49,10 @@ frontend/
 │   │   ├── ProjectsPage.jsx     # Projects grid
 │   │   └── SkillsPage.jsx       # Skills detail page
 │   ├── components/
+│   │   ├── LiquidGlass.jsx      # Refraction engine: generated displacement maps + SVG filters
+│   │   ├── Spotlight.jsx        # ⌘K / "/" command palette
+│   │   ├── DynamicIsland.jsx    # Live Eastern-time status capsule that morphs open
+│   │   ├── ContactModal.jsx     # Contact sheet (FormSubmit + mailto fallback)
 │   │   ├── LatentField.jsx      # 3D embedding-space hero (canvas, drag to orbit)
 │   │   ├── TiltCard.jsx         # Pointer-driven 3D tilt card with glare
 │   │   ├── ProjectCover.jsx     # Generated constellation art for image-less projects
@@ -103,13 +109,16 @@ Repo settings: **Settings → Pages → Source: Deploy from a branch →
 
 ## Key Features
 
+- **Liquid Glass** — one `.glass` material (pill / card / round families): backdrop blur + saturation, gradient specular rim, pointer-tracked sheen; on Chromium an SVG displacement map bends the backdrop at each edge like thick glass. Safari/Firefox get the frosted fallback; `prefers-reduced-transparency` gets solid surfaces
+- **Glass toolbar** — floating capsule with a sliding tab lens; becomes an iOS-style bottom tab bar on phones
+- **Spotlight** — ⌘K / Ctrl+K / "/" palette for pages, sections, projects, profiles and actions
+- **Dynamic Island** — live Eastern-time clock (EDT/EST) + status; hover or tap to expand, "Say hi" opens the contact sheet
 - **Latent Field Hero** — interactive 3D embedding of real skill domains: drag to orbit, pointer parallax, deterministic layout (seeded PRNG), pauses off-screen, respects reduced motion, dims to an ambient layer on small screens
 - **Full-bleed Name Lockup** — each line of the name is measured against the loaded display font and sized to span the column exactly on any viewport
 - **Career Trace** — experience plotted as spans on a shared timeline, observability-style
 - **3D Tilt Cards** — spring-smoothed pointer tilt with glare sweep on project cards (hover devices only)
 - **Generated Project Covers** — deterministic constellation art for projects without screenshots
-- **Theme Toggle** — dark/light with circular mask reveal animation (View Transitions API)
-- **IST Status** — live status indicator with time-aware messages
+- **Theme Toggle** — dark/light via the View Transitions API
 - **Contact Modal** — FormSubmit.co with mailto: fallback, focus-trapped, Escape to close, honeypot spam filter
 - **Accessibility** — `prefers-reduced-motion` respected end to end (Framer `MotionConfig`, canvas auto-orbit, tagline rotation), focus-visible outlines, SR-safe rotating text
 - **SEO & Sharing** — real URLs per page, per-route titles, OG/Twitter cards, JSON-LD, sitemap

@@ -25,7 +25,7 @@ export const profile = {
         "Making machines think, one prompt at a time",
     ],
     about: [
-        `I build the machinery behind production AI. ${yearsOfExperience}+ years of agentic systems, LLM observability platforms, and MLOps & LLMOps frameworks that hold up under enterprise load across CPG, retail, and healthcare.`,
+        `I build the machinery behind production AI. For ${yearsOfExperience}+ years I've shipped agentic AI systems, the observability platforms that make them trustworthy, and the MLOps & LLMOps frameworks that keep them running at enterprise scale across retail, healthcare, and CPG.`,
         "My favorite territory is the gap between a promising demo and a dependable product. That's where the hard problems live: evaluation, observability, guardrails, and the unglamorous engineering that turns a clever model into something a business can trust.",
         "Under it all is plain curiosity about the technology, and about how it reshapes the industries and people around it. It's what keeps me experimenting, writing, and shipping.",
     ],
@@ -99,45 +99,72 @@ export const education = [
     },
 ];
 
-// Skill colors follow the site's inferno ramp: violet → rose → orange → amber
+// What I build — the three areas of AI engineering I work in.
+// `icon` picks the card icon: "agents" | "observability" | "mlops".
 export const skills = [
     {
-        category: "AI & Agents",
-        icon: "◆",
-        items: [
-            { name: "Agentic AI & Multi-Agent Systems", level: 95, color: "#FFB224" },
-            { name: "Generative AI & Observability", level: 90, color: "#FF7847" },
-            { name: "LLM Fine-tuning & Prompt Engineering", level: 92, color: "#F0527C" },
-        ],
+        category: "Agentic Solutions",
+        icon: "agents",
+        summary: "Multi-agent systems that plan, use tools, and hold up in production, not just in the demo.",
+        items: ["LangChain", "LlamaIndex", "CrewAI", "MCP", "Bedrock AgentCore", "Tool use", "Multi-agent orchestration"],
     },
     {
-        category: "MLOps & Engineering",
-        icon: "◇",
-        items: [
-            { name: "LLMOps & MLOps", level: 90, color: "#FFB224" },
-            { name: "Machine Learning & Deep Learning", level: 93, color: "#B266FF" },
-            { name: "Python & Data Engineering", level: 92, color: "#FF7847" },
-        ],
+        category: "Observability Platforms",
+        icon: "observability",
+        summary: "Tracing, evaluation, and guardrails that make every step an agent takes visible and debuggable.",
+        items: ["OpenTelemetry", "Arize Phoenix", "Langfuse", "SigNoz", "LLM evaluation", "Guardrails"],
+    },
+    {
+        category: "MLOps & LLMOps",
+        icon: "mlops",
+        summary: "Paved roads from experiment to production: CI/CD, retraining, deployment, and drift monitoring.",
+        items: ["Databricks", "Azure ML", "Azure DevOps", "CI/CD", "Model versioning", "Evaluation gates", "Drift monitoring"],
+    },
+];
+
+// The rest of the AI engineering stack — smaller tiles on the skills page.
+// `icon`: "rag" | "llm" | "ml" | "perception" | "data" | "cloud".
+export const stackSkills = [
+    {
+        category: "RAG & Retrieval",
+        icon: "rag",
+        summary: "Retrieval pipelines that ground LLMs in private data, with memory and chat history.",
+        items: ["LangChain", "LlamaIndex", "Qdrant", "Pinecone", "FAISS", "Redis"],
+    },
+    {
+        category: "LLMs & Fine-tuning",
+        icon: "llm",
+        summary: "Choosing, prompting, and fine-tuning models to fit the task and the budget.",
+        items: ["Fine-tuning", "Prompt engineering", "Llama 3", "Claude", "Local LLMs"],
+    },
+    {
+        category: "ML & Deep Learning",
+        icon: "ml",
+        summary: "From classical models to deep nets, trained and shipped as real services.",
+        items: ["Classical ML", "Deep learning", "Transfer learning", "Random Forest"],
+    },
+    {
+        category: "Vision & Audio",
+        icon: "perception",
+        summary: "Models that see and listen: image recognition, transcription, and summarization.",
+        items: ["Image classification", "EfficientNetV2", "Speech-to-text", "Summarization", "Streamlit"],
+    },
+    {
+        category: "Data Engineering",
+        icon: "data",
+        summary: "Data-centric pipelines that feed models clean, trustworthy data at scale.",
+        items: ["Python", "Spark", "Databricks", "SQL", "Data pipelines"],
     },
     {
         category: "Cloud & DevOps",
-        icon: "▲",
-        items: [
-            { name: "Azure (AI Services, DevOps, ML)", level: 90, color: "#F0527C" },
-            { name: "AWS & GCP", level: 82, color: "#FFD166" },
-            { name: "CI/CD & Containerization", level: 88, color: "#B266FF" },
-        ],
-    },
-    {
-        category: "Frameworks & Tools",
-        icon: "●",
-        items: [
-            { name: "LangChain / LlamaIndex / CrewAI", level: 91, color: "#F0527C" },
-            { name: "Databricks & Spark", level: 89, color: "#FF7847" },
-            { name: "Vector DBs (Qdrant, Pinecone, FAISS)", level: 87, color: "#FFB224" },
-        ],
+        icon: "cloud",
+        summary: "Azure first, AWS and GCP when the problem calls for them, all automated.",
+        items: ["Azure AI Services", "AWS", "GCP", "Containers", "CI/CD"],
     },
 ];
+
+// Industries the work ships into
+export const industries = ["Retail", "Healthcare", "CPG"];
 
 export const projects = [
     {

@@ -14,7 +14,9 @@ frontend/src/data/portfolio.js
 | `links` | GitHub / LinkedIn / Medium / mail / resume buttons |
 | `experience` | The career trace on the homepage |
 | `education` | Foundations section |
-| `skills` | Skill domains on the homepage + skills page |
+| `skills` | The three expertise cards (homepage + skills page): title, summary, tools |
+| `stackSkills` | The "Across the AI stack" tiles on the skills page |
+| `industries` | The "Built for" strip on the skills page |
 | `projects` | Cards on the projects page |
 | `yearsOfExperience` | Derived from `CAREER_START` — never hardcode years elsewhere |
 

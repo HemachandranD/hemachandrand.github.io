@@ -7,7 +7,8 @@ import {
 } from "framer-motion";
 
 // ============================================================
-// TiltCard — pointer-driven 3D tilt with a light glare sweep.
+// TiltCard — pointer-driven 3D tilt with a specular light sweep,
+// like a pane of glass catching a light source as it turns.
 // Spring-smoothed so it feels physical, not jittery.
 // Disabled for touch-only devices and reduced-motion users.
 // ============================================================
@@ -27,7 +28,7 @@ export default function TiltCard({ children, className = "" }) {
     const sry = useSpring(ry, { stiffness: 260, damping: 22 });
     const sGlare = useSpring(glareOpacity, { stiffness: 200, damping: 30 });
 
-    const glare = useMotionTemplate`radial-gradient(340px circle at ${gx}% ${gy}%, hsl(var(--signal) / 0.10), transparent 65%)`;
+    const glare = useMotionTemplate`radial-gradient(420px circle at ${gx}% ${gy}%, hsl(var(--specular) / 0.16), transparent 60%)`;
 
     const interactive = () =>
         typeof window !== "undefined" &&

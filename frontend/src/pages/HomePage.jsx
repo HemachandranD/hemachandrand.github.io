@@ -1,55 +1,15 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Github, Linkedin, Mail, FileText, ExternalLink, X, Send, Loader2, ArrowUpRight } from "lucide-react";
+import { Github, Linkedin, Mail, FileText, ExternalLink, ArrowUpRight, ArrowRight } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MediumIcon from "../components/ui/MediumIcon";
 import LatentField from "../components/LatentField";
-import { Link } from "react-router-dom";
-import { toast } from "sonner";
+import DynamicIsland from "../components/DynamicIsland";
+import Footer from "../components/Footer";
+import ExpertiseCards from "../components/ExpertiseCards";
+import { useUI } from "../lib/ui";
 import { profile, links, experience, education, skills, projects, yearsOfExperience } from "../data/portfolio";
-
-// Dynamic IST status hook
-function useISTStatus() {
-    const [status, setStatus] = useState({ emoji: "", text: "", color: "" });
-
-    useEffect(() => {
-        const update = () => {
-            const now = new Date();
-            // IST = UTC + 5:30
-            const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-            const ist = new Date(utc + 5.5 * 3600000);
-            const hour = ist.getHours();
-            const day = ist.getDay(); // 0 = Sunday, 6 = Saturday
-            const isWeekend = day === 0 || day === 6;
-
-            if (isWeekend && hour >= 21) {
-                setStatus({ emoji: "🎮", text: "Weekend vibes — definitely not gaming... okay maybe a little", color: "bg-indigo-500" });
-            } else if (isWeekend && hour < 3) {
-                setStatus({ emoji: "🕹️", text: "One more match... said that 3 matches ago", color: "bg-indigo-500" });
-            } else if (hour >= 6 && hour < 9) {
-                setStatus({ emoji: "☕", text: "Brewing coffee & booting up", color: "bg-amber-400" });
-            } else if (hour >= 9 && hour < 12) {
-                setStatus({ emoji: "💻", text: "Deep in code — morning flow state", color: "bg-green-500" });
-            } else if (hour >= 12 && hour < 14) {
-                setStatus({ emoji: "🍜", text: "Refueling for the afternoon sprint", color: "bg-yellow-500" });
-            } else if (hour >= 14 && hour < 18) {
-                setStatus({ emoji: "🚀", text: "Shipping features & breaking builds", color: "bg-green-500" });
-            } else if (hour >= 18 && hour < 21) {
-                setStatus({ emoji: "🌙", text: "Evening experiments & side quests", color: "bg-purple-400" });
-            } else if (hour >= 21 && hour < 23) {
-                setStatus({ emoji: "📚", text: "Winding down — reading & reflecting", color: "bg-blue-400" });
-            } else {
-                setStatus({ emoji: "😴", text: "Recharging for tomorrow's builds", color: "bg-gray-400" });
-            }
-        };
-
-        update();
-        const interval = setInterval(update, 60000); // refresh every minute
-        return () => clearInterval(interval);
-    }, []);
-
-    return status;
-}
 
 // Rotating tagline. Holds still for reduced-motion users, and screen
 // readers get one static tagline instead of an announcement every cycle.
@@ -71,14 +31,13 @@ function RotatingText({ texts, interval = 3000 }) {
                 <AnimatePresence mode="wait">
                     <motion.span
                         key={index}
-                        initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+                        initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
                         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
+                        exit={{ opacity: 0, y: -12, filter: "blur(6px)" }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                         className="inline-block"
                     >
                         {texts[index]}
-                        <span className="caret" />
                     </motion.span>
                 </AnimatePresence>
             </span>
@@ -86,50 +45,44 @@ function RotatingText({ texts, interval = 3000 }) {
     );
 }
 
-// Coordinate eyebrow — every section is a location in the space
-function Coord({ xy, label }) {
+function Eyebrow({ label }) {
     return (
-        <div className="coord">
-            <span className="coord-xy">[ {xy[0]}, {xy[1]} ]</span>
-            <span className="coord-sep">·</span>
-            <span className="coord-label">{label}</span>
+        <div className="eyebrow-row">
+            <span className="eyebrow-label">{label}</span>
         </div>
     );
 }
 
-// Hero name — words rise out of clipped lines, each line sized to
-// span the full column exactly (Syne 800 is too wide to eyeball).
+// Hero name — words rise out of clipped lines; each line is scaled so
+// it spans the column (measured from the rendered text, so it's right
+// for whichever system font the visitor's device resolves).
+const NAME_MAX_PX = 124;
+
 function RisingName({ name }) {
     const words = useMemo(() => name.split(" "), [name]);
     const boxRef = useRef(null);
+    const wordRefs = useRef([]);
     const [sizes, setSizes] = useState([]);
 
-    useEffect(() => {
-        // The CSS clamp is a safe (smaller) fallback; once Syne is
-        // actually loaded, size each line from canvas metrics so it
-        // spans the column exactly.
-        const FONT = "800 100px Syne";
+    useLayoutEffect(() => {
         const fit = () => {
-            const el = boxRef.current;
-            if (!el || !document.fonts?.check?.(FONT)) return;
-            const w = el.clientWidth;
-            const ctx = document.createElement("canvas").getContext("2d");
-            ctx.font = `${FONT}, sans-serif`;
+            const box = boxRef.current;
+            if (!box) return;
+            const w = box.clientWidth;
             setSizes(
-                words.map((word) => {
-                    const m = ctx.measureText(word.toUpperCase()).width;
-                    return m > 0 ? Math.min((99 * w) / m, 150) : null;
+                wordRefs.current.map((el) => {
+                    if (!el) return null;
+                    const current = parseFloat(getComputedStyle(el).fontSize);
+                    const width = el.getBoundingClientRect().width;
+                    return width > 0 ? Math.min((current * w * 0.995) / width, NAME_MAX_PX) : null;
                 })
             );
         };
         fit();
-        document.fonts?.load?.(FONT).then(fit).catch(() => { });
-        document.fonts?.addEventListener?.("loadingdone", fit);
-        window.addEventListener("resize", fit);
-        return () => {
-            document.fonts?.removeEventListener?.("loadingdone", fit);
-            window.removeEventListener("resize", fit);
-        };
+        document.fonts?.ready?.then(fit).catch(() => { });
+        const ro = new ResizeObserver(fit);
+        ro.observe(boxRef.current);
+        return () => ro.disconnect();
     }, [words]);
 
     return (
@@ -142,10 +95,11 @@ function RisingName({ name }) {
                     style={sizes[i] ? { fontSize: `${sizes[i]}px` } : undefined}
                 >
                     <motion.span
-                        className="hero-name-word"
+                        ref={(el) => (wordRefs.current[i] = el)}
+                        className={`hero-name-word ${i === 1 ? "hero-name-accent" : ""}`}
                         initial={{ y: "112%" }}
                         animate={{ y: "0%" }}
-                        transition={{ duration: 0.85, delay: 0.25 + i * 0.14, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.9, delay: 0.2 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                     >
                         {word}
                     </motion.span>
@@ -155,12 +109,14 @@ function RisingName({ name }) {
     );
 }
 
-// Section reveal on scroll
+// Section reveal on scroll. No `filter` here on purpose: a leftover
+// filter on an ancestor would stop the glass inside from seeing the
+// page behind it (it becomes the backdrop root).
 const reveal = {
-    initial: { opacity: 0, y: 22, filter: "blur(6px)" },
-    whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
+    initial: { opacity: 0, y: 26 },
+    whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, margin: "-60px" },
-    transition: { duration: 0.55, ease: [0.23, 1, 0.32, 1] },
+    transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
 };
 
 // ===== Tenure timeline parsing =====
@@ -186,218 +142,26 @@ function parseSpan(period, nowDec) {
 // Trace span colors walk the inferno ramp, newest = hottest
 const SPAN_COLORS = ["#FFB224", "#F0527C", "#B266FF", "#FF7847"];
 
-// Contact Form Modal
-function ContactModal({ isOpen, onClose }) {
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-    const [sending, setSending] = useState(false);
-    const dialogRef = useRef(null);
-
-    // Escape closes, focus moves into the dialog and stays trapped there,
-    // and the page behind stops scrolling while it's open.
-    useEffect(() => {
-        if (!isOpen) return;
-        const opener = document.activeElement;
-        document.body.style.overflow = "hidden";
-        const focusables = () =>
-            dialogRef.current?.querySelectorAll(
-                'button, [href], input, textarea, [tabindex]:not([tabindex="-1"])'
-            ) ?? [];
-        // Focus the first field once the dialog is in the DOM
-        requestAnimationFrame(() => {
-            const first =
-                dialogRef.current?.querySelector("input:not([tabindex='-1']), textarea") ??
-                focusables()[0];
-            first?.focus();
-        });
-        const onKeyDown = (e) => {
-            if (e.key === "Escape") {
-                onClose();
-                return;
-            }
-            if (e.key !== "Tab") return;
-            const items = focusables();
-            if (items.length === 0) return;
-            const first = items[0];
-            const last = items[items.length - 1];
-            if (e.shiftKey && document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-            }
-        };
-        document.addEventListener("keydown", onKeyDown);
-        return () => {
-            document.removeEventListener("keydown", onKeyDown);
-            document.body.style.overflow = "";
-            opener?.focus?.();
-        };
-    }, [isOpen, onClose]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setSending(true);
-        try {
-            const response = await fetch('https://formsubmit.co/ajax/hema18deena@gmail.com', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    message: formData.message,
-                    _subject: `Portfolio Contact from ${formData.name}`,
-                    _captcha: 'false',
-                    _honey: formData.honey ?? '',
-                    _template: 'table',
-                }),
-            });
-
-            const data = await response.json().catch(() => null);
-
-            if (response.ok && data?.success !== 'false') {
-                toast.success("Message sent! Thanks for reaching out! 🚀");
-                setFormData({ name: '', email: '', message: '' });
-                onClose();
-            } else {
-                // FormSubmit might need email activation — fall back to mailto
-                const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
-                const body = encodeURIComponent(
-                    `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
-                );
-                window.open(`mailto:hema18deena@gmail.com?subject=${subject}&body=${body}`, '_blank');
-                toast.info("Opening your email client as a fallback...");
-                onClose();
-            }
-        } catch {
-            // Network error — fall back to mailto
-            const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
-            const body = encodeURIComponent(
-                `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
-            );
-            window.open(`mailto:hema18deena@gmail.com?subject=${subject}&body=${body}`, '_blank');
-            toast.info("Opening your email client as a fallback...");
-            onClose();
-        } finally {
-            setSending(false);
-        }
-    };
-
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.96, y: 18 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.96, y: 18 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-                    >
-                        <div
-                            ref={dialogRef}
-                            role="dialog"
-                            aria-modal="true"
-                            aria-label="Send a message"
-                            className="w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl overflow-hidden"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-border">
-                                <span className="eyebrow flex items-center gap-2">
-                                    <span className="dot dot-signal" /> Send a message
-                                </span>
-                                <button
-                                    onClick={onClose}
-                                    className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-muted transition-colors text-muted-foreground"
-                                    aria-label="Close"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
-                            </div>
-
-                            <div className="p-6">
-                                <p className="text-sm text-muted-foreground mb-5">It lands straight in my inbox — I'll get back to you soon.</p>
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    {/* Honeypot — bots fill it, FormSubmit drops those submissions */}
-                                    <input
-                                        type="text"
-                                        name="_honey"
-                                        value={formData.honey ?? ""}
-                                        onChange={(e) => setFormData({ ...formData, honey: e.target.value })}
-                                        className="hidden"
-                                        tabIndex={-1}
-                                        autoComplete="off"
-                                        aria-hidden="true"
-                                    />
-                                    <div>
-                                        <label className="eyebrow block mb-1.5" htmlFor="contact-name">Name</label>
-                                        <input
-                                            id="contact-name"
-                                            value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            placeholder="Your name"
-                                            required
-                                            className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-signal/40 transition-shadow"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="eyebrow block mb-1.5" htmlFor="contact-email">Email</label>
-                                        <input
-                                            id="contact-email"
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            placeholder="your@email.com"
-                                            required
-                                            className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-signal/40 transition-shadow"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="eyebrow block mb-1.5" htmlFor="contact-message">Message</label>
-                                        <textarea
-                                            id="contact-message"
-                                            value={formData.message}
-                                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                            placeholder="Tell me about your project..."
-                                            required
-                                            rows={4}
-                                            className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-signal/40 transition-shadow resize-none"
-                                        />
-                                    </div>
-                                    <button type="submit" disabled={sending} className="btn w-full">
-                                        {sending ? (
-                                            <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
-                                        ) : (
-                                            <><Send className="w-4 h-4" /> Send message</>
-                                        )}
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
-    );
-}
-
 export default function HomePage() {
-    const istStatus = useISTStatus();
-    const [contactOpen, setContactOpen] = useState(false);
+    const { openContact } = useUI();
     const { resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
     const isDark = !mounted || resolvedTheme !== "light";
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    // Spotlight can jump straight to a section, from any page. The jump
+    // is one-shot: clear it from history so Back/reload don't replay it.
+    useEffect(() => {
+        const id = location.state?.scrollTo;
+        if (!id) return;
+        const t = setTimeout(() => {
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            navigate(location.pathname, { replace: true, state: null });
+        }, 60);
+        return () => clearTimeout(t);
+    }, [location.key, location.state, location.pathname, navigate]);
 
     // Shared tenure timeline (earliest start → now)
     const tenure = useMemo(() => {
@@ -421,11 +185,10 @@ export default function HomePage() {
         };
     }, []);
 
-    const indexRows = [
-        { key: "About", val: `${yearsOfExperience}+ yrs · Enterprise AI`, to: null, ext: null, anchor: "about" },
-        { key: "Work", val: `${projects.length} featured projects`, to: "/projects", ext: null },
-        { key: "Skills", val: `${skills.length} domains`, to: "/skills", ext: null },
-        ...(links.medium ? [{ key: "Writing", val: "Medium", to: null, ext: links.medium }] : []),
+    const widgetRows = [
+        { key: "Work", val: `${projects.length} projects`, to: "/projects" },
+        { key: "Skills", val: `${skills.length} focus areas`, to: "/skills" },
+        ...(links.medium ? [{ key: "Writing", val: "on Medium", ext: links.medium }] : []),
     ];
 
     const stats = [
@@ -437,46 +200,82 @@ export default function HomePage() {
 
     return (
         <div className="home">
-            {/* ===== Hero — the latent field ===== */}
+            {/* ===== Hero — the latent field, seen through glass ===== */}
             <section className="hero">
                 <LatentField dark={isDark} className="hero-field" />
 
                 <div className="hero-content">
                     <motion.div
-                        className="hero-eyebrow"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{ opacity: 0, y: -10, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
+                        className="hero-island"
                     >
-                        <span className="accent">latent-space</span>
-                        <span>·</span>
-                        <span>hemz · enterprise-ai</span>
+                        <DynamicIsland />
                     </motion.div>
 
                     <RisingName name={profile.name} />
 
-                    <motion.div
-                        className="gen-line"
+                    <motion.p
+                        className="hero-tagline"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.7 }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
                     >
-                        <span className="prompt">▸</span>
                         {profile.taglines && profile.taglines.length > 0 ? (
                             <RotatingText texts={profile.taglines} interval={2800} />
                         ) : (
-                            <span>{profile.title}<span className="caret" /></span>
+                            profile.title
                         )}
-                    </motion.div>
+                    </motion.p>
 
                     <motion.div
-                        className="hero-status"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.9 }}
+                        className="hero-actions"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.75 }}
                     >
-                        <span className={`dot ${istStatus.color} animate-pulse-dot`} />
-                        <span>{istStatus.emoji} {istStatus.text} <span className="hero-status-tz">· IST</span></span>
+                        {links.mail && (
+                            <button type="button" onClick={openContact} className="btn btn-primary">
+                                <Mail className="w-4 h-4" /> Get in touch
+                            </button>
+                        )}
+                        <Link to="/projects" className="glass glass-pill btn btn-glass">
+                            See the work <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </motion.div>
+
+                    {/* Widget — the lookup table, as an iOS widget */}
+                    <motion.div
+                        className="glass glass-card widget"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.55, delay: 0.9 }}
+                    >
+                        <div className="widget-head">
+                            <span>Index</span>
+                            <button
+                                type="button"
+                                className="widget-about"
+                                onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
+                            >
+                                {yearsOfExperience}+ yrs · about me ↓
+                            </button>
+                        </div>
+                        {widgetRows.map((row) => {
+                            const inner = (
+                                <>
+                                    <span className="widget-key">{row.key}</span>
+                                    <span className="widget-val">{row.val}</span>
+                                    <ArrowUpRight className="widget-arrow" aria-hidden="true" />
+                                </>
+                            );
+                            return row.to ? (
+                                <Link key={row.key} to={row.to} className="widget-row">{inner}</Link>
+                            ) : (
+                                <a key={row.key} href={row.ext} target="_blank" rel="noopener noreferrer" className="widget-row">{inner}</a>
+                            );
+                        })}
                     </motion.div>
 
                     <motion.p
@@ -485,62 +284,31 @@ export default function HomePage() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.6, delay: 1.4 }}
                     >
-                        ↻ drag the field to orbit — every cluster is a real skill domain
+                        <span className="hint-desktop">drag the field to orbit · every cluster is a real skill domain</span>
+                        <span className="hint-touch">every glowing cluster is a real skill domain</span>
                     </motion.p>
-
-                    {/* Index strip */}
-                    <motion.div
-                        className="index-list"
-                        initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 1.05 }}
-                    >
-                        {indexRows.map((row) => {
-                            const inner = (
-                                <>
-                                    <span className="index-key">{row.key}</span>
-                                    <span className="index-val">{row.val}</span>
-                                    <span className="index-arrow">↗</span>
-                                </>
-                            );
-                            if (row.to) return <Link key={row.key} to={row.to} className="index-row">{inner}</Link>;
-                            if (row.ext) return <a key={row.key} href={row.ext} target="_blank" rel="noopener noreferrer" className="index-row">{inner}</a>;
-                            if (row.anchor) return (
-                                <button
-                                    key={row.key}
-                                    type="button"
-                                    className="index-row"
-                                    onClick={() => document.getElementById(row.anchor)?.scrollIntoView({ behavior: "smooth" })}
-                                >
-                                    {inner}
-                                </button>
-                            );
-                            return <div key={row.key} className="index-row">{inner}</div>;
-                        })}
-                    </motion.div>
                 </div>
             </section>
 
             <div className="page-body">
-                {/* ===== About ===== */}
+                {/* ===== About — bento ===== */}
                 <motion.section id="about" className="sec" {...reveal}>
-                    <Coord xy={["0.412", "−1.087"]} label="About" />
-                    <div className="about-grid">
+                    <Eyebrow label="About" />
+                    <h2 className="sec-h">Demos are easy. <span className="dim">Production is the point.</span></h2>
+                    <div className="bento">
                         {profile.avatarUrl && (
-                            <div className="about-photo">
+                            <figure className="glass glass-card bento-photo">
                                 <img src={profile.avatarUrl} alt={profile.name} loading="lazy" />
-                                <span className="about-photo-caption">Hemz · Human, not Synthetic</span>
-                            </div>
+                                <figcaption className="glass glass-pill photo-caption">Hemz · human, not synthetic</figcaption>
+                            </figure>
                         )}
-                        <div className="about-text">
+                        <div className="glass glass-card bento-text">
                             {profile.about.map((p, i) => (
                                 <p key={i} className="lead">{p}</p>
                             ))}
                         </div>
-                    </div>
-                    <div className="stat-strip">
                         {stats.map((s) => (
-                            <div key={s.label} className="stat-cell">
+                            <div key={s.label} className="glass glass-card bento-stat">
                                 <span className="stat-val">{s.val}</span>
                                 <span className="stat-label">{s.label}</span>
                             </div>
@@ -551,47 +319,34 @@ export default function HomePage() {
                 {/* ===== Skills preview ===== */}
                 {skills.length > 0 && (
                     <motion.section className="sec" {...reveal}>
-                        <Coord xy={["−0.958", "0.344"]} label="Skills" />
+                        <Eyebrow label="Skills" />
                         <div className="sec-head-row">
-                            <h2 className="sec-h">Domains &amp; tooling</h2>
-                            <Link to="/skills" className="view-all">
-                                view all <ArrowUpRight className="w-3 h-3" />
+                            <h2 className="sec-h">What I build</h2>
+                            <Link to="/skills" className="glass glass-pill view-all">
+                                View all <ArrowUpRight className="w-3.5 h-3.5" />
                             </Link>
                         </div>
-                        <div className="space-y-5">
-                            {skills.map((cat) => (
-                                <div key={cat.category}>
-                                    <span className="eyebrow flex items-center gap-1.5 mb-2.5">
-                                        <span className="cat-glyph">{cat.icon}</span> {cat.category}
-                                    </span>
-                                    <div className="flex flex-wrap gap-2">
-                                        {cat.items.map((s) => (
-                                            <span key={s.name} className="token-chip">{s.name}</span>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <ExpertiseCards />
                     </motion.section>
                 )}
 
                 {/* ===== Experience — the career trace ===== */}
                 {experience.length > 0 && (
-                    <motion.section className="sec" {...reveal}>
-                        <Coord xy={["−0.733", "0.291"]} label="Experience" />
+                    <motion.section id="experience" className="sec" {...reveal}>
+                        <Eyebrow label="Experience" />
                         <h2 className="sec-h">The career trace</h2>
-                        <div className="trace-meta">
-                            <span>career.run()</span>
-                            <span>{experience.length} spans · {tenure.tlStart} → now</span>
-                        </div>
-                        <div>
+                        <div className="glass glass-card trace">
+                            <div className="trace-meta">
+                                <span>career.run()</span>
+                                <span>{experience.length} spans · {tenure.tlStart} → now</span>
+                            </div>
                             {experience.map((exp, i) => (
-                                <div key={i} className="xp-row">
+                                <div key={exp.company} className="xp-row">
                                     <div className="xp-head">
                                         {exp.companyUrl ? (
                                             <a href={exp.companyUrl} target="_blank" rel="noopener noreferrer" className="xp-company">
                                                 {exp.company}
-                                                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                                                <ExternalLink className="w-3.5 h-3.5 xp-ext" />
                                             </a>
                                         ) : (
                                             <span className="xp-company">{exp.company}</span>
@@ -599,8 +354,8 @@ export default function HomePage() {
                                         <span className="xp-period">{exp.roles[0]?.period}</span>
                                     </div>
 
-                                    {exp.roles.map((role, j) => (
-                                        <div key={j}>
+                                    {exp.roles.map((role) => (
+                                        <div key={role.title}>
                                             <div className="xp-role">
                                                 {role.title}
                                                 {role.type && <span className="xp-type">{role.type}</span>}
@@ -615,6 +370,7 @@ export default function HomePage() {
                                             style={{
                                                 left: `${tenure.bars[i].left}%`,
                                                 background: SPAN_COLORS[i % SPAN_COLORS.length],
+                                                boxShadow: `0 0 14px ${SPAN_COLORS[i % SPAN_COLORS.length]}88`,
                                             }}
                                             initial={{ width: 0 }}
                                             whileInView={{ width: `${tenure.bars[i].width}%` }}
@@ -625,7 +381,7 @@ export default function HomePage() {
 
                                     {exp.tags && exp.tags.length > 0 && (
                                         <div className="flex flex-wrap gap-1.5 mt-3">
-                                            {exp.tags.map((tag) => <span key={tag} className="token-chip">{tag}</span>)}
+                                            {exp.tags.map((tag) => <span key={tag} className="chip chip-sm">{tag}</span>)}
                                         </div>
                                     )}
                                 </div>
@@ -640,24 +396,22 @@ export default function HomePage() {
 
                 {/* ===== Education ===== */}
                 {education.length > 0 && (
-                    <motion.section className="sec" {...reveal}>
-                        <Coord xy={["0.108", "0.966"]} label="Education" />
+                    <motion.section id="education" className="sec" {...reveal}>
+                        <Eyebrow label="Education" />
                         <h2 className="sec-h">Foundations</h2>
-                        <div>
-                            {education.map((edu, i) => (
-                                <div key={i} className="edu-row">
-                                    <div>
-                                        {edu.institutionUrl ? (
-                                            <a href={edu.institutionUrl} target="_blank" rel="noopener noreferrer" className="edu-inst">
-                                                {edu.institution}
-                                                <ExternalLink className="w-3 h-3 text-muted-foreground" />
-                                            </a>
-                                        ) : (
-                                            <span className="edu-inst">{edu.institution}</span>
-                                        )}
-                                        <div className="edu-degree">{edu.degree}</div>
-                                    </div>
+                        <div className="edu-grid">
+                            {education.map((edu) => (
+                                <div key={edu.institution} className="glass glass-card edu-tile">
                                     <span className="xp-period">{edu.period}</span>
+                                    {edu.institutionUrl ? (
+                                        <a href={edu.institutionUrl} target="_blank" rel="noopener noreferrer" className="edu-inst">
+                                            {edu.institution}
+                                            <ExternalLink className="w-3 h-3 xp-ext" />
+                                        </a>
+                                    ) : (
+                                        <span className="edu-inst">{edu.institution}</span>
+                                    )}
+                                    <div className="edu-degree">{edu.degree}</div>
                                 </div>
                             ))}
                         </div>
@@ -665,48 +419,46 @@ export default function HomePage() {
                 )}
 
                 {/* ===== Connect ===== */}
-                <motion.section className="sec" {...reveal}>
-                    <Coord xy={["−0.529", "−0.644"]} label="Connect" />
-                    <h2 className="sec-h">Let's build something real</h2>
-                    <p className="connect-note">
-                        Open to hard problems in agents, LLM systems, and everything it takes to run them in production.
-                    </p>
-                    <div className="flex flex-wrap gap-2.5">
-                        {links.mail && (
-                            <button onClick={() => setContactOpen(true)} className="btn">
-                                <Mail className="w-4 h-4" /> Send a message
-                            </button>
-                        )}
-                        {links.github && (
-                            <a href={links.github} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                                <Github className="w-4 h-4" /> GitHub
-                            </a>
-                        )}
-                        {links.linkedin && (
-                            <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                                <Linkedin className="w-4 h-4" /> LinkedIn
-                            </a>
-                        )}
-                        {links.medium && (
-                            <a href={links.medium} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                                <MediumIcon className="w-4 h-4" /> Medium
-                            </a>
-                        )}
-                        {links.resume && (
-                            <a href={links.resume} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                                <FileText className="w-4 h-4" /> Resume
-                            </a>
-                        )}
+                <motion.section id="connect" className="sec" {...reveal}>
+                    <div className="glass glass-card connect">
+                        <div className="connect-glow" aria-hidden="true" />
+                        <Eyebrow label="Connect" />
+                        <h2 className="connect-h">Let's build something real.</h2>
+                        <p className="connect-note">
+                            Open to hard problems in agents, LLM systems, and everything it takes to run them in production.
+                        </p>
+                        <div className="connect-actions">
+                            {links.mail && (
+                                <button type="button" onClick={openContact} className="btn btn-primary">
+                                    <Mail className="w-4 h-4" /> Send a message
+                                </button>
+                            )}
+                            {links.github && (
+                                <a href={links.github} target="_blank" rel="noopener noreferrer" className="glass glass-pill btn btn-glass">
+                                    <Github className="w-4 h-4" /> GitHub
+                                </a>
+                            )}
+                            {links.linkedin && (
+                                <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="glass glass-pill btn btn-glass">
+                                    <Linkedin className="w-4 h-4" /> LinkedIn
+                                </a>
+                            )}
+                            {links.medium && (
+                                <a href={links.medium} target="_blank" rel="noopener noreferrer" className="glass glass-pill btn btn-glass">
+                                    <MediumIcon className="w-4 h-4" /> Medium
+                                </a>
+                            )}
+                            {links.resume && (
+                                <a href={links.resume} target="_blank" rel="noopener noreferrer" className="glass glass-pill btn btn-glass">
+                                    <FileText className="w-4 h-4" /> Resume
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </motion.section>
 
-                {/* ===== Footer ===== */}
-                <footer className="site-footer">
-                    <p>© {new Date().getFullYear()} {profile.shortName || profile.name.split(" ")[0]} <span className="sep">·</span> mapped in latent space <span className="sep">·</span> caffeine → tokens ☕</p>
-                </footer>
+                <Footer />
             </div>
-
-            <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
         </div>
     );
 }

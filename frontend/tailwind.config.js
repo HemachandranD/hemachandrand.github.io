@@ -8,9 +8,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Syne', 'Instrument Sans', 'system-ui', 'sans-serif'],
-        sans: ['Instrument Sans', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['IBM Plex Mono', 'JetBrains Mono', 'monospace'],
+        display: ['var(--font-display)'],
+        sans: ['var(--font-sans)'],
+        mono: ['var(--font-mono)'],
       },
       borderRadius: {
         lg: 'var(--radius)',

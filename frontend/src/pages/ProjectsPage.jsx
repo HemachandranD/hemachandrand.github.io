@@ -1,26 +1,29 @@
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
-import { projects, profile } from "../data/portfolio";
+import { projects } from "../data/portfolio";
 import MediumIcon from "../components/ui/MediumIcon";
 import TiltCard from "../components/TiltCard";
 import ProjectCover from "../components/ProjectCover";
+import Footer from "../components/Footer";
 
 const container = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.07 } },
 };
 
+// No `filter` in these variants: it would cut the glass cards off from
+// the page behind them (see the note in HomePage)
 const item = {
-    hidden: { opacity: 0, y: 24, filter: "blur(5px)" },
-    show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] } },
+    hidden: { opacity: 0, y: 28, scale: 0.97 },
+    show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.55, ease: [0.23, 1, 0.32, 1] } },
 };
 
 function ProjectCard({ project, featured }) {
     return (
-        <TiltCard className={featured ? "proj-card proj-card-featured" : "proj-card"}>
+        <TiltCard className={featured ? "glass glass-card proj-card proj-card-featured" : "glass glass-card proj-card"}>
             <div className="proj-card-top">
                 <span className="proj-date">{project.date}</span>
-                {featured && <span className="proj-flag">latest</span>}
+                {featured && <span className="glass glass-pill proj-flag">latest</span>}
             </div>
 
             <div className="proj-img">
@@ -38,23 +41,23 @@ function ProjectCard({ project, featured }) {
 
             <div className="flex flex-wrap gap-1.5 mt-auto pt-4">
                 {project.tags.map((tag) => (
-                    <span key={tag} className="token-chip">{tag}</span>
+                    <span key={tag} className="chip chip-sm">{tag}</span>
                 ))}
             </div>
 
             <div className="proj-links">
                 {project.liveUrl && (
-                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="proj-link proj-link-primary">
+                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="glass glass-pill proj-link proj-link-primary">
                         <ExternalLink className="w-3.5 h-3.5" /> Live
                     </a>
                 )}
                 {project.githubUrl && (
-                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="proj-link">
+                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="glass glass-pill proj-link">
                         <Github className="w-3.5 h-3.5" /> GitHub
                     </a>
                 )}
                 {project.mediumUrl && (
-                    <a href={project.mediumUrl} target="_blank" rel="noopener noreferrer" className="proj-link">
+                    <a href={project.mediumUrl} target="_blank" rel="noopener noreferrer" className="glass glass-pill proj-link">
                         <MediumIcon className="w-3.5 h-3.5" /> Read the write-up
                     </a>
                 )}
@@ -73,10 +76,8 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.45 }}
                 className="mb-12"
             >
-                <div className="coord">
-                    <span className="coord-xy">[ 0.847, 0.312 ]</span>
-                    <span className="coord-sep">·</span>
-                    <span className="coord-label">Work · {String(projects.length).padStart(2, "0")} Entries</span>
+                <div className="eyebrow-row">
+                    <span className="eyebrow-label">Work · {String(projects.length).padStart(2, "0")} entries</span>
                 </div>
                 <h1 className="page-title">Selected work</h1>
                 <p className="page-intro">
@@ -98,9 +99,7 @@ export default function ProjectsPage() {
                 ))}
             </motion.div>
 
-            <footer className="site-footer">
-                <p>© {new Date().getFullYear()} {profile.shortName || profile.name.split(" ")[0]} <span className="sep">·</span> mapped in latent space <span className="sep">·</span> caffeine → tokens ☕</p>
-            </footer>
+            <Footer />
         </div>
     );
 }
