@@ -2,8 +2,19 @@ import localFont from "next/font/local";
 
 export { GeistSans } from "geist/font/sans";
 
-// Geist Mono only sets small labels, so it isn't preloaded: it never
-// competes with the page's first paint for bandwidth.
+// Editorial serif for display type (headlines, names, the model card).
+export const InstrumentSerif = localFont({
+  src: [
+    { path: "../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2", style: "normal", weight: "400" },
+    { path: "../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2", style: "italic", weight: "400" },
+  ],
+  variable: "--font-instrument-serif",
+  display: "swap",
+  fallback: ["ui-serif", "Georgia", "Cambria", "Times New Roman", "serif"],
+});
+
+// Geist Mono sets data and labels; it isn't preloaded so it never
+// competes with the first paint for bandwidth.
 export const GeistMono = localFont({
   src: "../../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2",
   variable: "--font-geist-mono",

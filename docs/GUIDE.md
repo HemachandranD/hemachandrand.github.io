@@ -11,23 +11,26 @@ src/data/portfolio.ts
 | Export | Drives |
 | --- | --- |
 | `site` | Site URL, default title and meta description |
-| `profile` | Name, title, rotating taglines, hero summary, about paragraphs, avatar, time zone for the status pill |
+| `profile` | Name, title, hero summary, about paragraphs, avatar, time zone for the status pill |
+| `nameTokens` / `roleTokens` | The hero headline, split into tokens: each has a probability `p` and runner-up `alts` shown in the token inspector |
+| `taglines` | Candidate taglines with `logit`s; the temperature sampler draws from `softmax(logit / T)`. Higher logit = more likely |
 | `email` | Contact form recipient, "Copy email" actions |
 | `links` | GitHub / LinkedIn / Medium / resume |
-| `experience` | The career trace on the home page |
-| `education` | Foundations section |
+| `experience` | The career waterfall on the home page |
+| `education` | "Pre-training" rows under the career waterfall |
 | `skills` | The three core expertise cards (home + skills page) |
 | `stackSkills` | "Everything underneath" tiles on the skills page |
-| `industries` | "Built for" strip and the industries stat |
-| `projectCategories` | Filter chips on the projects page |
+| `industries` | Model card domains and the "deployed in" strip |
+| `projectCategories` | Filter chips and embedding-map clusters on the projects page (cluster positions live in `src/components/inference/embedding-map.tsx`) |
 | `projects` | Project cards, command-menu entries, home "Recent builds" (first three) |
-| `toolbox` | The scrolling tool marquee |
 | `yearsOfExperience` | Derived from `CAREER_START`; never hardcode years elsewhere |
 
 Notes:
 
 - **Experience dates** use `"YYYY-MM"`; set `end: null` for the current role.
   Period labels and durations ("2 yrs 3 mos") are computed.
+- **Page sections** become spans in the header's trace bar when they carry
+  `data-span="name"` (and an `id` to jump to).
 - **Projects** are listed newest first. `id` must be unique and URL-safe; it's
   the anchor for `/projects/#<id>` links. Links are optional: set any of
   `liveUrl`, `githubUrl` (the project repo, not your profile) or `articleUrl`,

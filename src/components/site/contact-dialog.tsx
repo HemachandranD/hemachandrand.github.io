@@ -116,7 +116,8 @@ export function ContactDialog({
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl">Send a message</DialogTitle>
+          <p className="font-mono text-[11px] text-muted-foreground">tool · send_message(name, email, message)</p>
+          <DialogTitle className="font-serif text-4xl leading-none font-normal">Send a message</DialogTitle>
           <DialogDescription>
             It lands straight in my inbox. I usually reply within a day or two.
           </DialogDescription>
@@ -134,7 +135,9 @@ export function ContactDialog({
           />
 
           <div className="grid gap-2">
-            <Label htmlFor="contact-name">Name</Label>
+            <Label htmlFor="contact-name" className="font-mono text-xs font-normal">
+              name<span className="text-muted-foreground">: string</span>
+            </Label>
             <Input
               id="contact-name"
               name="name"
@@ -153,7 +156,9 @@ export function ContactDialog({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="contact-email">Email</Label>
+            <Label htmlFor="contact-email" className="font-mono text-xs font-normal">
+              email<span className="text-muted-foreground">: email</span>
+            </Label>
             <Input
               id="contact-email"
               name="email"
@@ -174,7 +179,9 @@ export function ContactDialog({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="contact-message">Message</Label>
+            <Label htmlFor="contact-message" className="font-mono text-xs font-normal">
+              message<span className="text-muted-foreground">: text</span>
+            </Label>
             <Textarea
               id="contact-message"
               name="message"

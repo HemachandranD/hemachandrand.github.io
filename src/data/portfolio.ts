@@ -20,26 +20,56 @@ export const yearsOfExperience = Math.floor(
 
 export const profile = {
   name: "Hemachandran Dhinakaran",
-  firstName: "Hemachandran",
-  lastName: "Dhinakaran",
   shortName: "Hemz",
   title: "Enterprise AI Engineer",
   avatarUrl: "/profile.webp",
   timeZone: "America/New_York",
-  taglines: [
-    "shipping agents that survive production.",
-    "watching every thought an agent has.",
-    "turning coffee into tokens since 2018.",
-    "making machines think, one prompt at a time.",
-  ],
-  summary:
-    "I build the machinery behind production AI: agentic systems, the observability that makes them trustworthy, and the MLOps & LLMOps that keep them running at enterprise scale.",
   about: [
     `For ${yearsOfExperience}+ years I've shipped agentic AI systems, the observability platforms that make them trustworthy, and the MLOps & LLMOps frameworks that keep them running at enterprise scale across retail, healthcare, and CPG.`,
     "My favorite territory is the gap between a promising demo and a dependable product. That's where the hard problems live: evaluation, observability, guardrails, and the unglamorous engineering that turns a clever model into something a business can trust.",
     "Under it all is plain curiosity about the technology, and about how it reshapes the industries and people around it. It's what keeps me experimenting, writing, and shipping.",
   ],
 };
+
+// ---------- Inference: the hero is rendered like model output ----------
+
+export type Token = {
+  text: string;
+  /** probability of this token (0–1) */
+  p: number;
+  /** runner-up tokens, most likely first */
+  alts: [string, number][];
+};
+
+// The name, tokenized BPE-style. Hover a token to inspect it.
+export const nameTokens: Token[][] = [
+  [
+    { text: "Hema", p: 0.97, alts: [["Hemz", 0.02], ["Hima", 0.006]] },
+    { text: "chandran", p: 0.94, alts: [["chander", 0.03], ["ch", 0.02]] },
+  ],
+  [
+    { text: "Dhina", p: 0.91, alts: [["Dina", 0.05], ["Dhana", 0.03]] },
+    { text: "karan", p: 0.96, alts: [["kar", 0.02], ["garan", 0.01]] },
+  ],
+];
+
+export const roleTokens: Token[] = [
+  { text: "Enterprise", p: 0.88, alts: [["Production", 0.07], ["Applied", 0.03]] },
+  { text: "AI", p: 0.99, alts: [["ML", 0.006], ["Agent", 0.002]] },
+  { text: "Engineer", p: 0.93, alts: [["Builder", 0.04], ["Plumber", 0.01]] },
+];
+
+// Candidate taglines with logits. The temperature slider reshapes the
+// softmax over these; "sample" draws one and streams it in.
+export const taglines: { text: string; logit: number }[] = [
+  { text: "shipping agents that survive production.", logit: 3.2 },
+  { text: "building the observability that makes agents trustworthy.", logit: 2.7 },
+  { text: "turning promising demos into dependable products.", logit: 2.4 },
+  { text: "watching every thought an agent has.", logit: 1.7 },
+  { text: "making machines think, one prompt at a time.", logit: 1.1 },
+  { text: "turning coffee into tokens since 2018.", logit: 0.5 },
+  { text: "arguing with LLMs so production doesn't have to.", logit: 0.1 },
+];
 
 export const email = "hema18deena@gmail.com";
 
@@ -348,32 +378,4 @@ export const projects: Project[] = [
     tags: ["NLP", "Speech-to-text", "Audio", "Python"],
     articleUrl: "https://www.linkedin.com/pulse/ask-audio-hemachandran-dhinakaran",
   },
-];
-
-// The toolbox marquee on the home and skills pages.
-export const toolbox = [
-  "Python",
-  "LangChain",
-  "LlamaIndex",
-  "CrewAI",
-  "MCP",
-  "Claude",
-  "Amazon Bedrock",
-  "OpenTelemetry",
-  "Arize Phoenix",
-  "Langfuse",
-  "SigNoz",
-  "Databricks",
-  "Spark",
-  "Azure ML",
-  "Azure DevOps",
-  "AWS",
-  "GCP",
-  "Qdrant",
-  "Pinecone",
-  "FAISS",
-  "Redis",
-  "Llama 3",
-  "EfficientNetV2",
-  "Streamlit",
 ];

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentType, SVGProps } from "react";
+import { useState, type CSSProperties, type ComponentType, type SVGProps } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
@@ -54,6 +54,18 @@ function filter(value: string, search: string, keywords: string[] = []) {
 }
 type Item = { label: string; icon: Icon; run: () => void; keywords?: string[]; hint?: string };
 
+/** Similarity score, drawn as a tiny bar + number. */
+function Score({ value }: { value: number }) {
+  return (
+    <span className="prob ml-auto flex items-center gap-2 font-mono text-[11px] text-muted-foreground" style={{ "--p": value } as CSSProperties}>
+      <span className="h-1 w-12 overflow-hidden rounded-full bg-muted" aria-hidden="true">
+        <span className="block h-full rounded-full bg-(--prob-color)" style={{ width: `${value * 100}%` }} />
+      </span>
+      <span className="tabular-nums">{value.toFixed(2).replace(/^0/, "")}</span>
+    </span>
+  );
+}
+
 export function CommandMenu({
   open,
   onOpenChange,
@@ -65,6 +77,7 @@ export function CommandMenu({
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const { openContact } = useUI();
+  const [search, setSearch] = useState("");
 
   // Same-page anchors are real hash changes (so the page can react to
   // them); anything else is a route change and Next scrolls to the hash.
@@ -133,6 +146,7 @@ export function CommandMenu({
   ];
 
   const select = (item: Item) => {
+    setSearch("");
     onOpenChange(false);
     // let the dialog close (and hand focus back) before acting
     requestAnimationFrame(() => item.run());
@@ -141,14 +155,22 @@ export function CommandMenu({
   return (
     <CommandDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={(next) => {
+        if (!next) setSearch("");
+        onOpenChange(next);
+      }}
       title="Search"
       description="Jump to a page, section or project, or run an action."
       className="top-[12vh] translate-y-0 sm:max-w-xl"
       showCloseButton={false}
       filter={filter}
     >
-      <CommandInput placeholder="Search pages, projects, actions…" />
+      <CommandInput
+        value={search}
+        onValueChange={setSearch}
+        placeholder="ask: observability, rag, contact, dark mode…"
+        className="font-mono text-[13px]"
+      />
       <CommandList className="max-h-[min(60vh,420px)]">
         <CommandEmpty>No results found.</CommandEmpty>
         {groups.map((group, i) => (
@@ -164,14 +186,18 @@ export function CommandMenu({
                 >
                   <item.icon />
                   <span className="truncate">{item.label}</span>
-                  {item.hint && <CommandShortcut className="tracking-normal">{item.hint}</CommandShortcut>}
+                  {search.trim() ? (
+                    <Score value={filter(`${group.heading} ${item.label}`, search, item.keywords)} />
+                  ) : (
+                    item.hint && <CommandShortcut className="tracking-normal">{item.hint}</CommandShortcut>
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>
           </div>
         ))}
       </CommandList>
-      <div className="flex items-center gap-4 border-t px-4 py-2.5 text-xs text-muted-foreground">
+      <div className="flex items-center gap-4 border-t px-4 py-2.5 font-mono text-[11px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <Kbd>↑</Kbd>
           <Kbd>↓</Kbd> navigate
@@ -179,7 +205,8 @@ export function CommandMenu({
         <span className="flex items-center gap-1">
           <Kbd>↵</Kbd> select
         </span>
-        <span className="ml-auto flex items-center gap-1">
+        <span className="ml-auto hidden sm:inline">{search.trim() ? "ranked by similarity" : "retrieval over this site"}</span>
+        <span className="flex items-center gap-1 max-sm:ml-auto">
           <Kbd>esc</Kbd> close
         </span>
       </div>

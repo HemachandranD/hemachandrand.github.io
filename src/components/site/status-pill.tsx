@@ -70,7 +70,7 @@ export function StatusPill({ className }: { className?: string }) {
           type="button"
           onClick={openContact}
           className={cn(
-            "inline-flex h-8 items-center gap-2 rounded-full border bg-background/60 px-3 text-xs font-medium backdrop-blur transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+            "inline-flex h-8 items-center gap-2 rounded-full border bg-background/60 px-3 font-mono text-[11px] backdrop-blur transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
             className,
           )}
         >

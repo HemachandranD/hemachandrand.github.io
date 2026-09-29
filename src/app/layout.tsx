@@ -3,12 +3,10 @@ import type { Metadata, Viewport } from "next";
 import { Providers } from "@/components/site/providers";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
-import { SiteDock } from "@/components/site/site-dock";
-import { ScrollProgress } from "@/components/magicui/scroll-progress";
 import { cn } from "@/lib/utils";
 import { experience, links, profile, site } from "@/data/portfolio";
 
-import { GeistMono, GeistSans } from "./fonts";
+import { GeistMono, GeistSans, InstrumentSerif } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -73,7 +71,7 @@ const legacyRedirect = `(function(l){if(l.hash.indexOf('#/')===0){var p=l.hash.s
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn(GeistSans.variable, GeistMono.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn(GeistSans.variable, GeistMono.variable, InstrumentSerif.variable)}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: legacyRedirect }} />
       </head>
@@ -85,13 +83,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           >
             Skip to content
           </a>
-          <ScrollProgress />
           <SiteHeader />
           <main id="main" tabIndex={-1} className="outline-none">
             {children}
           </main>
           <SiteFooter />
-          <SiteDock />
         </Providers>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>

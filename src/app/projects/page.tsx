@@ -14,16 +14,21 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 pt-14 pb-24 sm:px-6 sm:pt-20">
-      <div className="enter">
+    <div className="mx-auto max-w-6xl px-4 pt-14 pb-28 sm:px-6 sm:pt-20">
+      <section id="top" aria-labelledby="projects-title" className="enter">
         <SectionHeading
           as="h1"
+          id="projects-title"
           eyebrow={`Work · ${String(projects.length).padStart(2, "0")} entries`}
-          title="Selected work"
+          title={
+            <>
+              Selected <em>work.</em>
+            </>
+          }
           description="Things I've shipped, chasing one question: how do you make AI hold up outside the demo? Each card links to code or a write-up on how it was built."
           className="mb-10"
         />
-      </div>
+      </section>
       <ProjectsExplorer />
     </div>
   );
