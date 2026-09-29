@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
+  # Monthly rebuild keeps build-time figures (years of experience, role
+  # durations) current without a content change.
+  schedule:
+    - cron: "17 6 1 * *"
   workflow_dispatch:
 
 permissions:
@@ -16,24 +20,24 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        working-directory: frontend
         run: npm ci
 
-      - name: Build
-        working-directory: frontend
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (type-checks and statically exports to out/)
         run: npm run build
 
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/dist
+          publish_dir: ./out

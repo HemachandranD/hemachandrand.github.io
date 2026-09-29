@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://hemachandrand.github.io/sitemap.xml

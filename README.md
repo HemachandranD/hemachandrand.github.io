@@ -1,128 +1,106 @@
 # Hemachandran Dhinakaran — Portfolio
 
-Personal portfolio site for **Hemachandran Dhinakaran**, Enterprise AI Engineer.
+Personal site for **Hemachandran Dhinakaran**, Enterprise AI Engineer.
 
 **Live:** [hemachandrand.github.io](https://hemachandrand.github.io)
 
-**Design concept — "Liquid Latent":** a navigable embedding space seen
-through Apple-style liquid glass. The hero is a hand-rolled 3D point-cloud
-of real skill domains (drag to orbit — no WebGL library, just perspective
-projection on a 2D canvas); every surface above it is translucent glass
-that blurs, saturates and — on Chromium — genuinely refracts what drifts
-behind it, lit by a specular rim that follows the pointer. The career
-timeline still renders like a distributed trace, and the light follows the
-inferno ramp (violet → rose → ember).
+Every page is prerendered to static HTML at build time and served by GitHub
+Pages, so the first paint doesn't wait for JavaScript. Interactivity (command
+palette, contact sheet, theme switch, project filters) hydrates on top.
 
 ---
 
-## Tech Stack
+## Stack
 
-- **React 19** + React Router (BrowserRouter with a GitHub Pages SPA fallback)
-- **Vite** — dev server & production build
-- **Tailwind CSS 3** + tailwindcss-animate
-- **Framer Motion** — page transitions, scroll animations, 3D tilt cards
-- **next-themes** — dark/light with View Transitions API circular reveal
-- **Lucide React** — icons
-- **Sonner** — toast notifications
-- **gh-pages** via GitHub Actions — deployment
-- **Fonts:** SF Pro / SF Mono on Apple devices, Inter / JetBrains Mono elsewhere
+| Layer | Choice |
+| --- | --- |
+| Framework | **Next.js 16** (App Router, `output: "export"`, React Compiler) |
+| UI runtime | **React 19** |
+| Language | **TypeScript** (strict) |
+| Styling | **Tailwind CSS 4** + `tw-animate-css`, OKLCH design tokens |
+| Components | **shadcn/ui** (Radix primitives: Dialog, Tooltip, Command/cmdk, Sonner) |
+| Effects | **Magic UI** (Dock, BlurFade, MagicCard, BorderBeam, NumberTicker, WordRotate, Marquee, OrbitingCircles, FlickeringGrid, ScrollProgress) |
+| Animation | **Motion** (`motion/react`, loaded via `LazyMotion`) |
+| Theme | `next-themes`, circular reveal via the View Transitions API |
+| Icons / fonts | Lucide, Geist Sans & Geist Mono (self-hosted) |
+| Hosting | GitHub Actions → `gh-pages` branch → GitHub Pages |
+
+shadcn/ui and Magic UI components are copied into the repo (that's how both
+libraries are meant to be used), so they can be tuned: the Magic UI pieces here
+are adapted to respect `prefers-reduced-motion`, skip work when off-screen, and
+avoid re-rendering React on pointer movement.
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
-frontend/
-├── index.html                   # Vite entry — meta, OG tags, JSON-LD, SPA redirect decode
-├── public/
-│   ├── 404.html                 # GitHub Pages SPA fallback redirect
-│   ├── favicon.svg + PNG icons  # Favicon, apple-touch, manifest icons
-│   ├── og.png                   # Social share card (1200×630)
-│   ├── manifest.webmanifest
-│   ├── robots.txt / sitemap.xml
-│   └── profile.png
-├── src/
-│   ├── data/
-│   │   └── portfolio.js         # ALL content: profile, links, experience, education, skills, projects
-│   ├── pages/
-│   │   ├── HomePage.jsx         # Hero, about, skills overview, experience, education, connect
-│   │   ├── ProjectsPage.jsx     # Projects grid
-│   │   └── SkillsPage.jsx       # Skills detail page
-│   ├── components/
-│   │   ├── LiquidGlass.jsx      # Refraction engine: generated displacement maps + SVG filters
-│   │   ├── Spotlight.jsx        # ⌘K / "/" command palette
-│   │   ├── DynamicIsland.jsx    # Live Eastern-time status capsule that morphs open
-│   │   ├── ContactModal.jsx     # Contact sheet (FormSubmit + mailto fallback)
-│   │   ├── LatentField.jsx      # 3D embedding-space hero (canvas, drag to orbit)
-│   │   ├── TiltCard.jsx         # Pointer-driven 3D tilt card with glare
-│   │   ├── ProjectCover.jsx     # Generated constellation art for image-less projects
-│   │   └── ui/                  # badge, separator, sonner (shadcn/ui)
-│   ├── lib/utils.js             # cn() helper
-│   ├── App.jsx                  # Root layout, nav, theme toggle, routes, per-route titles
-│   ├── App.css                  # All custom styles
-│   ├── main.jsx                 # Entry (ThemeProvider, MotionConfig, BrowserRouter)
-│   └── index.css                # Tailwind directives, CSS variables
-├── vite.config.mjs
-├── tailwind.config.js
-└── package.json
+src/
+├── app/
+│   ├── layout.tsx          # <html>, metadata/SEO, JSON-LD, header/footer/dock
+│   ├── page.tsx            # Home: hero, stats, about, expertise, experience, work, contact
+│   ├── projects/page.tsx   # Projects (filterable)
+│   ├── skills/page.tsx     # Skills
+│   ├── not-found.tsx       # 404 (exported as 404.html)
+│   ├── sitemap.ts · robots.ts · manifest.ts
+│   ├── fonts.ts
+│   └── globals.css         # Tailwind, design tokens, keyframes
+├── components/
+│   ├── ui/                 # shadcn/ui primitives
+│   ├── magicui/            # Magic UI effects (adapted)
+│   ├── site/               # App shell: header, dock, footer, command menu, contact dialog, theme toggle
+│   └── *.tsx               # Project card & cover art, experience timeline, expertise grid…
+├── data/portfolio.ts       # ALL site content
+└── lib/                    # Small helpers
+public/                     # Static assets (favicon, OG image, avatar)
 ```
 
 ---
 
-## Local Development
+## Local development
 
-Requires **Node.js 20+**.
+Requires **Node.js 20.9+** (22 recommended).
 
 ```bash
-cd frontend
 npm install
 npm run dev        # http://localhost:3000
+npm run lint       # ESLint (Next.js + React Compiler rules)
+npm run typecheck  # TypeScript
+npm run build      # static export to out/
+npm run preview    # serve out/ locally
 ```
 
-### Content updates
+### Updating content
 
-All portfolio content lives in **`src/data/portfolio.js`** — see
-[`docs/GUIDE.md`](docs/GUIDE.md) for a field-by-field walkthrough
-(including how the resume button, project GitHub links, and generated
-cover art behave).
+Everything the site says lives in **`src/data/portfolio.ts`**. See
+[`docs/GUIDE.md`](docs/GUIDE.md) for a field-by-field walkthrough.
 
 ---
 
 ## Deployment
 
-Pushing to `master` runs the **Deploy to GitHub Pages** workflow
-(`.github/workflows/deploy.yml`), which builds with Vite and publishes
-`frontend/dist` to the `gh-pages` branch. GitHub Pages serves that
-branch at <https://hemachandrand.github.io>.
+Pushing to `master` runs **Deploy to GitHub Pages**
+(`.github/workflows/deploy.yml`): `npm ci` → lint → `next build` → publish
+`out/` to the `gh-pages` branch, which GitHub Pages serves. The workflow also
+runs on the 1st of every month so build-time figures (years of experience, role
+durations) stay current, and can be started by hand from the Actions tab.
 
-Manual fallback:
-
-```bash
-cd frontend
-npm run deploy     # build + push dist/ to gh-pages
-```
-
-Repo settings: **Settings → Pages → Source: Deploy from a branch →
-`gh-pages` / `/ (root)`**.
+Repo settings: **Settings → Pages → Source: Deploy from a branch → `gh-pages` / `/ (root)`**.
 
 ---
 
-## Key Features
+## Features
 
-- **Liquid Glass** — one `.glass` material (pill / card / round families): backdrop blur + saturation, gradient specular rim, pointer-tracked sheen; on Chromium an SVG displacement map bends the backdrop at each edge like thick glass. Safari/Firefox get the frosted fallback; `prefers-reduced-transparency` gets solid surfaces
-- **Glass toolbar** — floating capsule with a sliding tab lens; becomes an iOS-style bottom tab bar on phones
-- **Spotlight** — ⌘K / Ctrl+K / "/" palette for pages, sections, projects, profiles and actions
-- **Dynamic Island** — live Eastern-time clock (EDT/EST) + status; hover or tap to expand, "Say hi" opens the contact sheet
-- **Latent Field Hero** — interactive 3D embedding of real skill domains: drag to orbit, pointer parallax, deterministic layout (seeded PRNG), pauses off-screen, respects reduced motion, dims to an ambient layer on small screens
-- **Full-bleed Name Lockup** — each line of the name is measured against the loaded display font and sized to span the column exactly on any viewport
-- **Career Trace** — experience plotted as spans on a shared timeline, observability-style
-- **3D Tilt Cards** — spring-smoothed pointer tilt with glare sweep on project cards (hover devices only)
-- **Generated Project Covers** — deterministic constellation art for projects without screenshots
-- **Theme Toggle** — dark/light via the View Transitions API
-- **Contact Modal** — FormSubmit.co with mailto: fallback, focus-trapped, Escape to close, honeypot spam filter
-- **Accessibility** — `prefers-reduced-motion` respected end to end (Framer `MotionConfig`, canvas auto-orbit, tagline rotation), focus-visible outlines, SR-safe rotating text
-- **SEO & Sharing** — real URLs per page, per-route titles, OG/Twitter cards, JSON-LD, sitemap
-- **Responsive** — mobile-first, works on all screen sizes
+- **⌘K / Ctrl K / `/` command menu**: pages, sections, every project, profiles, and actions (message, copy email, switch theme)
+- **Contact sheet**: validated form posting to FormSubmit, with a mail-app fallback and a honeypot for bots
+- **Live status pill**: what I'm probably doing right now, by my local (Eastern) time
+- **Project explorer**: category filters and text search; `/projects/#<id>` deep links scroll to and highlight a card
+- **Career trace**: experience timeline with each role plotted on the whole career span
+- **Dock**: macOS-style magnification on hover (mouse only, never stuck on touch)
+- **Theme**: dark/light with a circular reveal, remembered per visitor
+- **Accessibility**: skip link, labelled controls, focus management in dialogs, correct heading order, reduced-motion support throughout
+- **SEO**: per-page titles and canonicals, Open Graph/Twitter cards, JSON-LD `Person`, sitemap, robots
+- **Legacy links**: old `/#/projects`-style URLs redirect to the real pages
 
 ---
 

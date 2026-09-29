@@ -1,0 +1,281 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand ramp — violet → rose → amber */
+  --color-brand-violet: var(--brand-violet);
+  --color-brand-rose: var(--brand-rose);
+  --color-brand-amber: var(--brand-amber);
+  --color-brand-ember: var(--brand-ember);
+
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+  --animate-shine: shine var(--duration) infinite linear;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+
+  @keyframes orbit {
+    0% {
+      transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px))
+        rotate(calc(var(--angle) * -1deg));
+    }
+    100% {
+      transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px))
+        rotate(calc((var(--angle) * -1deg) - 360deg));
+    }
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    to {
+      background-position: 0% 0%;
+    }
+  }
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.99 0.002 270);
+  --foreground: oklch(0.17 0.015 270);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.17 0.015 270);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.17 0.015 270);
+  --primary: oklch(0.2 0.015 270);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.96 0.004 270);
+  --secondary-foreground: oklch(0.22 0.015 270);
+  --muted: oklch(0.96 0.004 270);
+  --muted-foreground: oklch(0.47 0.015 270);
+  --accent: oklch(0.95 0.006 270);
+  --accent-foreground: oklch(0.2 0.015 270);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.91 0.006 270);
+  --input: oklch(0.9 0.006 270);
+  --ring: oklch(0.62 0.17 300);
+
+  --brand-violet: oklch(0.56 0.23 300);
+  --brand-rose: oklch(0.6 0.21 5);
+  --brand-amber: oklch(0.7 0.17 60);
+  --brand-ember: oklch(0.66 0.19 40);
+}
+
+.dark {
+  --background: oklch(0.155 0.012 270);
+  --foreground: oklch(0.96 0.005 270);
+  --card: oklch(0.19 0.013 270);
+  --card-foreground: oklch(0.96 0.005 270);
+  --popover: oklch(0.19 0.013 270);
+  --popover-foreground: oklch(0.96 0.005 270);
+  --primary: oklch(0.96 0.005 270);
+  --primary-foreground: oklch(0.19 0.013 270);
+  --secondary: oklch(0.25 0.014 270);
+  --secondary-foreground: oklch(0.96 0.005 270);
+  --muted: oklch(0.25 0.014 270);
+  --muted-foreground: oklch(0.72 0.012 270);
+  --accent: oklch(0.27 0.016 270);
+  --accent-foreground: oklch(0.96 0.005 270);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.7 0.17 300);
+
+  --brand-violet: oklch(0.7 0.2 300);
+  --brand-rose: oklch(0.7 0.19 5);
+  --brand-amber: oklch(0.83 0.16 75);
+  --brand-ember: oklch(0.74 0.17 45);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--brand-violet) 35%, transparent);
+  }
+
+  /* Anchored sections clear the sticky header */
+  [id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background-image: linear-gradient(
+      100deg,
+      var(--brand-violet),
+      var(--brand-rose) 45%,
+      var(--brand-amber)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-brand-gradient {
+    background-image: linear-gradient(
+      100deg,
+      var(--brand-violet),
+      var(--brand-rose) 50%,
+      var(--brand-amber)
+    );
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .mask-radial {
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Above-the-fold entrance: pure CSS, so it plays before (and without)
+   JavaScript and never holds back the largest contentful paint. */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+  }
+}
+
+.enter {
+  animation: enter 0.7s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Text variant: focuses in from a blur but is never fully transparent, so
+   the browser counts it as painted (largest contentful paint) at once. */
+@keyframes enter-text {
+  from {
+    opacity: 0.25;
+    transform: translateY(10px);
+    filter: blur(8px);
+  }
+}
+
+.enter-text {
+  animation: enter-text 0.8s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Magic UI BorderBeam, as a CSS offset-path animation */
+@keyframes border-beam {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+.border-beam {
+  offset-distance: 0%;
+  animation: border-beam 8s linear infinite;
+}
+
+/* A card reached through a link (#project-id) pulses once */
+@keyframes flash {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  15%,
+  65% {
+    box-shadow:
+      0 0 0 2px var(--background),
+      0 0 0 4px var(--ring);
+  }
+}
+
+.flash {
+  animation: flash 2.4s ease-out 1;
+}
+
+/* Theme switch: a circular reveal from the toggle (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
