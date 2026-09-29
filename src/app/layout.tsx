@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { cn } from "@/lib/utils";
 import { experience, links, profile, site } from "@/data/portfolio";
 
-import { GeistMono, GeistSans, InstrumentSerif } from "./fonts";
+import { GeistSans, InstrumentSerif, MartianMono } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -71,7 +71,7 @@ const legacyRedirect = `(function(l){if(l.hash.indexOf('#/')===0){var p=l.hash.s
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn(GeistSans.variable, GeistMono.variable, InstrumentSerif.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn(GeistSans.variable, MartianMono.variable, InstrumentSerif.variable)}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: legacyRedirect }} />
       </head>

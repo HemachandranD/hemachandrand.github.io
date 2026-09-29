@@ -41,7 +41,7 @@ on top, and everything degrades gracefully (the career spans use native
 | Effects | Magic UI BlurFade for scroll reveals |
 | Animation | **Motion** (`motion/react`, loaded via `LazyMotion`) |
 | Theme | `next-themes`, circular reveal via the View Transitions API |
-| Icons / fonts | Lucide; Instrument Serif (display), Geist Sans & Geist Mono, all self-hosted |
+| Icons / fonts | Lucide; Instrument Serif (display), Geist Sans (text), Martian Mono (data & labels), all self-hosted |
 | Hosting | GitHub Actions → `gh-pages` branch → GitHub Pages |
 
 shadcn/ui components are copied into the repo (that's how the library is

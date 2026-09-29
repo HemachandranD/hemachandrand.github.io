@@ -128,7 +128,7 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
           {status}
         </div>
 
-        <p className="enter mt-8 font-mono text-xs text-muted-foreground" style={{ "--d": "40ms" } as CSSProperties}>
+        <p className="enter mt-8 font-mono text-[10.5px] text-muted-foreground sm:text-xs" style={{ "--d": "40ms" } as CSSProperties}>
           <span className="text-brand-rose">{">"}</span> generate(prompt=<span className="text-foreground">&quot;who builds production AI?&quot;</span>)
         </p>
 
@@ -300,7 +300,7 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
             ))}
           </ol>
 
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-2 sm:gap-3">
             <label htmlFor="temperature" className="font-mono text-[11px] text-muted-foreground">
               T
             </label>
@@ -317,7 +317,7 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
                 if (/^Arrow|^Home$|^End$|^Page/.test(e.key)) sample(Number((e.target as HTMLInputElement).value));
               }}
               aria-valuetext={`temperature ${temperature.toFixed(2)}`}
-              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-[linear-gradient(90deg,var(--brand-amber),var(--brand-rose),var(--brand-violet))] accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-background [&::-moz-range-thumb]:bg-foreground [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-background [&::-webkit-slider-thumb]:bg-foreground [&::-webkit-slider-thumb]:shadow"
+              className="h-1.5 w-0 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-[linear-gradient(90deg,var(--brand-amber),var(--brand-rose),var(--brand-violet))] accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-background [&::-moz-range-thumb]:bg-foreground [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-background [&::-webkit-slider-thumb]:bg-foreground [&::-webkit-slider-thumb]:shadow"
             />
             <output htmlFor="temperature" className="w-9 text-right font-mono text-xs tabular-nums">
               {temperature.toFixed(2)}
@@ -325,7 +325,7 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
             <button
               type="button"
               onClick={() => sample()}
-              className="inline-flex h-8 items-center gap-1.5 rounded-full border bg-background px-3 font-mono text-xs transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+              className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border bg-background px-3 font-mono text-xs transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               <Dices className="size-3.5" aria-hidden="true" /> sample
             </button>
