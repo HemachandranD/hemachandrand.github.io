@@ -44,16 +44,14 @@ function subscribe(cb: () => void) {
 }
 
 // Dynamic Island: a black capsule with my avatar, what I'm up to and my
-// local time. Hover (or tap) and it morphs open. It floats over the page
-// rather than pushing it down, so opening never shifts the layout.
+// local time. Click (or tap) and it morphs open; it lives in the page flow,
+// so the content below glides down to make room instead of being covered.
+// It opens on click rather than hover so the page only moves when asked to.
 export function DynamicIsland({ className }: { className?: string }) {
   const snap = useSyncExternalStore(subscribe, readClock, () => null);
   const { openContact } = useUI();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  useEffect(() => () => clearTimeout(hoverTimer.current), []);
 
   // Close on outside press or Escape
   useEffect(() => {
@@ -70,37 +68,24 @@ export function DynamicIsland({ className }: { className?: string }) {
     };
   }, [open]);
 
-  // Mouse hover with a little intent, so grazing it doesn't make it flap
-  const onHover = (e: React.PointerEvent, next: boolean, delay: number) => {
-    if (e.pointerType !== "mouse") return;
-    clearTimeout(hoverTimer.current);
-    hoverTimer.current = setTimeout(() => setOpen(next), delay);
-  };
-
   const [time, hourStr, weekday] = snap ? snap.split("|") : [];
   const status = snap ? statusFor(Number(hourStr), weekday === "Sat" || weekday === "Sun") : null;
 
   return (
-    <div ref={rootRef} className={cn("relative z-30 h-10", className)}>
+    <div ref={rootRef} className={cn("relative", className)}>
       <div
         data-open={open || undefined}
-        onPointerEnter={(e) => onHover(e, true, 80)}
-        onPointerLeave={(e) => onHover(e, false, 220)}
         className={cn(
-          "island absolute top-0 left-0 overflow-hidden bg-[oklch(0.12_0.005_270)] text-white shadow-[0_10px_30px_-10px_rgb(0_0_0/0.6)] ring-1 ring-white/10",
-          open ? "w-[min(21rem,calc(100vw-2rem))] rounded-[26px]" : "w-auto rounded-[20px]",
+          "island overflow-hidden bg-[oklch(0.12_0.005_270)] text-white shadow-[0_10px_30px_-10px_rgb(0_0_0/0.6)] ring-1 ring-white/10",
+          open ? "w-[min(21rem,calc(100vw-2rem))] rounded-[26px]" : "w-fit rounded-[20px]",
         )}
       >
         <button
           type="button"
           aria-expanded={open}
           aria-controls="island-detail"
-          onClick={(e) => {
-            clearTimeout(hoverTimer.current);
-            // with a mouse, hover already opened it; a click keeps it open
-            setOpen((o) => (e.detail > 0 && window.matchMedia("(hover: hover)").matches ? true : !o));
-          }}
-          className="flex h-10 w-full items-center gap-2.5 rounded-[inherit] pr-4 pl-1 text-left whitespace-nowrap focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none focus-visible:ring-inset"
+          onClick={() => setOpen((o) => !o)}
+          className="group flex h-10 w-full items-center gap-2.5 rounded-[inherit] pr-4 pl-1 text-left whitespace-nowrap focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none focus-visible:ring-inset"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, pre-optimized webp */}
           <img
@@ -109,7 +94,7 @@ export function DynamicIsland({ className }: { className?: string }) {
             width={32}
             height={32}
             className={cn(
-              "island-avatar size-8 shrink-0 rounded-full bg-white/10 object-cover",
+              "island-avatar size-8 shrink-0 rounded-full bg-white/10 object-cover group-hover:scale-110",
               open && "scale-110",
             )}
           />

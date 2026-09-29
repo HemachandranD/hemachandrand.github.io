@@ -12,7 +12,7 @@ component is a piece of LLM/observability tooling turned into UI:
 | --- | --- |
 | Hero | Model output: the name is BPE-style tokens with confidence bars; an **inference console** shows each token's logprob and runner-up candidates, and a **temperature sampler** reshapes the softmax over taglines and streams a new one |
 | Header | A **trace bar**: every page section is a span on a timeline, with a playhead that follows the scroll |
-| About | A **model card** (architecture, training run, checkpoints, evals, limitations…) |
+| About | A **profile card**: current role, experience, focus, industries, previous roles, education |
 | Expertise | Three **attention heads** (previous-token, induction, attention-sink heatmaps) |
 | Experience | A **Jaeger-style waterfall**: roles as spans on a time axis, expandable into attributes |
 | Work | Projects in a 2D **embedding space**, clustered by domain and linked to the cards |
@@ -37,7 +37,7 @@ on top, and everything degrades gracefully (the career spans use native
 | Language | **TypeScript** (strict) |
 | Styling | **Tailwind CSS 4** + `tw-animate-css`, OKLCH design tokens |
 | Components | **shadcn/ui** (Radix primitives: Dialog, Tooltip, Command/cmdk, Sonner) |
-| Signature UI | Custom components in `src/components/inference/` (token stream, sampler, trace bar, waterfall, embedding map, attention heads, model card, architecture diagram) |
+| Signature UI | Custom components in `src/components/inference/` (token stream, sampler, trace bar, waterfall, embedding map, attention heads, profile card, architecture diagram) |
 | Effects | Magic UI BlurFade for scroll reveals |
 | Animation | **Motion** (`motion/react`, loaded via `LazyMotion`) |
 | Theme | `next-themes`, circular reveal via the View Transitions API |
@@ -116,7 +116,7 @@ Repo settings: **Settings → Pages → Source: Deploy from a branch → `gh-pag
 - **⌘K / Ctrl K / `/`**: retrieval over pages, sections, every project, profiles and actions (message, copy email, switch theme), ranked by similarity
 - **Embedding map**: hover a point to highlight its card (and vice versa), click a cluster to filter, click a point to jump to it; `/projects/#<id>` deep links scroll to and highlight a card
 - **Contact tool call**: validated form posting to FormSubmit, with a mail-app fallback and a honeypot for bots
-- **Dynamic Island**: a black capsule with my avatar, what I'm probably doing right now and my local time; hover or tap and it morphs open with a "Say hi" shortcut
+- **Dynamic Island**: a black capsule with my avatar, what I'm probably doing right now and my local time; click or tap and it morphs open (the page glides down to make room) with a "Say hi" shortcut
 - **Theme**: warm-paper light and ink dark, with a circular reveal, remembered per visitor
 - **Accessibility**: skip link, labelled controls, keyboard paths for every interaction, focus management in dialogs, correct heading order, reduced-motion support throughout (Lighthouse accessibility 100 on every page)
 - **SEO**: per-page titles and canonicals, Open Graph/Twitter cards, JSON-LD `Person`, sitemap, robots

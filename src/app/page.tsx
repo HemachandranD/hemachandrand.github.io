@@ -6,7 +6,7 @@ import { AttentionHeads } from "@/components/inference/attention-heads";
 import { CareerTrace } from "@/components/inference/career-trace";
 import { EmbeddingMap } from "@/components/inference/embedding-map";
 import { InferenceHero } from "@/components/inference/inference-hero";
-import { ModelCard } from "@/components/inference/model-card";
+import { ProfileCard } from "@/components/inference/profile-card";
 import { ToolCall } from "@/components/inference/tool-call";
 import { ProjectCard } from "@/components/project-card";
 import { SectionHeading } from "@/components/section-heading";
@@ -66,7 +66,7 @@ export default function HomePage() {
 
       <div className="mx-auto max-w-6xl space-y-28 px-4 pb-28 sm:space-y-36 sm:px-6">
         {/* ============ About ============ */}
-        <section id="about" data-span="model_card" aria-labelledby="about-title">
+        <section id="about" data-span="profile" aria-labelledby="about-title">
           <BlurFade inView>
             <SectionHeading
               index="01"
@@ -90,7 +90,7 @@ export default function HomePage() {
               </div>
             </BlurFade>
             <BlurFade inView delay={0.1}>
-              <ModelCard />
+              <ProfileCard />
             </BlurFade>
           </div>
         </section>

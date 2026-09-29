@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { ChevronLeft, ChevronRight, Dices } from "lucide-react";
 
 import { cn, r3 } from "@/lib/utils";
-import { nameTokens, profile, roleTokens, taglines, yearsOfExperience, type Token } from "@/data/portfolio";
+import { nameTokens, roleTokens, taglines, type Token } from "@/data/portfolio";
 
 // Every token in reading order, so the inspector can step through them.
 const ALL: Token[] = [...nameTokens.flat(), ...roleTokens];
@@ -124,8 +124,7 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
     <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-12">
       {/* ---------------- output ---------------- */}
       <div className="@container min-w-0" onPointerLeave={(e) => e.pointerType === "mouse" && setInspected(null)}>
-        {/* z-30 so the island, when open, floats over the lines below */}
-        <div className="enter relative z-30" style={{ "--d": "0ms" } as CSSProperties}>
+        <div className="enter" style={{ "--d": "0ms" } as CSSProperties}>
           {status}
         </div>
 
@@ -207,29 +206,6 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
           <span className="ml-2">inference console</span>
           <span className="ml-auto">hemz-v8 · fp16</span>
         </header>
-
-        {/* loaded model: the face behind the weights */}
-        <div className="flex items-center gap-4 border-b px-4 py-4">
-          {/* eslint-disable-next-line @next/next/no-img-element -- static export, pre-optimized webp */}
-          <img
-            src={profile.avatarUrl}
-            alt={`${profile.name}'s avatar`}
-            width={64}
-            height={64}
-            className="size-16 shrink-0 rounded-2xl border bg-muted object-cover"
-          />
-          <div className="min-w-0 font-mono text-[11px] leading-relaxed text-muted-foreground">
-            <p>
-              model <span className="text-foreground">hemz-v{yearsOfExperience}</span>
-            </p>
-            <p className="truncate">
-              role <span className="text-foreground">{profile.title.toLowerCase()}</span>
-            </p>
-            <p>
-              weights <span className="text-ok">loaded ✓</span>
-            </p>
-          </div>
-        </div>
 
         {/* token inspector */}
         <div className="border-b px-4 py-4">

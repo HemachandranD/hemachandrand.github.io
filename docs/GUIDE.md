@@ -20,7 +20,7 @@ src/data/portfolio.ts
 | `education` | "Pre-training" rows under the career waterfall |
 | `skills` | The three core expertise cards (home + skills page) |
 | `stackSkills` | "Everything underneath" tiles on the skills page |
-| `industries` | Model card domains and the "deployed in" strip |
+| `industries` | Profile card and the "deployed in" strip |
 | `projectCategories` | Filter chips and embedding-map clusters on the projects page (cluster positions live in `src/components/inference/embedding-map.tsx`) |
 | `projects` | Project cards, command-menu entries, home "Recent builds" (first three) |
 | `yearsOfExperience` | Derived from `CAREER_START`; never hardcode years elsewhere |
@@ -29,7 +29,7 @@ Notes:
 
 - **Experience dates** use `"YYYY-MM"`; set `end: null` for the current role.
   `short` is the company label used in the career trace (`tcs.machine_…`)
-  and the model card's checkpoints.
+  and the profile card.
   Period labels and durations ("2 yrs 3 mos") are computed.
 - **Page sections** become spans in the header's trace bar when they carry
   `data-span="name"` (and an `id` to jump to).
