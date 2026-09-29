@@ -83,6 +83,8 @@ export const links = {
 
 export type Experience = {
   company: string;
+  /** short label for traces and the model card, e.g. "TCS" */
+  short: string;
   companyUrl?: string;
   title: string;
   type: string;
@@ -95,6 +97,7 @@ export type Experience = {
 export const experience: Experience[] = [
   {
     company: "Tredence Inc",
+    short: "Tredence",
     companyUrl: "https://www.tredence.com/",
     title: "Enterprise AI Engineer",
     type: "Full-time",
@@ -106,6 +109,7 @@ export const experience: Experience[] = [
   },
   {
     company: "Atos",
+    short: "Atos",
     companyUrl: "https://atos.net/",
     title: "Machine Learning Engineer",
     type: "Full-time",
@@ -117,6 +121,7 @@ export const experience: Experience[] = [
   },
   {
     company: "Tata Consultancy Services",
+    short: "TCS",
     companyUrl: "https://www.tcs.com/",
     title: "Machine Learning Practitioner",
     type: "Full-time",

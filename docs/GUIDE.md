@@ -28,6 +28,8 @@ src/data/portfolio.ts
 Notes:
 
 - **Experience dates** use `"YYYY-MM"`; set `end: null` for the current role.
+  `short` is the company label used in the career trace (`tcs.machine_…`)
+  and the model card's checkpoints.
   Period labels and durations ("2 yrs 3 mos") are computed.
 - **Page sections** become spans in the header's trace bar when they carry
   `data-span="name"` (and an `id` to jump to).
@@ -58,6 +60,12 @@ Pushing to `master` triggers `.github/workflows/deploy.yml`, which lints,
 builds the static export and publishes `out/` to the `gh-pages` branch. No
 manual steps. It also rebuilds on the 1st of each month to keep date-derived
 numbers current.
+
+## The name font
+
+The name in the hero is set in Fraunces, subset to just the letters of the
+name (~30 KB instead of ~270 KB). If the name ever changes, update `NAME` in
+`scripts/subset-name-font.mjs` and run `npm run fonts:name`.
 
 ## Contact form
 

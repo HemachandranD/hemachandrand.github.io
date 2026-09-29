@@ -178,6 +178,39 @@
   }
 }
 
+/* The name: Fraunces at display optical size, fully soft; the italic line
+   also turns on the "wonky" alternates. */
+.name-display {
+  /* the variable is set on the home hero only (see app/name-font.ts) */
+  font-family: var(--font-fraunces-name, ui-serif);
+  font-weight: 620;
+  font-optical-sizing: auto;
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 0;
+  letter-spacing: -0.035em;
+}
+
+.name-display .italic {
+  font-weight: 380;
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 1;
+}
+
+/* Dynamic Island morph: width animates between auto and open where the
+   browser can interpolate intrinsic sizes; elsewhere it simply snaps. */
+.island {
+  interpolate-size: allow-keywords;
+  transition:
+    width 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+    border-radius 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.island-avatar {
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 /* Probability → colour: violet (unlikely) … amber (confident). --p is 0–1. */
 .prob {
   --prob-color: color-mix(in oklch, var(--brand-amber) calc(var(--p, 1) * 100%), var(--brand-violet));

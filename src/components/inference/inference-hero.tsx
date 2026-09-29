@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { ChevronLeft, ChevronRight, Dices } from "lucide-react";
 
 import { cn, r3 } from "@/lib/utils";
-import { nameTokens, roleTokens, taglines, type Token } from "@/data/portfolio";
+import { nameTokens, profile, roleTokens, taglines, yearsOfExperience, type Token } from "@/data/portfolio";
 
 // Every token in reading order, so the inspector can step through them.
 const ALL: Token[] = [...nameTokens.flat(), ...roleTokens];
@@ -123,8 +123,9 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
   return (
     <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-12">
       {/* ---------------- output ---------------- */}
-      <div className="min-w-0" onPointerLeave={(e) => e.pointerType === "mouse" && setInspected(null)}>
-        <div className="enter" style={{ "--d": "0ms" } as CSSProperties}>
+      <div className="@container min-w-0" onPointerLeave={(e) => e.pointerType === "mouse" && setInspected(null)}>
+        {/* z-30 so the island, when open, floats over the lines below */}
+        <div className="enter relative z-30" style={{ "--d": "0ms" } as CSSProperties}>
           {status}
         </div>
 
@@ -134,10 +135,10 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
 
         <h1
           aria-label="Hemachandran Dhinakaran"
-          className="mt-3 font-serif text-[clamp(3.1rem,15vw,4.5rem)] leading-[0.95] tracking-[-0.02em] sm:text-8xl lg:text-[6.5rem]"
+          className="name-display mt-3 text-[clamp(2.2rem,13.6cqi,5.6rem)] leading-[1.02]"
         >
           {nameTokens.map((line, li) => (
-            <span key={li} aria-hidden="true" className={cn("enter-text block", li === 1 && "italic")} style={{ "--d": `${li * 90}ms` } as CSSProperties}>
+            <span key={li} aria-hidden="true" className={cn("enter-text block whitespace-nowrap", li === 1 && "italic")} style={{ "--d": `${li * 90}ms` } as CSSProperties}>
               {line.map((t) => {
                 const i = index++;
                 return <TokenSpan key={i} token={t} index={i} active={inspected === i} onInspect={setInspected} />;
@@ -206,6 +207,29 @@ export function InferenceHero({ status, actions }: { status: ReactNode; actions:
           <span className="ml-2">inference console</span>
           <span className="ml-auto">hemz-v8 · fp16</span>
         </header>
+
+        {/* loaded model: the face behind the weights */}
+        <div className="flex items-center gap-4 border-b px-4 py-4">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export, pre-optimized webp */}
+          <img
+            src={profile.avatarUrl}
+            alt={`${profile.name}'s avatar`}
+            width={64}
+            height={64}
+            className="size-16 shrink-0 rounded-2xl border bg-muted object-cover"
+          />
+          <div className="min-w-0 font-mono text-[11px] leading-relaxed text-muted-foreground">
+            <p>
+              model <span className="text-foreground">hemz-v{yearsOfExperience}</span>
+            </p>
+            <p className="truncate">
+              role <span className="text-foreground">{profile.title.toLowerCase()}</span>
+            </p>
+            <p>
+              weights <span className="text-ok">loaded ✓</span>
+            </p>
+          </div>
+        </div>
 
         {/* token inspector */}
         <div className="border-b px-4 py-4">

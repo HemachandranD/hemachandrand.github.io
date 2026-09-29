@@ -11,10 +11,12 @@ import { ToolCall } from "@/components/inference/tool-call";
 import { ProjectCard } from "@/components/project-card";
 import { SectionHeading } from "@/components/section-heading";
 import { ContactButton } from "@/components/site/actions";
-import { StatusPill } from "@/components/site/status-pill";
+import { DynamicIsland } from "@/components/site/dynamic-island";
 import { GitHubIcon, LinkedInIcon, MediumIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { links, profile, projects, yearsOfExperience } from "@/data/portfolio";
+
+import { FrauncesName } from "./name-font";
 
 export const metadata = { alternates: { canonical: "/" } };
 
@@ -28,7 +30,7 @@ export default function HomePage() {
   return (
     <>
       {/* ============ Prompt / output ============ */}
-      <section id="top" data-span="prompt" aria-label="Introduction" className="relative overflow-hidden">
+      <section id="top" data-span="prompt" aria-label="Introduction" className={`relative overflow-hidden ${FrauncesName.variable}`}>
         <div aria-hidden="true" className="bg-grid mask-fade-b absolute inset-0 -z-10" />
         <div
           aria-hidden="true"
@@ -36,7 +38,7 @@ export default function HomePage() {
         />
         <div className="mx-auto max-w-6xl px-4 pt-10 pb-20 sm:px-6 sm:pt-14 lg:pb-28">
           <InferenceHero
-            status={<StatusPill />}
+            status={<DynamicIsland />}
             actions={
               <div className="flex flex-wrap items-center gap-3">
                 <ContactButton variant="brand" size="lg">

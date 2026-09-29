@@ -8,7 +8,7 @@ import { Kbd } from "@/components/ui/kbd";
 import { TraceBar } from "@/components/inference/trace-bar";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { useUI } from "@/components/site/ui-context";
-import { NAV, isActive } from "@/components/site/nav";
+import { NAV, isActive, prefetchFor } from "@/components/site/nav";
 import { useModKey } from "@/lib/use-platform";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +22,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-1 px-4 sm:gap-2 sm:px-6">
         <Link
           href="/"
+          prefetch={false}
           className="mr-auto rounded-md font-serif text-2xl leading-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
           aria-label="Hemz — home"
         >
@@ -35,6 +36,7 @@ export function SiteHeader() {
               <Link
                 key={href}
                 href={href}
+                prefetch={prefetchFor(href)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   href === "/" && "max-sm:hidden",

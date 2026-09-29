@@ -2,7 +2,7 @@ import { experience, industries, profile, projects, skills, yearsOfExperience } 
 
 // About, formatted as a model card.
 export function ModelCard() {
-  const checkpoints = [...experience].reverse().map((e) => e.company.split(" ")[0]);
+  const checkpoints = [...experience].reverse().map((e) => e.short);
   const rows: [string, string][] = [
     ["architecture", skills.map((s) => s.category.split(" ")[0].toLowerCase()).join(" ∘ ")],
     ["training run", `jun 2018 → present · ${yearsOfExperience}+ yrs`],

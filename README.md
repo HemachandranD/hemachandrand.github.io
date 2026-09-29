@@ -41,7 +41,7 @@ on top, and everything degrades gracefully (the career spans use native
 | Effects | Magic UI BlurFade for scroll reveals |
 | Animation | **Motion** (`motion/react`, loaded via `LazyMotion`) |
 | Theme | `next-themes`, circular reveal via the View Transitions API |
-| Icons / fonts | Lucide; Instrument Serif (display), Geist Sans (text), Martian Mono (data & labels), all self-hosted |
+| Icons / fonts | Lucide; Fraunces (the name, subset to its letters), Instrument Serif (headings), Geist Sans (text), Martian Mono (data & labels), all self-hosted |
 | Hosting | GitHub Actions → `gh-pages` branch → GitHub Pages |
 
 shadcn/ui components are copied into the repo (that's how the library is
@@ -116,7 +116,7 @@ Repo settings: **Settings → Pages → Source: Deploy from a branch → `gh-pag
 - **⌘K / Ctrl K / `/`**: retrieval over pages, sections, every project, profiles and actions (message, copy email, switch theme), ranked by similarity
 - **Embedding map**: hover a point to highlight its card (and vice versa), click a cluster to filter, click a point to jump to it; `/projects/#<id>` deep links scroll to and highlight a card
 - **Contact tool call**: validated form posting to FormSubmit, with a mail-app fallback and a honeypot for bots
-- **Live status pill**: what I'm probably doing right now, by my local (Eastern) time
+- **Dynamic Island**: a black capsule with my avatar, what I'm probably doing right now and my local time; hover or tap and it morphs open with a "Say hi" shortcut
 - **Theme**: warm-paper light and ink dark, with a circular reveal, remembered per visitor
 - **Accessibility**: skip link, labelled controls, keyboard paths for every interaction, focus management in dialogs, correct heading order, reduced-motion support throughout (Lighthouse accessibility 100 on every page)
 - **SEO**: per-page titles and canonicals, Open Graph/Twitter cards, JSON-LD `Person`, sitemap, robots

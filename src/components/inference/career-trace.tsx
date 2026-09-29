@@ -67,7 +67,7 @@ export function CareerTrace() {
                 <span className="flex min-w-0 items-center gap-1.5 font-mono text-xs">
                   <ChevronRight className="size-3.5 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" aria-hidden="true" />
                   <span className="truncate">
-                    {slug(exp.company.split(" ")[0])}.<span className="text-muted-foreground">{slug(exp.title)}</span>
+                    {slug(exp.short)}.<span className="text-muted-foreground">{slug(exp.title)}</span>
                   </span>
                 </span>
                 <span className="relative h-6">

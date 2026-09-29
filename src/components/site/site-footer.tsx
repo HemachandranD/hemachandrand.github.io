@@ -3,7 +3,7 @@ import Link from "next/link";
 import { InferenceStats } from "@/components/inference/inference-stats";
 import { SearchHint } from "@/components/site/actions";
 import { GitHubIcon, LinkedInIcon, MediumIcon } from "@/components/icons";
-import { NAV } from "@/components/site/nav";
+import { NAV, prefetchFor } from "@/components/site/nav";
 import { links, profile } from "@/data/portfolio";
 
 const socials = [
@@ -29,7 +29,7 @@ export function SiteFooter() {
         <div className="flex flex-col gap-3 md:items-end">
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {NAV.map(({ href, label }) => (
-              <Link key={href} href={href} className="underline-offset-4 hover:text-foreground hover:underline">
+              <Link key={href} href={href} prefetch={prefetchFor(href)} className="underline-offset-4 hover:text-foreground hover:underline">
                 {label}
               </Link>
             ))}
